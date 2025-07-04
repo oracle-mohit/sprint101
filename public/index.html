@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sprint Manager</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+
+    <header class="app-header">
+        <div class="header-content">
+            <div class="app-brand">
+                <i class="fas fa-list-check app-icon"></i>
+                <span class="app-title">Sprint Manager</span>
+            </div>
+            <div class="header-actions">
+                <button id="viewSprintsBtn" class="btn btn-header btn-view-sprints">
+                    <i class="fas fa-calendar-days"></i> Sprints
+                </button>
+                <button id="createSprintBtn" class="btn btn-header btn-create-sprint">
+                    <i class="fas fa-plus"></i> Add Sprint
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <div class="main-wrapper">
+        <main class="content-container">
+
+            <section id="createSprintSection" class="panel-card create-sprint-panel">
+                <h2 class="form-section-title"><i class="fas fa-plus-circle"></i> Create New Sprint</h2>
+                <form id="sprintForm">
+                    <div class="form-section">
+                        <div class="form-group">
+                            <label for="podName">POD Name</label>
+                            <input type="text" id="podName" required placeholder="e.g., Team Alpha">
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="startDate">Sprint Start Date</label>
+                                <input type="date" id="startDate" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="endDate">Sprint End Date</label>
+                                <input type="date" id="endDate" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-section">
+                        <h3 class="form-section-subtitle"><i class="fas fa-tasks"></i> Sprint Goals</h3>
+                        <div class="goal-input-container">
+                            <div class="goal-headers">
+                                <span class="goal-header-description">Goal Description</span>
+                                <span class="goal-header-type">Type</span>
+                                <span class="goal-header-actions"></span>
+                            </div>
+                            <div id="goalsContainer" class="goals-list"></div>
+                            <div class="form-actions-inline">
+                                <button type="button" id="addGoal" class="btn btn-secondary btn-icon-left">
+                                    <i class="fas fa-plus"></i> Add Another Goal
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-actions-bottom">
+                        <button type="button" id="cancelSprintBtn" class="btn btn-tertiary">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Create Sprint</button>
+                    </div>
+                </form>
+            </section>
+
+            <!-- Cleaned up Manage Goals section -->
+            <section id="manageGoalsSection" class="panel-card manage-goals-panel" style="display:none;">
+                <h2 class="form-section-title"><i class="fas fa-edit"></i> Manage Goals for <span id="managedSprintName"></span></h2>
+                <div class="form-section">
+<table class="goals-table">
+    <thead>
+        <tr>
+            <th>Goal Description</th>
+            <th>Type</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <tbody id="manageGoalsList"></tbody>
+</table>                </div>
+                <div class="form-actions-bottom">
+                    <button type="button" id="backToSprintsBtn" class="btn btn-tertiary">Back to Sprints</button>
+                    <button type="button" id="saveGoalsBtn" class="btn btn-primary">Save Changes</button>
+                </div>
+            </section>
+
+            <section id="currentUpcomingSprintsSection" class="panel-card sprints-list-panel">
+                <h2 class="panel-title"><i class="fas fa-hourglass-start"></i> Current & Upcoming Sprints</h2>
+                <div id="currentSprintsList" class="sprint-cards-container">
+                    <p class="empty-state">Loading sprints...</p>
+                </div>
+            </section>
+
+            <section id="pastSprintsSection" class="panel-card sprints-list-panel">
+                <h2 class="panel-title"><i class="fas fa-box-archive"></i> Past Sprints</h2>
+                <div id="pastSprintsList" class="sprint-cards-container">
+                    <p class="empty-state">Loading past sprints...</p>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
