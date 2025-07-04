@@ -41,6 +41,7 @@ const sprintSchema = new mongoose.Schema({
 
 const Sprint = mongoose.model('Sprint', sprintSchema);
 
+
 // --- API Routes ---
 
 // 1. Create a new Sprint

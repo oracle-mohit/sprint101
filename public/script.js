@@ -1,4 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
+    const API_BASE = 'https://sprint101-1.onrender.com'; // Replace with your actual backend URL
     const sprintForm = document.getElementById('sprintForm');
     const goalsContainer = document.getElementById('goalsContainer'); // Now points to .goals-list
     const addGoalButton = document.getElementById('addGoal');
@@ -105,7 +106,7 @@ document.addEventListener('DOMContentLoaded', () => {
         };
 
         try {
-            const response = await fetch('/api/sprints', {
+            const response = await fetch(`${API_BASE}/api/sprints`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -140,7 +141,7 @@ document.addEventListener('DOMContentLoaded', () => {
         pastSprintsList.innerHTML = '<p class="empty-state"><i class="fas fa-spinner fa-spin"></i> Loading past sprints...</p>';
 
         try {
-            const response = await fetch('/api/sprints');
+            const response = await fetch(`${API_BASE}/api/sprints`);
             if (response.ok) {
                 const sprints = await response.json();
 
@@ -211,7 +212,7 @@ async function openManageGoalsPanel(sprintId, readOnly = false, editStatusOnly =
     document.getElementById('manageGoalsSection').style.display = '';
 
     // Fetch sprint goals
-    const res = await fetch(`/api/sprints/${sprintId}/goals`);
+    const res = await fetch(`${API_BASE}/api/sprints/${sprintId}/goals`);
     const goals = await res.json();
 
     document.getElementById('managedSprintName').textContent = `Sprint ${sprintId}`;
@@ -346,7 +347,7 @@ document.getElementById('saveGoalsBtn').addEventListener('click', async function
         status: row.querySelector('.goal-status-select').value
     }));
 
-    await fetch(`/api/sprints/${sprintId}/goals`, {
+    await fetch(`${API_BASE}/api/sprints/${sprintId}/goals`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ goals: updatedGoals })
