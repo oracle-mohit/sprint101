@@ -213,18 +213,35 @@ input[type="text"]:focus, input[type="date"]:focus, select:focus {
     margin-top: 1rem;
 }
 
+/* Default (in progress) */
 .sprint-card {
+    border-left: 6px solid #1a73e8; /* blue */
     background: #f9fafb;
-    border-radius: 8px;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.04);
-    padding: 1.2rem 1rem;
-    min-width: 260px;
-    flex: 1 1 260px;
-    border-left: 6px solid var(--color-primary-blue, #1a73e8);
-    display: flex;
-    flex-direction: column;
-    gap: 0.7rem;
+    transition: box-shadow 0.2s, border-color 0.2s;
 }
+
+/* Completed */
+.sprint-card.completed {
+    border-left-color: #34a853; /* green */
+    background: #e6f4ea;
+}
+
+/* Overdue */
+.sprint-card.overdue {
+    border-left-color: #ea4335; /* red */
+    background: #fbeaea;
+}
+
+/* Add a subtle hover effect */
+.sprint-card:hover {
+    box-shadow: 0 4px 16px rgba(26, 115, 232, 0.08);
+}
+
+
+
+
+
+
 
 .sprint-card-header {
     display: flex;

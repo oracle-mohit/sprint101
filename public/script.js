@@ -289,14 +289,12 @@ async function openManageGoalsPanel(sprintId, readOnly = false, editStatusOnly =
         const achievementPercentage = totalGoals > 0 ? Math.round((completedGoals / totalGoals) * 100) : 0;
 
         // Determine accent border color
-        const isOverdue = new Date(sprint.endDate) < new Date() && achievementPercentage < 100;
-        if (isOverdue) {
-            sprintCard.style.borderLeftColor = 'var(--color-danger-red)'; // Red for overdue
-        } else if (achievementPercentage === 100 && totalGoals > 0) { // Only green if 100% and has goals
-            sprintCard.style.borderLeftColor = 'var(--color-success-green)'; // Green for 100% complete
-        } else {
-            sprintCard.style.borderLeftColor = 'var(--color-primary-blue)'; // Default blue
-        }
+const isOverdue = new Date(sprint.endDate) < new Date() && achievementPercentage < 100;
+if (isOverdue) {
+    sprintCard.classList.add('overdue');
+} else if (achievementPercentage === 100 && totalGoals > 0) {
+    sprintCard.classList.add('completed');
+}
 
         // Determine CTA text and icon based on whether it's a past sprint
         const ctaText = isPastSprint ? 'View Goals' : 'Manage Goals';
