@@ -6,10 +6,7 @@ const path = require('path');
 // ...other requires
 const cors = require('cors');
 // Allow all origins (for development)
-app.use(cors());
-
 // If you want to allow only your frontend domain, use this instead:
-// app.use(cors({ origin: 'https://zany-guide-x5qqq7grv97c6wq9-3000.app.github.dev' }));
 
 // Load environment variables from .env file
 dotenv.config();
@@ -18,8 +15,15 @@ console.log("MONGODB_URI from .env:", process.env.MONGODB_URI); // <-- ADD THIS
 // ... rest of your code
 
 const app = express();
+// app.use(cors());
+app.use(cors({ origin: 'https://zany-guide-x5qqq7grv97c6wq9-3000.app.github.dev' }));
+
+
 const PORT = process.env.PORT || 3000;
 const MONGODB_URI = process.env.MONGODB_URI; // Using only the value from .env
+
+
+
 
 // Middleware to parse JSON bodies
 app.use(express.json());
@@ -48,10 +52,6 @@ const sprintSchema = new mongoose.Schema({
 });
 
 const Sprint = mongoose.model('Sprint', sprintSchema);
-
-
-const cors = require('cors');
-app.use(cors());
 
 
 // --- API Routes ---
