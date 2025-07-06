@@ -2,37 +2,33 @@ const express = require('express');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const path = require('path');
-
-// ...other requires
-const cors = require('cors');
-// Allow all origins (for development)
-// If you want to allow only your frontend domain, use this instead:
+const cors = require('cors'); // Ensure cors is properly imported
 
 // Load environment variables from .env file
 dotenv.config();
 
-console.log("MONGODB_URI from .env:", process.env.MONGODB_URI); // <-- ADD THIS
-// ... rest of your code
+console.log("MONGODB_URI from .env:", process.env.MONGODB_URI);
 
 const app = express();
-// app.use(cors());
 
 const allowedOrigins = [
   'https://sprint101.vercel.app',
-  'https://sprint101.onrender.com',
-  'https://sprint101-1.onrender.com',
-  'https://sprint101-1.onrender.com/api/sprints',
-    'https://sprint101.onrender.com/api/sprints'
+  'http://localhost:3000', // Added for local development if your frontend runs on this port
+  'http://localhost:5500' // Common for Live Server in VS Code
+  // Note: The /api/sprints paths are not origins and should be removed.
+  // The origin is just the domain/port where the request is coming from.
+  // 'https://sprint101-1.onrender.com/api/sprints', // Remove this
+  // 'https://sprint101.onrender.com/api/sprints'   // Remove this
 ];
 
-
+// Refined CORS configuration (fixed allowedOrigins to only be domains)
 app.use(cors({
   origin: function(origin, callback) {
-    // allow requests with no origin (like mobile apps, curl, etc.)
-    if (!origin) return callback(null, true);
+    if (!origin) return callback(null, true); // Allow requests with no origin (e.g., from Postman/curl)
     if (allowedOrigins.includes(origin)) {
       return callback(null, true);
     } else {
+      console.log('CORS Blocked: Origin not allowed:', origin);
       return callback(new Error('Not allowed by CORS'));
     }
   }
@@ -40,10 +36,7 @@ app.use(cors({
 
 
 const PORT = process.env.PORT || 3000;
-const MONGODB_URI = process.env.MONGODB_URI; // Using only the value from .env
-
-
-
+const MONGODB_URI = process.env.MONGODB_URI;
 
 // Middleware to parse JSON bodies
 app.use(express.json());
@@ -60,7 +53,7 @@ mongoose.connect(MONGODB_URI)
 const goalSchema = new mongoose.Schema({
     description: { type: String, required: true },
     type: { type: String, enum: ['Live', 'QA Complete', 'Dev Complete'], default: 'Dev Complete' },
-    status: { type: String, enum: ['Not Done', 'Done'], default: 'Not Done' } // Default status
+    status: { type: String, enum: ['Not Done', 'Done'], default: 'Not Done' }
 });
 
 const sprintSchema = new mongoose.Schema({
@@ -91,7 +84,7 @@ app.post('/api/sprints', async (req, res) => {
 // 2. Get all Sprints
 app.get('/api/sprints', async (req, res) => {
     try {
-        const sprints = await Sprint.find().sort({ startDate: -1 }); // Sort by start date descending
+        const sprints = await Sprint.find().sort({ startDate: -1 });
         res.status(200).json(sprints);
     } catch (error) {
         console.error('Error fetching sprints:', error);
@@ -99,10 +92,32 @@ app.get('/api/sprints', async (req, res) => {
     }
 });
 
+// --- NEW ROUTE: Get a single Sprint by ID ---
+app.get('/api/sprints/:id', async (req, res) => {
+    console.log(`Backend received GET request for sprint ID: ${req.params.id}`); // Debug log
+    try {
+        const sprint = await Sprint.findById(req.params.id);
+        if (!sprint) {
+            return res.status(404).json({ message: 'Sprint not found' });
+        }
+        res.status(200).json(sprint); // Return the entire sprint object
+    } catch (error) {
+        console.error(`Error fetching sprint ${req.params.id}:`, error);
+        // Mongoose CastError for invalid ID format often results in 500 without proper handling
+        if (error.name === 'CastError') {
+            return res.status(400).json({ message: 'Invalid Sprint ID format' });
+        }
+        res.status(500).json({ message: 'Error fetching sprint', error: error.message });
+    }
+});
+// --- END NEW ROUTE ---
 
-// 3. Get goals for a specific sprint
+
+// 3. Get goals for a specific sprint (This route is technically redundant if GET /api/sprints/:id returns the whole sprint)
+// However, if your frontend *only* asks for goals here, it's fine.
+// The frontend currently gets the full sprint first, then accesses goals from that.
 app.get('/api/sprints/:id/goals', async (req, res) => {
-    console.log(`Backend received GET request for goals for sprint ID: ${req.params.id}`); // Debug log
+    console.log(`Backend received GET request for goals for sprint ID: ${req.params.id}`);
     try {
         const sprint = await Sprint.findById(req.params.id);
         if (!sprint) {
@@ -111,14 +126,14 @@ app.get('/api/sprints/:id/goals', async (req, res) => {
         res.status(200).json(sprint.goals);
     } catch (error) {
         console.error(`Error fetching goals for sprint ${req.params.id}:`, error);
+        if (error.name === 'CastError') {
+            return res.status(400).json({ message: 'Invalid Sprint ID format' });
+        }
         res.status(500).json({ message: 'Error fetching goals', error: error.message });
     }
 });
 
 // 4. Update goal statuses and descriptions for a specific sprint
-// ...existing code...
-
-// Update goals for a specific sprint
 app.put('/api/sprints/:id/goals', async (req, res) => {
     try {
         const sprintId = req.params.id;
@@ -132,19 +147,15 @@ app.put('/api/sprints/:id/goals', async (req, res) => {
         res.status(200).json(sprint.goals);
     } catch (error) {
         console.error('Error updating goals:', error);
+        if (error.name === 'CastError') {
+            return res.status(400).json({ message: 'Invalid Sprint ID format' });
+        }
         res.status(400).json({ message: 'Error updating goals', error: error.message });
     }
 });
-// ...existing code...
 
 
-
-
-
-
-
-// Catch-all to serve the index.html for any other frontend routes (for future routing)
-
+// Catch-all to serve the index.html for any other frontend routes
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
