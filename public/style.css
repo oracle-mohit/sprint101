@@ -1,64 +1,13 @@
 /* Basic Colors */
 :root {
-    /* Primary Color: Vibrant Blue */
-    --md-primary: #2e65f0;
-    --md-primary-light: #6e92ff; /* Lighter shade for accents/hover */
-    --md-primary-dark: #0037bc; /* Darker shade for accents/hover */
-    --md-primary-text: #ffffff;
-
-    /* Secondary Color: Darker Blue (for strong actions, active states) */
-    --md-secondary: #1560bd;
-    --md-secondary-light: #508ee1; /* Lighter shade for accents/hover */
-    --md-secondary-dark: #00358c; /* Darker shade for accents/hover */
-    --md-secondary-text: #ffffff;
-
-    /* General UI Colors */
-    --md-background: #eceff1; /* Light grey background */
-    --md-surface: #ffffff; /* Card/panel background (default for forms, welcome) */
-    --md-border-color: #e0e0e0; /* Lighter border */
-
-    /* Text Colors */
-    --md-text-high-emphasis: rgba(0, 0, 0, 0.87);
-    --md-text-medium-emphasis: rgba(0, 0, 0, 0.60);
-    --md-text-disabled: rgba(0, 0, 0, 0.38);
-    --md-text-on-primary: #ffffff;
-    --md-text-on-secondary: #ffffff;
-
-    /* Status Colors (remain standard for clarity in manage goals, but not on cards) */
-    --md-success: #66BB6A; /* Toned down Green */
-    --md-success-light-bg: #E8F5E9; /* Lightest Green */
-    --md-error: #EF5350; /* Toned down Red */
-    --md-error-light-bg: #FFEBEE; /* Lightest Red */
-    --md-info: #2196F3; /* Standard Material Blue for info */
-    --md-warning: #FFC107; /* Amber */
-
-    /* --- UPDATED SECTION & CARD COLORS --- */
-    /* Section backgrounds are now white */
-    --section-current-bg: var(--md-surface); /* White */
-    --section-past-bg: var(--md-surface);     /* White */
-
-    /* Card backgrounds now take the previous section background colors */
-    --card-current-bg: #E3F2FD; /* Very light blue for Current/Upcoming cards background */
-    --card-current-border: var(--md-primary); /* Primary blue for Current/Upcoming card border */
-    --card-current-title-color: var(--md-primary-light); /* Light blue for Current card titles */
-    --card-current-action-btn: var(--card-current-title-color); /* Action button matches title color */
-    --card-current-action-btn-hover: var(--md-primary-dark); /* Darker hover for current action button */
-    --card-current-progress-fill: var(--card-current-title-color); /* Achievement bar matches title color */
-
-    --card-past-bg: #F3E5F5;    /* Very light purple for Past cards background */
-    --card-past-title-color: #A06ECF; /* A distinct light purple for Past card titles */
-    --card-past-border: var(--card-past-title-color); /* Left border matches title color */
-    --card-past-action-btn: var(--card-past-title-color); /* Action button matches title color */
-    --card-past-action-btn-hover: #7B3F9A; /* Darker hover for past action button */
-    --card-past-progress-fill: var(--card-past-title-color); /* Achievement bar matches title color */
-    /* --- END UPDATED SECTION & CARD COLORS --- */
-
-
-    /* Material Shadows (Elevation) */
-    --md-shadow-0: none;
-    --md-shadow-1: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
-    --md-shadow-2: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
-    --md-shadow-3: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+    --primary-color: #007bff;
+    --secondary-color: #6c757d;
+    --accent-color: #28a745; /* Green for success */
+    --danger-color: #dc3545; /* Red for error */
+    --background-color: #f8f9fa;
+    --surface-color: #ffffff;
+    --border-color: #dee2e6;
+    --text-color: #343a40;
 }
 
 body {
@@ -76,7 +25,7 @@ h1, h2, h3 {
     margin-bottom: 1rem;
 }
 
-/* Header */
+/* --- Header Section --- */
 .app-header {
     background: var(--primary-color);
     color: #fff;
@@ -118,7 +67,31 @@ h1, h2, h3 {
     border-color: #fff;
 }
 
-/* Main Layout */
+.btn-header {
+    font-size: 0.95rem;
+    padding: 0.5rem 1.2rem;
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: var(--md-shadow-0);
+}
+
+.btn-header:hover {
+    background: rgba(255, 255, 255, 0.25);
+    transform: none;
+    box-shadow: var(--md-shadow-0);
+}
+
+.btn-header.active {
+    background: var(--md-surface);
+    color: var(--md-primary);
+    box-shadow: var(--md-shadow-1);
+}
+
+.btn-header.active:hover {
+    background: #f0f0f0;
+}
+
+/* --- Main Layout & Card General Styles --- */
 .main-wrapper {
     padding: 2rem 0;
 }
@@ -190,7 +163,28 @@ textarea {
     border-top: 1px solid var(--border-color);
 }
 
-/* Buttons */
+/* Styles for read-only/disabled input fields - make them look like plain text */
+input[readonly],
+textarea[readonly] {
+    background: transparent; /* Make background transparent */
+    border-color: transparent; /* Remove the border */
+    box-shadow: none; /* Ensure no box shadow */
+    cursor: default; /* Keep default cursor */
+    color: var(--md-text-high-emphasis); /* Use high emphasis color for readability */
+    padding-left: 0;   /* Remove left padding to make it look like text */
+    padding-right: 0;  /* Remove right padding */
+    outline: none; /* Remove outline on focus */
+}
+
+/* Ensure textarea keeps its min-height but looks like text */
+textarea[readonly] {
+    min-height: 60px; /* Keep defined min-height */
+    resize: none; /* Disable resizing for read-only textareas */
+    overflow: hidden; /* Hide scrollbar if content exceeds min-height */
+}
+
+
+/* --- Buttons (General) --- */
 .btn {
     padding: 0.75rem 1.5rem;
     border: none;
@@ -364,23 +358,8 @@ textarea {
     cursor: pointer;
     font-size: 0.8em;
 }
-.goal-card-delete-btn:active {
-    transform: scale(0.9);
-}
 
-
-/* --- SECTION BACKGROUNDS --- */
-#currentUpcomingSprintsSection {
-    background: var(--section-current-bg);
-}
-
-#pastSprintsSection {
-    background: var(--section-past-bg);
-}
-/* --- END SECTION BACKGROUNDS --- */
-
-
-/* Sprint Cards */
+/* Sprint Cards List */
 .sprint-cards-container {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -397,18 +376,7 @@ textarea {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-    overflow: hidden;
-
-    /* Base colors for CURRENT & UPCOMING sprint cards */
-    border-left: 6px solid var(--card-current-border); /* NOW MATCHES POD NAME COLOR */
-    background: var(--card-current-bg);
-}
-
-/* Past Sprint Card Specific Styles */
-.sprint-card.sprint-card--past {
-    border-left-color: var(--card-past-border); /* NOW MATCHES POD NAME COLOR */
-    background: var(--card-past-bg);
+    transition: transform 0.2s, box-shadow 0.2s;
 }
 
 .sprint-card:hover {
@@ -426,102 +394,28 @@ textarea {
 }
 
 .sprint-card-title {
-    font-size: 1.15rem;
-    margin: 0;
-    font-weight: 700;
-    color: var(--card-current-title-color);
-    line-height: 1.2;
-}
-
-.sprint-card.sprint-card--past .sprint-card-title {
-    color: var(--card-past-title-color);
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
 }
 
 .sprint-card-dates {
-    font-size: 0.8rem;
-    color: var(--md-text-medium-emphasis);
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    margin-top: 0.3rem;
+    font-size: 0.85rem;
+    color: #666;
+    margin-bottom: 1rem;
 }
 
-.sprint-card-dates span {
-    display: flex;
-    align-items: center;
-    gap: 0.25rem;
-}
-
-.sprint-card-dates .fas {
-    color: var(--md-primary); /* Icons will follow the card's main theme color */
-    font-size: 0.7rem;
-}
-
-
-.progress-section {
-    margin-top: 0.6rem;
-    margin-bottom: 0.8rem;
-}
-
-.progress-bar-container {
-    width: 100%;
-    /* Increased height by 50% from 6px to 9px */
-    height: 9px;
-    background: var(--md-border-color);
-    border-radius: 4.5px; /* Adjust border-radius to match new height */
-    overflow: hidden;
-    margin-bottom: 0.3rem;
-}
-
-/* --- PROGRESS BAR FILL --- */
-.progress-bar-fill {
-    height: 100%;
-    background: var(--card-current-progress-fill); /* Matches Current card title/border color */
-    border-radius: 4.5px; /* Adjust border-radius to match new height */
-    transition: width 0.4s ease-out;
-}
-
-.sprint-card.sprint-card--past .progress-bar-fill {
-    background: var(--card-past-progress-fill); /* Matches Past card title/border color */
-}
-/* --- END PROGRESS BAR FILL --- */
-
-
-.progress-text {
-    font-size: 0.8rem;
-    color: var(--md-text-high-emphasis);
-    margin: 0;
-    font-weight: 500;
-}
-
-.sprint-card-actions {
-    margin-top: 1rem;
-    padding-top: 0.8rem;
-    border-top: 1px solid var(--md-border-color);
-}
-
-/* --- SPRINT CARD ACTION BUTTONS --- */
 .sprint-card-actions .btn {
     width: 100%;
     padding: 0.6rem 1rem;
     font-size: 0.9rem;
-    background: var(--card-current-action-btn); /* Matches Current card title/border color */
-    color: var(--md-primary-text);
+    background: var(--primary-color);
+    color: #fff;
 }
-.sprint-card-actions .btn:hover {
-    background: var(--card-current-action-btn-hover); /* Darker hover for Current */
+.sprint-card--past .sprint-card-actions .btn {
+    background: var(--secondary-color);
 }
 
-.sprint-card.sprint-card--past .sprint-card-actions .btn {
-    background: var(--card-past-action-btn); /* Matches Past card title/border color */
-}
-.sprint-card.sprint-card--past .sprint-card-actions .btn:hover {
-    background: var(--card-past-action-btn-hover); /* Darker hover for Past */
-}
-/* --- END SPRINT CARD ACTION BUTTONS --- */
-
-
-/* Empty State & Errors */
 .empty-state {
     text-align: center;
     color: #666;
