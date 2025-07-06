@@ -1,156 +1,263 @@
+/* Variables for easier theme management */
+:root {
+    --primary-color: #4A90E2; /* A brighter blue */
+    --primary-dark: #3A7CC7;
+    --secondary-color: #E6F0FF; /* Light blue for secondary buttons */
+    --secondary-text: #2A6DB3;
+    --success-color: #28a745; /* Standard green */
+    --success-light: #e6f7ea;
+    --danger-color: #dc3545; /* Standard red */
+    --danger-light: #fbecec;
+    --warning-color: #ffc107; /* Standard yellow */
+    --text-color-dark: #2c3e50; /* Darker text for readability */
+    --text-color-light: #7f8c8d; /* Lighter text for secondary info */
+    --bg-light: #f8f9fa; /* Lighter background */
+    --bg-card: #ffffff;
+    --border-color: #e0e6ed;
+    --shadow-light: rgba(0, 0, 0, 0.08);
+    --shadow-medium: rgba(0, 0, 0, 0.12);
+}
+
 /* Reset & base styles */
 body {
     margin: 0;
     padding: 0;
-    font-family: 'Inter', Arial, sans-serif;
-    background: #f6f8fa;
-    color: #222;
+    font-family: 'Inter', Arial, sans-serif; /* Inter for body */
+    background: var(--bg-light);
+    color: var(--text-color-dark);
+    line-height: 1.6;
 }
 
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Poppins', sans-serif; /* Poppins for headings */
+    color: var(--text-color-dark);
+}
+
+/* Header */
 .app-header {
-    background: #1a73e8;
+    background: var(--primary-color);
     color: #fff;
     padding: 1rem 0;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+    box-shadow: 0 4px 15px var(--shadow-medium);
 }
 
 .header-content {
-    max-width: 900px;
+    max-width: 1000px; /* Slightly wider header */
     margin: 0 auto;
     display: flex;
     align-items: center;
     justify-content: space-between;
+    padding: 0 1.5rem; /* Add padding to sides */
 }
 
 .app-brand {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: 0.75rem; /* Increased gap */
 }
 
 .app-icon {
-    font-size: 1.5rem;
+    font-size: 1.8rem; /* Larger icon */
 }
 
 .app-title {
-    font-size: 1.3rem;
-    font-weight: 600;
-    letter-spacing: 1px;
+    font-size: 1.5rem; /* Larger title */
+    font-weight: 700; /* Bolder */
+    letter-spacing: 0.5px;
 }
 
-.header-actions .btn {
-    margin-left: 0.5rem;
+.header-actions {
+    display: flex;
+    gap: 0.75rem; /* Space between buttons */
 }
 
+/* Main Layout */
 .main-wrapper {
-    max-width: 900px;
+    max-width: 1000px; /* Consistent with header width */
     margin: 2rem auto;
-    padding: 0 1rem;
+    padding: 0 1.5rem; /* Consistent padding */
 }
 
 .panel-card {
-    background: #fff;
-    border-radius: 10px;
-    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
-    margin-bottom: 2rem;
-    padding: 2rem 2rem 1.5rem 2rem;
+    background: var(--bg-card);
+    border-radius: 12px; /* Slightly more rounded corners */
+    box-shadow: 0 6px 20px var(--shadow-light); /* More pronounced shadow */
+    margin-bottom: 2.5rem; /* More vertical space between cards */
+    padding: 2.5rem; /* More internal padding */
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.panel-card:hover {
+    transform: translateY(-3px); /* Subtle lift effect */
+    box-shadow: 0 8px 25px var(--shadow-medium);
 }
 
 .form-section-title, .panel-title {
     margin-top: 0;
-    margin-bottom: 1.5rem;
-    font-size: 1.3rem;
-    font-weight: 600;
+    margin-bottom: 1.8rem; /* More space below titles */
+    font-size: 1.6rem; /* Larger titles */
+    font-weight: 700;
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: 0.8rem; /* Space between icon and text */
+    color: var(--primary-color); /* Title color */
+}
+
+.form-section-title .fas, .panel-title .fas {
+    color: var(--primary-dark);
 }
 
 .form-section {
-    margin-bottom: 2rem;
+    margin-bottom: 2.5rem; /* More space between form sections */
 }
 
 .form-group {
-    margin-bottom: 1.2rem;
+    margin-bottom: 1.5rem; /* More space between form groups */
 }
 
 .form-row {
     display: flex;
-    gap: 1.5rem;
+    gap: 2rem; /* Increased gap in form rows */
+}
+
+.form-row .form-group {
+    flex: 1; /* Make groups take equal width in a row */
+    margin-bottom: 0; /* No extra margin if it's within a row */
+}
+
+label {
+    display: block; /* Make labels block-level for better spacing */
+    margin-bottom: 0.5rem; /* Space between label and input */
+    font-weight: 600;
+    color: var(--text-color-dark);
+    font-size: 0.95rem;
 }
 
 input[type="text"], input[type="date"], select {
     width: 100%;
-    padding: 0.5rem 0.75rem;
-    border: 1px solid #d0d7de;
-    border-radius: 5px;
+    padding: 0.8rem 1rem; /* More padding for larger input fields */
+    border: 1px solid var(--border-color);
+    border-radius: 8px; /* Slightly more rounded inputs */
     font-size: 1rem;
-    background: #f9fafb;
-    margin-top: 0.3rem;
+    background: var(--bg-light); /* Light background for inputs */
     box-sizing: border-box;
+    transition: border-color 0.2s, box-shadow 0.2s, background-color 0.2s;
 }
 
 input[type="text"]:focus, input[type="date"]:focus, select:focus {
-    outline: 2px solid #1a73e8;
-    border-color: #1a73e8;
+    outline: none; /* Remove default outline */
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.2); /* Soft focus ring */
     background: #fff;
 }
 
+/* Buttons */
 .btn {
     display: inline-flex;
     align-items: center;
-    gap: 0.5rem;
-    padding: 0.5rem 1.2rem;
+    gap: 0.75rem; /* More space for icons */
+    padding: 0.75rem 1.5rem; /* Larger buttons */
     border: none;
-    border-radius: 5px;
-    font-size: 1rem;
-    font-weight: 500;
+    border-radius: 8px; /* More rounded buttons */
+    font-size: 1.05rem; /* Slightly larger text */
+    font-weight: 600;
     cursor: pointer;
-    transition: background 0.2s;
+    transition: background 0.2s ease-out, transform 0.1s ease-out, box-shadow 0.2s ease-out;
+}
+
+.btn:hover {
+    transform: translateY(-2px); /* Lift on hover */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.btn:active {
+    transform: translateY(0); /* Press down on click */
+    box-shadow: none;
 }
 
 .btn-primary {
-    background: #1a73e8;
+    background: var(--primary-color);
     color: #fff;
 }
 
 .btn-primary:hover {
-    background: #1761c7;
+    background: var(--primary-dark);
 }
 
 .btn-secondary {
-    background: #e3eafc;
-    color: #1a73e8;
+    background: var(--secondary-color);
+    color: var(--secondary-text);
 }
 
 .btn-secondary:hover {
-    background: #d2e3fc;
+    background: #cddffc; /* A slightly darker secondary hover */
 }
 
 .btn-tertiary {
-    background: #f5f5f5;
-    color: #222;
+    background: var(--border-color);
+    color: var(--text-color-dark);
 }
 
 .btn-tertiary:hover {
-    background: #e0e0e0;
+    background: #cdd5df;
+}
+
+.btn-danger {
+    background: var(--danger-color);
+    color: #fff;
+}
+
+.btn-danger:hover {
+    background: #c82333;
 }
 
 .btn-header {
-    font-size: 1rem;
-    padding: 0.4rem 1rem;
+    font-size: 0.95rem; /* Slightly smaller for header buttons */
+    padding: 0.5rem 1.2rem;
+    background: rgba(255, 255, 255, 0.15); /* Slightly transparent background */
+    border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
-.form-actions-bottom, .form-actions-inline {
+.btn-header:hover {
+    background: rgba(255, 255, 255, 0.25);
+    transform: none; /* No lift for header buttons */
+    box-shadow: none;
+}
+
+.btn-header.active {
+    background: #fff; /* Active state is white */
+    color: var(--primary-color);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.btn-header.active:hover {
+    background: #f0f0f0; /* Slightly grey on active hover */
+}
+
+.form-actions-bottom {
     display: flex;
-    gap: 1rem;
-    margin-top: 1.5rem;
+    justify-content: flex-end; /* Align buttons to the right */
+    gap: 1.2rem;
+    margin-top: 2rem;
+    padding-top: 1.5rem; /* Padding above buttons */
+    border-top: 1px solid var(--border-color); /* Separator line */
 }
 
 .form-actions-inline {
-    margin-top: 0.5rem;
+    margin-top: 1rem;
 }
 
+.form-section-subtitle {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--primary-dark);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+}
+
+/* Goal Input & Table Styles */
 .goal-input-container {
     margin-top: 1rem;
 }
@@ -159,161 +266,458 @@ input[type="text"]:focus, input[type="date"]:focus, select:focus {
     display: flex;
     gap: 1rem;
     font-weight: 600;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.8rem;
+    color: var(--text-color-light);
+    font-size: 0.9rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--border-color);
 }
 
-.goal-header-description {
-    flex: 2;
-}
-.goal-header-type {
-    flex: 1;
-}
-.goal-header-actions {
-    flex: 0.5;
-}
+.goal-header-description { flex: 2; }
+.goal-header-type { flex: 1; }
+.goal-header-actions { flex: 0.5; text-align: right; }
 
 .goals-list {
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
+    gap: 0.8rem; /* More space between goal items */
 }
 
+.goal-item {
+    display: flex;
+    gap: 1rem; /* Space between goal inputs */
+    align-items: center;
+    background: #fcfdff;
+    padding: 0.8rem 1rem;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+}
+
+.goal-item input, .goal-item select {
+    flex: 1; /* Allow inputs to grow */
+    margin-top: 0; /* Remove default margin from inputs */
+    padding: 0.6rem 0.8rem;
+    font-size: 0.95rem;
+}
+
+.goal-item .goal-description { flex: 2; }
+.goal-item .goal-type { flex: 1; }
+.goal-item .remove-goal {
+    padding: 0.6rem 0.8rem;
+    font-size: 0.95rem;
+}
+
+/* Manage Goals Table */
 .goals-table {
     width: 100%;
-    border-collapse: collapse;
-    margin-bottom: 1rem;
-    background: #fff;
+    border-collapse: separate; /* Use separate for border-radius on cells */
+    border-spacing: 0; /* Remove default spacing */
+    margin-bottom: 1.5rem;
+    background: var(--bg-card);
+    border-radius: 8px; /* Rounded table corners */
+    overflow: hidden; /* Ensures rounded corners are visible */
 }
 
 .goals-table th, .goals-table td {
-    border: 1px solid #e0e0e0;
-    padding: 0.6rem 0.75rem;
+    padding: 1rem 1.2rem; /* More padding for table cells */
     text-align: left;
-    font-size: 1rem;
+    font-size: 0.95rem;
+    border-bottom: 1px solid var(--border-color); /* Only bottom border */
 }
 
 .goals-table th {
-    background: #f5f5f5;
+    background: var(--bg-light);
     font-weight: 600;
+    color: var(--text-color-dark);
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 0.5px;
+}
+
+.goals-table tr:last-child td {
+    border-bottom: none; /* No border on last row */
 }
 
 .goals-table tr:nth-child(even) {
-    background: #fafbfc;
+    background: #fcfcfc; /* Subtle stripe */
 }
 
-.goal-desc-view, .goal-type-view, .goal-status-view {
-    padding: 0.2rem 0.1rem;
-    font-size: 1rem;
+.goals-table td input[type="text"],
+.goals-table td select {
+    border: 1px solid transparent; /* Transparent border normally */
+    background: none;
+    padding: 0.4rem 0.5rem;
+    border-radius: 5px;
+    font-size: 0.95rem;
+    width: calc(100% - 1rem); /* Account for padding */
+    box-sizing: border-box;
 }
 
+.goals-table td input[type="text"]:focus,
+.goals-table td select:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.1);
+    background: #fff;
+}
+
+.goals-table .goal-row td {
+    vertical-align: top; /* Align content to top for multi-line inputs */
+}
+
+.goal-status-select.status-done {
+    color: var(--success-color);
+    font-weight: 600;
+}
+.goal-status-select.status-not-done {
+    color: var(--danger-color);
+    font-weight: 600;
+}
+
+
+/* Sprint Cards */
 .sprint-cards-container {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1.5rem;
-    margin-top: 1rem;
+    display: grid; /* Use grid for better control over cards */
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Responsive grid */
+    gap: 1.8rem; /* More space between cards */
+    margin-top: 1.5rem;
 }
 
-/* Default (in progress) */
 .sprint-card {
-    border-left: 6px solid #1a73e8; /* blue */
-    background: #f9fafb;
-    transition: box-shadow 0.2s, border-color 0.2s;
-}
-
-/* Completed */
-.sprint-card.completed {
-    border-left-color: #34a853; /* green */
-    background: #e6f4ea;
-}
-
-/* Overdue */
-.sprint-card.overdue {
-    border-left-color: #ea4335; /* red */
-    background: #fbeaea;
-}
-
-/* Add a subtle hover effect */
-.sprint-card:hover {
-    box-shadow: 0 4px 16px rgba(26, 115, 232, 0.08);
-}
-
-
-
-
-
-
-
-.sprint-card-header {
+    padding: 1.5rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
     display: flex;
     flex-direction: column;
-    gap: 0.3rem;
+    justify-content: space-between;
+    transition: all 0.2s ease-in-out;
+    border-left: 8px solid var(--primary-color); /* Default blue accent */
+    background: var(--bg-card);
+}
+
+.sprint-card.completed {
+    border-left-color: var(--success-color);
+    background: var(--success-light);
+}
+
+.sprint-card.overdue {
+    border-left-color: var(--danger-color);
+    background: var(--danger-light);
+}
+
+.sprint-card:hover {
+    transform: translateY(-5px); /* Stronger lift on hover */
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+}
+
+.sprint-card-header {
+    margin-bottom: 1rem;
 }
 
 .sprint-card-title {
     margin: 0;
-    font-size: 1.1rem;
-    font-weight: 600;
+    font-size: 1.3rem; /* Larger sprint title */
+    font-weight: 700;
+    color: var(--text-color-dark);
 }
 
 .sprint-card-dates {
-    font-size: 0.95rem;
-    color: #555;
+    font-size: 0.9rem;
+    color: var(--text-color-light);
     display: flex;
-    gap: 1.2rem;
+    flex-wrap: wrap; /* Allow dates to wrap on small screens */
+    gap: 1rem;
+    margin-top: 0.5rem;
 }
 
+.sprint-card-dates span {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+}
+
+.sprint-card-dates .fas {
+    color: var(--primary-color); /* Icons for dates */
+    font-size: 0.8rem;
+}
+
+.sprint-card.completed .sprint-card-dates .fas { color: var(--success-color); }
+.sprint-card.overdue .sprint-card-dates .fas { color: var(--danger-color); }
+
+
 .progress-section {
-    margin-top: 0.5rem;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
 }
 
 .progress-bar-container {
     width: 100%;
-    height: 8px;
-    background: #e0e0e0;
-    border-radius: 4px;
+    height: 10px; /* Thicker progress bar */
+    background: var(--border-color);
+    border-radius: 5px;
     overflow: hidden;
-    margin-bottom: 0.3rem;
+    margin-bottom: 0.5rem;
 }
 
 .progress-bar-fill {
     height: 100%;
-    background: #1a73e8;
-    border-radius: 4px;
-    transition: width 0.3s;
+    background: var(--primary-color); /* Default progress bar color */
+    border-radius: 5px;
+    transition: width 0.4s ease-out; /* Smoother transition */
 }
+.sprint-card.completed .progress-bar-fill { background: var(--success-color); }
+.sprint-card.overdue .progress-bar-fill { background: var(--danger-color); }
+
 
 .progress-text {
-    font-size: 0.95rem;
-    color: #333;
+    font-size: 0.9rem;
+    color: var(--text-color-dark);
     margin: 0;
+    font-weight: 500;
 }
 
 .sprint-card-actions {
-    margin-top: 0.5rem;
-    display: flex;
-    gap: 0.5rem;
+    margin-top: 1rem;
 }
 
+.sprint-card-actions .btn {
+    width: 100%; /* Make button full width in card */
+    justify-content: center; /* Center content in button */
+    padding: 0.8rem 1rem;
+}
+.sprint-card.completed .sprint-card-actions .btn {
+    background: var(--success-color); /* Green button for completed */
+}
+.sprint-card.overdue .sprint-card-actions .btn {
+    background: var(--danger-color); /* Red button for overdue */
+}
+
+
+/* Empty State & Errors */
 .empty-state {
-    color: #888;
-    font-size: 1.05rem;
+    color: var(--text-color-light);
+    font-size: 1.1rem;
     text-align: center;
-    margin: 2rem 0;
+    margin: 3rem 0; /* More vertical space */
+    padding: 1.5rem;
+    border: 1px dashed var(--border-color);
+    border-radius: 8px;
+    background: #fdfdfd;
+}
+
+.empty-state .fas {
+    margin-right: 0.5rem;
+    color: var(--primary-color);
 }
 
 .error-message {
-    color: #d32f2f;
+    color: var(--danger-color);
+    font-weight: 500;
 }
 
-@media (max-width: 700px) {
+/* Welcome Panel Specific Styles */
+.welcome-panel {
+    text-align: center;
+    padding: 3rem 2rem; /* More generous padding */
+    background: linear-gradient(135deg, var(--primary-color) 0%, #6dd5ed 100%); /* Gradient background */
+    color: #fff;
+    box-shadow: 0 10px 30px rgba(74, 144, 226, 0.3);
+    margin-bottom: 3rem;
+}
+
+.welcome-panel .panel-title {
+    color: #fff;
+    justify-content: center; /* Center the title */
+    font-size: 2rem; /* Larger welcome title */
+    margin-bottom: 1.5rem;
+}
+
+.welcome-panel .panel-title .fas {
+    color: #fff; /* White icon */
+}
+
+.welcome-message {
+    font-size: 1.15rem;
+    line-height: 1.7;
+    margin-bottom: 2.5rem;
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: auto;
+    opacity: 0.9;
+}
+
+.welcome-actions {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+}
+
+.welcome-actions .btn {
+    min-width: 180px; /* Ensure buttons have a minimum width */
+}
+
+.welcome-actions .btn-primary {
+    background: #fff;
+    color: var(--primary-color);
+}
+.welcome-actions .btn-primary:hover {
+    background: #f0f0f0;
+    color: var(--primary-dark);
+}
+
+.welcome-actions .btn-secondary {
+    background: rgba(255, 255, 255, 0.2);
+    color: #fff;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+.welcome-actions .btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+/* Animations */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.fade-in-up {
+    animation: fadeInUp 0.6s ease-out forwards;
+}
+
+
+/* Media Queries for Responsiveness */
+@media (max-width: 768px) {
+    .header-content {
+        flex-direction: column; /* Stack header items */
+        text-align: center;
+        gap: 1rem;
+        padding: 0 1rem;
+    }
+    .app-brand {
+        margin-bottom: 0.5rem;
+    }
+    .app-icon {
+        font-size: 1.3rem;
+    }
+    .app-title {
+        font-size: 1.2rem;
+    }
+    .header-actions {
+        flex-wrap: wrap; /* Allow buttons to wrap */
+        justify-content: center;
+    }
+    .btn-header {
+        font-size: 0.9rem;
+        padding: 0.4rem 0.8rem;
+    }
+
     .main-wrapper {
-        padding: 0 0.5rem;
+        padding: 0 1rem; /* More padding on smaller screens */
+        margin: 1.5rem auto;
     }
     .panel-card {
-        padding: 1rem 0.5rem;
+        padding: 1.5rem; /* Less padding for smaller cards */
+        margin-bottom: 1.5rem;
     }
+    .form-section-title, .panel-title {
+        font-size: 1.4rem;
+        margin-bottom: 1.2rem;
+        justify-content: center; /* Center titles on mobile */
+        text-align: center;
+    }
+    .form-row {
+        flex-direction: column; /* Stack date inputs vertically */
+        gap: 1.2rem;
+    }
+    .form-group {
+        margin-bottom: 1rem;
+    }
+
+    .form-actions-bottom, .form-actions-inline, .welcome-actions {
+        flex-direction: column; /* Stack buttons vertically */
+        gap: 0.8rem;
+    }
+    .btn {
+        width: 100%; /* Full width buttons on mobile */
+    }
+
+    .goal-headers {
+        display: none; /* Hide headers on very small screens, or simplify */
+    }
+    .goal-item {
+        flex-wrap: wrap; /* Allow goal item elements to wrap */
+        gap: 0.8rem;
+        padding: 0.8rem;
+    }
+    .goal-item input, .goal-item select {
+        flex-basis: 100%; /* Full width for inputs in goal item */
+        margin-bottom: 0.5rem;
+    }
+    .goal-item .remove-goal {
+        width: 100%; /* Full width remove button */
+    }
+
+    .goals-table th, .goals-table td {
+        padding: 0.8rem;
+        font-size: 0.9rem;
+    }
+    .goals-table td input, .goals-table td select {
+        font-size: 0.9rem;
+    }
+
     .sprint-cards-container {
+        grid-template-columns: 1fr; /* Single column on mobile */
+        gap: 1.2rem;
+    }
+    .sprint-card {
+        padding: 1.2rem;
+        border-left-width: 6px;
+    }
+    .sprint-card-title {
+        font-size: 1.15rem;
+    }
+    .sprint-card-dates {
+        font-size: 0.85rem;
+    }
+
+    .welcome-panel {
+        padding: 2rem 1.5rem;
+        margin-bottom: 2rem;
+    }
+    .welcome-panel .panel-title {
+        font-size: 1.5rem;
+    }
+    .welcome-message {
+        font-size: 1rem;
+        margin-bottom: 1.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .app-brand {
         flex-direction: column;
-        gap: 1rem;
+        gap: 0.2rem;
+    }
+    .app-icon {
+        margin-bottom: -5px; /* Adjust if icon is too high */
+    }
+    .app-title {
+        font-size: 1.1rem;
+    }
+
+    .panel-card {
+        padding: 1.2rem;
+    }
+    .form-section-title, .panel-title {
+        font-size: 1.3rem;
+    }
+
+    .goals-table {
+        font-size: 0.85rem;
     }
 }
