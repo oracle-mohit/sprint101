@@ -403,142 +403,24 @@ textarea[readonly] {
     margin-top: 1rem;
 }
 
-/* --- Create Sprint Goals Input List --- */
+/* --- Create Sprint Goals Input List (Consistency with Manage Goals) --- */
 .goal-input-container {
     margin-top: 1rem;
 }
 
+/* Remove .goal-headers as individual goal items will manage their own labels */
 .goal-headers {
-    display: flex;
-    gap: 1rem;
-    font-weight: 600;
-    margin-bottom: 0.8rem;
-    color: var(--md-text-medium-emphasis);
-    font-size: 0.9rem;
-    padding-bottom: 0.5rem;
-    border-bottom: 1px solid var(--md-border-color);
-    font-family: var(--font-body); /* Headers for goal inputs use body font */
+    display: none;
 }
-
-.goal-header-description { flex: 2; }
-.goal-header-type { flex: 1; }
-.goal-header-actions { flex: 0.5; text-align: right; }
 
 .goals-list {
     display: flex;
     flex-direction: column;
-    gap: 0.8rem;
+    gap: 1rem; /* Consistent with .manage-goals-list-container */
 }
 
-.goal-item {
-    display: flex;
-    gap: 1rem;
-    align-items: center;
-    background: #fafafa;
-    padding: 0.8rem 1.5rem;
-    border-radius: 4px;
-    border: 1px solid var(--md-border-color);
-    box-shadow: 0 1px 1px rgba(0,0,0,0.05);
-    transition: all 0.3s ease, height 0.3s ease, padding 0.3s ease, margin 0.3s ease, opacity 0.3s ease; /* For remove animation */
-    overflow: hidden; /* Important for height transition */
-}
-
-.goal-item.removing {
-    opacity: 0;
-    transform: translateX(-20px);
-    height: 0; /* Target height to collapse */
-    padding-top: 0;
-    padding-bottom: 0;
-    margin-top: 0;
-    margin-bottom: 0;
-    border-color: transparent;
-}
-
-.goal-fields-wrapper {
-    display: flex; /* Flex container for description and type */
-    flex-wrap: wrap; /* Allow description and type to wrap if space is tight */
-    gap: 1rem; /* Space between description and type inputs */
-    flex-grow: 1; /* Allows this wrapper to take available space */
-}
-
-/* Specific sizing for Description and Type groups within Create Sprint form */
-.form-group.goal-description-group {
-    flex-basis: calc(70% - 0.5rem); /* Allocate more space for description, adjusted calc for gap */
-    min-width: 200px; /* Ensure description field doesn't get too small */
-    margin-bottom: 0; /* Reset margin-bottom, handled by gap */
-}
-.form-group.goal-type-group {
-    flex-basis: calc(30% - 0.5rem); /* Allocate remaining space for type, adjusted calc for gap */
-    min-width: 100px; /* Ensure type field doesn't get too small */
-    margin-bottom: 0; /* Reset margin-bottom, handled by gap */
-}
-
-/* Ensure inputs/selects/textareas fill their new flex parent */
-.goal-description,
-.goal-type {
-    width: 100%; /* Fill the width of their .form-group parent */
-}
-
-/* Button to remove a goal in Create Sprint form */
-.remove-goal {
-    flex-shrink: 0; /* Prevent button from shrinking */
-    align-self: center; /* Vertically center the trash button */
-    margin-left: auto; /* Push button to the right */
-    background-color: var(--md-error); /* Red color */
-    color: white;
-    border: none;
-    padding: 0.5rem 0.75rem; /* Adjusted padding */
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 0.9em;
-    transition: background-color 0.3s ease;
-    font-family: var(--font-body); /* Use body font for this button */
-}
-.remove-goal:hover {
-    background-color: #c82333; /* Darker red */
-}
-
-/* --- Manage Goals Page Styles (REWORKED) --- */
-.sprint-details-header {
-    background: var(--md-background);
-    padding: 1.2rem 1.5rem;
-    border-radius: 8px;
-    margin-bottom: 2rem;
-    box-shadow: inset 0 0 0 1px var(--md-border-color);
-}
-
-.sprint-details-dates {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1.5rem;
-    margin-bottom: 1rem;
-    font-size: 0.95rem;
-    color: var(--md-text-medium-emphasis);
-    font-family: var(--font-body); /* Dates use body font */
-}
-
-.sprint-details-dates strong {
-    color: var(--md-text-high-emphasis);
-}
-
-.sprint-details-dates .fas {
-    color: var(--md-primary);
-    font-size: 0.9rem;
-}
-
-.sprint-details-progress {
-    margin-top: 1rem;
-}
-
-/* New container for manage goals list */
-.manage-goals-list-container {
-    margin-top: 1.5rem;
-    display: flex;
-    flex-direction: column;
-    gap: 1rem; /* Space between goal items */
-}
-
-/* Individual Goal Item in Manage Goals Section */
+/* Consolidated styling for both Add Sprint and Manage Goals items */
+.goal-item,
 .manage-goal-item {
     background: var(--md-surface);
     border-radius: 8px;
@@ -552,6 +434,13 @@ textarea[readonly] {
     transition: border-color 0.2s, box-shadow 0.2s;
 }
 
+.goal-item:hover,
+.manage-goal-item:hover {
+    border-color: var(--md-primary-light);
+    box-shadow: var(--md-shadow-2);
+}
+
+.goal-item.removing,
 .manage-goal-item.removing {
     opacity: 0;
     transform: translateX(-20px);
@@ -565,16 +454,13 @@ textarea[readonly] {
     transition: all 0.3s ease-out;
 }
 
-.manage-goal-item:hover {
-    border-color: var(--md-primary-light);
-    box-shadow: var(--md-shadow-2);
-}
-
+.goal-item .form-group,
 .manage-goal-item .form-group {
     margin-bottom: 0; /* Override default form-group margin */
 }
 
-/* Goal Description in Manage Section */
+/* Unified styling for goal description textarea */
+.goal-description,
 .manage-goal-description {
     width: 100%;
     padding: 0.8rem 1rem;
@@ -589,6 +475,7 @@ textarea[readonly] {
     font-family: var(--font-body);
 }
 
+.goal-description:focus,
 .manage-goal-description:focus {
     outline: none;
     border-color: var(--md-primary);
@@ -596,6 +483,7 @@ textarea[readonly] {
     background: var(--md-surface);
 }
 
+.goal-description[readonly],
 .manage-goal-description[readonly] {
     background: transparent;
     border-color: transparent;
@@ -607,9 +495,9 @@ textarea[readonly] {
     cursor: default;
 }
 
-/* Type and Status Selects for Manage Section */
-.manage-goal-type,
-.manage-goal-status {
+/* Unified styling for Type selects */
+.goal-type,
+.manage-goal-type {
     width: auto; /* Allow content to dictate width */
     padding: 0.6rem 1rem;
     border: 1px solid var(--md-border-color);
@@ -627,20 +515,49 @@ textarea[readonly] {
     font-family: var(--font-body); /* Ensure consistent font */
 }
 
+.goal-type:not([disabled]):hover,
 .manage-goal-type:not([disabled]):hover,
-.manage-goal-status:not([disabled]):hover {
+.manage-goal-status:not([disabled]):hover { /* status select also gets hover */
     border-color: var(--md-primary);
     box-shadow: 0 0 0 2px var(--md-primary-light);
 }
 
-.manage-goal-type[disabled],
-.manage-goal-status[disabled] {
+.goal-type[disabled],
+.manage-goal-type[disabled] {
     cursor: default;
     background: var(--md-background); /* Keep a subtle background when disabled */
     border-color: var(--md-border-color); /* Keep the border */
     box-shadow: none;
     text-align: center;
     color: var(--md-text-medium-emphasis); /* Toned down color for disabled */
+}
+
+/* Specific styling for Status select (only in Manage Goals) */
+.manage-goal-status {
+    width: auto;
+    padding: 0.6rem 1rem;
+    border: 1px solid var(--md-border-color);
+    border-radius: 20px;
+    background: var(--md-background);
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--md-text-high-emphasis);
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: center;
+    font-family: var(--font-body);
+}
+
+.manage-goal-status[disabled] {
+    cursor: default;
+    background: var(--md-background);
+    border-color: var(--md-border-color);
+    box-shadow: none;
+    text-align: center;
+    color: var(--md-text-medium-emphasis);
 }
 
 /* Status colors within Manage Goals */
@@ -657,7 +574,7 @@ textarea[readonly] {
     font-weight: 600;
 }
 
-/* Layout for Type and Status controls */
+/* Layout for Type and Status controls in Manage Goals */
 .manage-goal-controls {
     display: flex;
     gap: 1rem;
@@ -666,8 +583,25 @@ textarea[readonly] {
     margin-top: 0.5rem; /* Space from description */
 }
 
-/* Delete Button for Manage Goals Section */
-.manage-goal-delete-btn {
+/* New layout for goal fields wrapper in Add Sprint, consistent with Manage Goals controls */
+.goal-fields-wrapper {
+    display: flex; /* Changed from old flex container */
+    flex-direction: column; /* Stack description, type */
+    gap: 1rem; /* Space between description and type inputs */
+    flex-grow: 1; /* Allows this wrapper to take available space */
+}
+
+/* Remove specific sizing for Add Sprint goal groups, let flex handle it */
+.form-group.goal-description-group,
+.form-group.goal-type-group {
+    flex-basis: auto; /* Revert from specific calc */
+    min-width: unset; /* Revert from specific min-width */
+    margin-bottom: 0; /* Handled by gap */
+}
+
+/* Delete Button for both sections */
+.remove-goal, /* For Add Sprint */
+.manage-goal-delete-btn { /* For Manage Goals */
     position: absolute;
     top: 1rem;
     right: 1rem;
@@ -680,7 +614,9 @@ textarea[readonly] {
     font-size: 1.1em;
     transition: all 0.2s ease;
     z-index: 10; /* Ensure it's clickable over other elements */
+    font-family: var(--font-body); /* Ensure consistent font for icon buttons */
 }
+.remove-goal:hover,
 .manage-goal-delete-btn:hover {
     color: var(--md-error);
     background-color: rgba(239, 83, 80, 0.1); /* Light red background on hover */
@@ -688,6 +624,7 @@ textarea[readonly] {
 }
 
 /* Hide labels for type and status inside goal items, as they are self-explanatory or handled by placeholders */
+.goal-item label, /* Added for Add Sprint goals */
 .manage-goal-item label {
     display: none;
 }
@@ -1008,6 +945,9 @@ textarea[readonly] {
         padding: 0 1rem;
     }
     .app-brand {
+        flex-direction: row; /* Keep app brand row on smaller screens */
+        justify-content: center;
+        width: 100%;
         margin-bottom: 0.5rem;
     }
     .app-icon {
@@ -1055,46 +995,41 @@ textarea[readonly] {
         width: 100%;
     }
 
-    .goal-headers {
-        display: none; /* Hide headers on small screens for create sprint form */
-    }
-    .goal-item {
-        flex-wrap: wrap;
-        gap: 0.8rem;
-        padding: 0.8rem;
-    }
-    /* Ensure all form elements within goal-item are consistently styled */
-    .goal-item input,
-    .goal-item select,
-    .goal-item textarea {
-        flex-basis: 100%;
-        margin-bottom: 0.5rem;
-        font-family: var(--font-body); /* Explicitly set font for robustness */
-    }
-    .goal-item .remove-goal {
-        width: 100%;
-    }
-
-    /* Manage Goals Page - Mobile Adjustments for Individual Goals */
+    /* Consistent styling for goal items on mobile */
+    .goal-item,
     .manage-goal-item {
         padding: 1rem;
+        gap: 0.8rem; /* Reduced gap for smaller screens */
     }
+    .goal-description,
     .manage-goal-description {
         min-height: 60px; /* Adjust for mobile */
     }
+    .remove-goal,
     .manage-goal-delete-btn {
         top: 0.5rem;
         right: 0.5rem;
         font-size: 1em;
     }
+    .goal-fields-wrapper, /* Apply flex column to stack description and type */
     .manage-goal-controls {
         flex-direction: column;
-        align-items: flex-start;
+        align-items: flex-start; /* Align elements to the start */
         gap: 0.8rem;
     }
+    .goal-type,
     .manage-goal-type,
     .manage-goal-status {
         width: 100%; /* Make them full width for better touch targets */
+        text-align: left; /* Align text to left for full width selects */
+        padding-left: 1rem; /* Re-add padding for better appearance */
+        padding-right: 1rem;
+    }
+    .goal-type[disabled],
+    .manage-goal-type[disabled],
+    .manage-goal-status[disabled] {
+        text-align: left; /* Keep text left-aligned when disabled */
+        padding-left: 1rem; /* Keep padding consistent */
     }
 
 
@@ -1120,13 +1055,6 @@ textarea[readonly] {
 }
 
 @media (max-width: 480px) {
-    .app-brand {
-        flex-direction: column;
-        gap: 0.2rem;
-    }
-    .app-icon {
-        margin-bottom: -5px;
-    }
     .app-title {
         font-size: 1.1rem;
     }

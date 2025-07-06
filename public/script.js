@@ -148,28 +148,28 @@ document.addEventListener('DOMContentLoaded', () => {
     elements.buttons.welcomeViewSprints.addEventListener('click', () => showSection('sprints'));
 
 
-    // --- Goal Management (Create Sprint Form) ---
+    // --- Goal Management (Create Sprint Form) - REWORKED for consistency ---
     function addGoalRow(goal = { description: '', type: 'Dev Complete' }) {
         const goalItem = document.createElement('div');
-        goalItem.classList.add('goal-item');
+        goalItem.classList.add('goal-item'); // Uses the consolidated .goal-item class
         const uniqueId = Date.now() + Math.floor(Math.random() * 1000);
 
         goalItem.innerHTML = `
-            <div class="goal-fields-wrapper">
-                <div class="form-group goal-description-group">
-                    <label for="goal-desc-${uniqueId}">Description</label>
-                    <textarea id="goal-desc-${uniqueId}" class="goal-description" placeholder="e.g., Implement user authentication" rows="2" required>${goal.description}</textarea>
-                </div>
-                <div class="form-group goal-type-group">
-                    <label for="goal-type-${uniqueId}">Type</label>
-                    <select id="goal-type-${uniqueId}" class="goal-type">
-                        <option value="Live" ${goal.type === 'Live' ? 'selected' : ''}>Live</option>
-                        <option value="QA Complete" ${goal.type === 'QA Complete' ? 'selected' : ''}>QA Complete</option>
-                        <option value="Dev Complete" ${goal.type === 'Dev Complete' ? 'selected' : ''}>Dev Complete</option>
-                    </select>
-                </div>
+            <button type="button" class="remove-goal" title="Remove Goal">
+                <i class="fas fa-times-circle"></i>
+            </button>
+            <div class="form-group">
+                <label for="goal-desc-${uniqueId}">Goal Description</label>
+                <textarea id="goal-desc-${uniqueId}" class="goal-description" placeholder="e.g., Implement user authentication" rows="3" required>${goal.description}</textarea>
             </div>
-            <button type="button" class="remove-goal btn btn-danger"><i class="fas fa-trash-can"></i></button>
+            <div class="form-group">
+                <label for="goal-type-${uniqueId}">Type</label>
+                <select id="goal-type-${uniqueId}" class="goal-type">
+                    <option value="Live" ${goal.type === 'Live' ? 'selected' : ''}>Live</option>
+                    <option value="QA Complete" ${goal.type === 'QA Complete' ? 'selected' : ''}>QA Complete</option>
+                    <option value="Dev Complete" ${goal.type === 'Dev Complete' ? 'selected' : ''}>Dev Complete</option>
+                </select>
+            </div>
         `;
         elements.forms.goalsContainer.appendChild(goalItem);
 
@@ -212,7 +212,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         // Validate if start date is in the future or today
-        if (sprintStartDate < today) {
+        if (sprintStartDate < today && sprintStartDate.toDateString() !== today.toDateString()) { // Allow today's date
             showToast('Sprint Start Date cannot be in the past. Please select today or a future date.', 'error');
             startDateInput.focus();
             return;
@@ -451,7 +451,7 @@ document.addEventListener('DOMContentLoaded', () => {
             } else {
                 sprintData.goals.forEach((goal) => {
                     const goalItem = document.createElement('div');
-                    goalItem.classList.add('manage-goal-item');
+                    goalItem.classList.add('manage-goal-item'); // Uses the consolidated class
                     goalItem.dataset.goalId = goal._id;
 
                     const isDescriptionEditable = !readOnly && !editStatusOnly;
