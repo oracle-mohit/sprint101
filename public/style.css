@@ -250,9 +250,9 @@ input[type="text"]:focus, input[type="date"]:focus, select:focus, textarea:focus
 }
 
 input[readonly], select[disabled], textarea[readonly] {
-    background: #f5f5f5; /* Lighter grey for disabled/readonly inputs */
+    background: #f5f5f5;
     color: var(--md-text-medium-emphasis);
-    cursor: default; /* Change cursor for non-editable */
+    cursor: default;
     border-color: #eee;
     box-shadow: none;
 }
@@ -413,7 +413,8 @@ input[readonly]:focus, select[disabled]:focus, textarea[readonly]:focus {
 /* Individual Goal Card in Manage Goals */
 .goals-cards-container {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    /* This is the key change for 1 goal card per line */
+    grid-template-columns: 1fr;
     gap: 1.5rem;
     margin-top: 1.5rem;
 }
@@ -449,15 +450,15 @@ input[readonly]:focus, select[disabled]:focus, textarea[readonly]:focus {
     display: flex;
     flex-direction: column;
     gap: 0.4rem;
-    min-width: 0; /* Allow flex item to shrink */
+    min-width: 0;
 }
 
-/* Styling for goal description (now textarea) */
-.goal-card-description-input { /* Applies to textarea */
+/* Styles for goal description (now textarea) */
+.goal-card-description-input {
     min-height: 60px; /* Increased minimum height for more readability */
     resize: vertical; /* Allow vertical resizing only */
     line-height: 1.4; /* Improve line spacing for readability */
-    padding: 0.6rem 0.8rem; /* Consistent padding */
+    padding: 0.6rem 0.8rem;
     border: 1px solid var(--md-border-color);
     border-radius: 4px;
     font-size: 0.95rem;
@@ -475,7 +476,7 @@ input[readonly]:focus, select[disabled]:focus, textarea[readonly]:focus {
 
 /* Styling for goal type select */
 .goal-card-type-select {
-    width: 100%; /* Ensure it takes full width of its container */
+    width: 100%;
     padding: 0.6rem 0.8rem;
     border: 1px solid var(--md-border-color);
     border-radius: 4px;
