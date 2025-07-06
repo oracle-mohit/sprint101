@@ -32,16 +32,20 @@
     --md-info: #2196F3; /* Standard Material Blue for info */
     --md-warning: #FFC107; /* Amber */
 
-    /* New Section & Card Colors */
-    /* Current & Upcoming Sprints Section & Cards (Blue Theme) */
-    --section-current-bg: #E3F2FD; /* Very light blue */
-    --card-current-border: var(--md-primary); /* Use primary blue for border */
-    --card-current-bg: #F5F8FF; /* Slightly off-white/very light blue for cards */
+    /* --- UPDATED SECTION & CARD COLORS --- */
+    /* Section backgrounds are now white */
+    --section-current-bg: var(--md-surface); /* White */
+    --section-past-bg: var(--md-surface);     /* White */
 
-    /* Past Sprints Section & Cards (Light Purple Theme) */
-    --section-past-bg: #F3E5F5; /* Very light purple */
-    --card-past-border: #9C27B0; /* A darker purple for the border */
-    --card-past-bg: #FCF5FF; /* Slightly off-white/very light purple for cards */
+    /* Card backgrounds now take the previous section background colors */
+    --card-current-bg: #E3F2FD; /* Very light blue for Current/Upcoming cards */
+    --card-current-border: var(--md-primary); /* Primary blue for Current/Upcoming card border */
+    --card-current-title-color: var(--md-primary-light); /* Light blue for Current card titles */
+
+    --card-past-bg: #F3E5F5;    /* Very light purple for Past cards */
+    --card-past-border: #9C27B0; /* A darker purple for Past card border */
+    --card-past-title-color: #A06ECF; /* A distinct light purple for Past card titles */
+    /* --- END UPDATED SECTION & CARD COLORS --- */
 
 
     /* Material Shadows (Elevation) */
@@ -117,7 +121,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .panel-card {
-    background: var(--md-surface);
+    background: var(--md-surface); /* Default for forms, welcome, manage goals */
     border-radius: 8px;
     box-shadow: var(--md-shadow-1);
     margin-bottom: 2.5rem;
@@ -130,7 +134,7 @@ h1, h2, h3, h4, h5, h6 {
     box-shadow: var(--md-shadow-2);
 }
 
-.form-section-title, .panel-title {
+.form-section-title { /* For Create New Sprint, Manage Goals Titles */
     margin-top: 0;
     margin-bottom: 1.8rem;
     font-size: 1.6rem;
@@ -138,12 +142,39 @@ h1, h2, h3, h4, h5, h6 {
     display: flex;
     align-items: center;
     gap: 0.8rem;
-    color: var(--md-primary-dark);
+    color: var(--md-primary-dark); /* Keep these main blue */
 }
-
-.form-section-title .fas, .panel-title .fas {
+.form-section-title .fas {
     color: var(--md-primary);
 }
+
+
+/* --- SECTION HEADINGS --- */
+.panel-title { /* Default for Welcome Panel, Sprints Section Titles */
+    margin-top: 0;
+    margin-bottom: 1.8rem;
+    font-size: 1.6rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    color: var(--md-primary-dark); /* Default is primary-dark (blue) */
+}
+.panel-title .fas {
+    color: var(--md-primary);
+}
+
+/* Specific override for Current & Upcoming and Past Sprints section titles to be black */
+#currentUpcomingSprintsSection .panel-title,
+#pastSprintsSection .panel-title {
+    color: var(--md-text-high-emphasis); /* Black */
+}
+#currentUpcomingSprintsSection .panel-title .fas,
+#pastSprintsSection .panel-title .fas {
+    color: var(--md-text-medium-emphasis); /* Darker icons for black text */
+}
+/* --- END SECTION HEADINGS --- */
+
 
 .form-section {
     margin-bottom: 2.5rem;
@@ -336,7 +367,7 @@ input[type="text"]:focus, input[type="date"]:focus, select:focus {
     gap: 1rem;
     align-items: center;
     background: #fafafa;
-    padding: 0.8rem 1.5rem; /* Adjusted for consistency */
+    padding: 0.8rem 1.5rem;
     border-radius: 4px;
     border: 1px solid var(--md-border-color);
     box-shadow: 0 1px 1px rgba(0,0,0,0.05);
@@ -357,77 +388,191 @@ input[type="text"]:focus, input[type="date"]:focus, select:focus {
     font-size: 0.95rem;
 }
 
-/* Manage Goals Table */
-.goals-table {
-    width: 100%;
-    border-collapse: separate;
-    border-spacing: 0;
-    margin-bottom: 1.5rem;
+/* Manage Goals Page - Sprint Details Header */
+.sprint-details-header {
+    background: var(--md-background);
+    padding: 1.2rem 1.5rem;
+    border-radius: 8px;
+    margin-bottom: 2rem;
+    box-shadow: inset 0 0 0 1px var(--md-border-color);
+}
+
+.sprint-details-dates {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    margin-bottom: 1rem;
+    font-size: 0.95rem;
+    color: var(--md-text-medium-emphasis);
+}
+
+.sprint-details-dates strong {
+    color: var(--md-text-high-emphasis);
+}
+
+.sprint-details-dates .fas {
+    color: var(--md-primary);
+    font-size: 0.9rem;
+}
+
+.sprint-details-progress {
+    margin-top: 1rem;
+}
+
+
+/* Manage Goals Page - Individual Goal Card */
+.goals-cards-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+    margin-top: 1.5rem;
+}
+
+.goal-card {
     background: var(--md-surface);
     border-radius: 8px;
-    overflow: hidden;
     box-shadow: var(--md-shadow-1);
-}
-
-.goals-table th, .goals-table td {
     padding: 1rem 1.2rem;
-    text-align: left;
-    font-size: 0.95rem;
-    border-bottom: 1px solid var(--md-border-color);
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+    transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    border-left: 5px solid var(--md-primary-light);
 }
 
-.goals-table th {
-    background: var(--md-background);
-    font-weight: 600;
-    color: var(--md-text-medium-emphasis);
-    text-transform: uppercase;
-    font-size: 0.85rem;
-    letter-spacing: 0.5px;
+.goal-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--md-shadow-2);
 }
 
-.goals-table tr:last-child td {
-    border-bottom: none;
+.goal-card-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
 }
 
-.goals-table tr:nth-child(even) {
-    background: #fdfdfd;
+.goal-card-details {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
 }
 
-.goals-table td input[type="text"],
-.goals-table td select {
-    border: 1px solid transparent;
-    background: none;
-    padding: 0.4rem 0.5rem;
+.goal-card-description-input {
+    width: 100%;
+    padding: 0.6rem 0.8rem;
+    border: 1px solid var(--md-border-color);
     border-radius: 4px;
     font-size: 0.95rem;
-    width: calc(100% - 1rem);
+    background: var(--md-background);
     box-sizing: border-box;
+    color: var(--md-text-high-emphasis);
+    transition: border-color 0.2s, box-shadow 0.2s, background-color 0.2s;
 }
-
-.goals-table td input[type="text"]:focus,
-.goals-table td select:focus {
+.goal-card-description-input:focus {
+    outline: none;
     border-color: var(--md-primary);
     box-shadow: 0 0 0 2px var(--md-primary-light);
     background: var(--md-surface);
 }
+.goal-card-description-input[readonly] {
+    background: #f5f5f5;
+    color: var(--md-text-medium-emphasis);
+    cursor: default;
+    border-color: #eee;
+}
 
-/* These status colors will remain for the dropdown in manage goals table */
-.goal-status-select.status-done {
+
+.goal-card-type-select {
+    width: 100%;
+    padding: 0.6rem 0.8rem;
+    border: 1px solid var(--md-border-color);
+    border-radius: 4px;
+    font-size: 0.9rem;
+    background: var(--md-background);
+    box-sizing: border-box;
+    color: var(--md-text-high-emphasis);
+    transition: border-color 0.2s, box-shadow 0.2s, background-color 0.2s;
+}
+.goal-card-type-select:focus {
+    outline: none;
+    border-color: var(--md-primary);
+    box-shadow: 0 0 0 2px var(--md-primary-light);
+    background: var(--md-surface);
+}
+.goal-card-type-select[disabled] {
+    background: #f5f5f5;
+    color: var(--md-text-medium-emphasis);
+    cursor: not-allowed;
+    border-color: #eee;
+}
+
+
+.goal-card-status-select {
+    flex-shrink: 0;
+    padding: 0.6rem 0.8rem;
+    border: 1px solid var(--md-border-color);
+    border-radius: 4px;
+    font-size: 0.95rem;
+    background: var(--md-background);
+    color: var(--md-text-high-emphasis);
+    transition: border-color 0.2s, box-shadow 0.2s, background-color 0.2s;
+    min-width: 120px;
+    text-align: center;
+}
+.goal-card-status-select:focus {
+    outline: none;
+    border-color: var(--md-primary);
+    box-shadow: 0 0 0 2px var(--md-primary-light);
+    background: var(--md-surface);
+}
+.goal-card-status-select[disabled] {
+    background: #f5f5f5;
+    color: var(--md-text-medium-emphasis);
+    cursor: not-allowed;
+    border-color: #eee;
+}
+
+.goal-card-status-select.status-done {
     color: var(--md-success);
     font-weight: 600;
 }
-.goal-status-select.status-not-done {
+.goal-card-status-select.status-not-done {
     color: var(--md-error);
     font-weight: 600;
 }
 
+.goal-card-delete-btn {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: none;
+    border: none;
+    color: var(--md-text-disabled);
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: color 0.2s, transform 0.2s;
+    padding: 5px;
+    border-radius: 50%;
+}
+.goal-card-delete-btn:hover {
+    color: var(--md-error);
+    transform: scale(1.1);
+}
+.goal-card-delete-btn:active {
+    transform: scale(0.9);
+}
+
+
 /* --- SECTION BACKGROUNDS --- */
 #currentUpcomingSprintsSection {
-    background: var(--section-current-bg);
+    background: var(--section-current-bg); /* Now white */
 }
 
 #pastSprintsSection {
-    background: var(--section-past-bg);
+    background: var(--section-past-bg); /* Now white */
 }
 /* --- END SECTION BACKGROUNDS --- */
 
@@ -450,27 +595,16 @@ input[type="text"]:focus, input[type="date"]:focus, select:focus {
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     overflow: hidden;
 
-    /* Default (Current & Upcoming) Sprint Card Colors */
-    border-left: 6px solid var(--card-current-border);
-    background: var(--card-current-bg);
+    /* Base colors for CURRENT & UPCOMING sprint cards */
+    border-left: 6px solid var(--card-current-border); /* Primary blue for border */
+    background: var(--card-current-bg); /* Light blue background for card */
 }
 
 /* Past Sprint Card Specific Styles */
 .sprint-card.sprint-card--past {
-    border-left-color: var(--card-past-border);
-    background: var(--card-past-bg);
+    border-left-color: var(--card-past-border); /* Dark purple for border */
+    background: var(--card-past-bg); /* Light purple background for card */
 }
-
-/* --- REMOVED ALL GREEN/RED COLOR OVERRIDES FOR SPRINT CARD ELEMENTS --- */
-/* These properties are removed/commented out to ensure no green/red on the cards */
-/* .sprint-card.completed {
-    border-left-color: var(--md-success);
-    background: var(--md-success-light-bg);
-}
-.sprint-card.overdue {
-    border-left-color: var(--md-error);
-    background: var(--md-error-light-bg);
-} */
 
 .sprint-card:hover {
     transform: translateY(-3px);
@@ -483,13 +617,20 @@ input[type="text"]:focus, input[type="date"]:focus, select:focus {
     border-bottom: 1px solid var(--md-border-color);
 }
 
+/* --- CARD TITLES (POD NAME) --- */
 .sprint-card-title {
     font-size: 1.15rem;
     margin: 0;
     font-weight: 700;
-    color: var(--md-text-high-emphasis);
+    color: var(--card-current-title-color); /* Light blue for Current card titles */
     line-height: 1.2;
 }
+
+.sprint-card.sprint-card--past .sprint-card-title {
+    color: var(--card-past-title-color); /* Light purple for Past card titles */
+}
+/* --- END CARD TITLES --- */
+
 
 .sprint-card-dates {
     font-size: 0.8rem;
@@ -510,9 +651,6 @@ input[type="text"]:focus, input[type="date"]:focus, select:focus {
     color: var(--md-primary); /* Icons will follow the card's main theme color */
     font-size: 0.7rem;
 }
-/* REMOVED specific color for completed/overdue date icons */
-/* .sprint-card.completed .sprint-card-dates .fas { color: var(--md-success); } */
-/* .sprint-card.overdue .sprint-card-dates .fas { color: var(--md-error); } */
 
 
 .progress-section {
@@ -531,14 +669,10 @@ input[type="text"]:focus, input[type="date"]:focus, select:focus {
 
 .progress-bar-fill {
     height: 100%;
-    background: var(--md-secondary); /* Progress bar will now follow secondary blue */
+    background: var(--md-secondary);
     border-radius: 3px;
     transition: width 0.4s ease-out;
 }
-/* REMOVED specific color for completed/overdue progress bar fill */
-/* .sprint-card.completed .progress-bar-fill { background: var(--md-success); } */
-/* .sprint-card.overdue .progress-bar-fill { background: var(--md-error); } */
-
 
 .progress-text {
     font-size: 0.8rem;
@@ -558,19 +692,12 @@ input[type="text"]:focus, input[type="date"]:focus, select:focus {
     justify-content: center;
     padding: 0.6rem 0.8rem;
     font-size: 0.9rem;
-    background: var(--md-secondary); /* Action button will now follow secondary blue */
+    background: var(--md-secondary);
     color: var(--md-secondary-text);
 }
-/* REMOVED specific color for completed/overdue action buttons */
-/* .sprint-card.completed .sprint-card-actions .btn { background: var(--md-success); } */
-/* .sprint-card.overdue .sprint-card-actions .btn { background: var(--md-error); } */
-
 .sprint-card-actions .btn:hover {
     background: var(--md-secondary-dark);
 }
-/* REMOVED specific hover colors for completed/overdue action buttons */
-/* .sprint-card.completed .sprint-card-actions .btn:hover { background: #388E3C; } */
-/* .sprint-card.overdue .sprint-card-actions .btn:hover { background: #D32F2F; } */
 
 
 /* Empty State & Errors */
@@ -855,6 +982,37 @@ input[type="text"]:focus, input[type="date"]:focus, select:focus {
         max-width: unset;
         width: 100%;
         box-sizing: border-box;
+    }
+
+    /* Manage Goals Page - Mobile Adjustments */
+    .sprint-details-header {
+        padding: 1rem;
+        margin-bottom: 1.5rem;
+    }
+    .sprint-details-dates {
+        flex-direction: column;
+        gap: 0.5rem;
+        margin-bottom: 0.8rem;
+    }
+    .goal-card {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 0.8rem;
+    }
+    .goal-card-content {
+        flex-direction: column;
+        align-items: flex-start;
+        width: 100%;
+        gap: 0.8rem;
+    }
+    .goal-card-status-select {
+        width: 100%;
+        min-width: unset;
+    }
+    .goal-card-delete-btn {
+        position: static;
+        margin-top: 0.5rem;
+        align-self: flex-end;
     }
 }
 
