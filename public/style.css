@@ -42,8 +42,7 @@
 /* Global Reset & Base Styles */
 body {
     margin: 0;
-    /* padding: 0; // Removed padding-top for sticky header as requested to ignore */
-    padding: 0; /* Ensuring no padding-top for sticky header */
+    padding: 0;
     font-family: 'Inter', Arial, sans-serif;
     background: var(--md-background);
     color: var(--md-text-high-emphasis);
@@ -64,7 +63,6 @@ h1, h2, h3, h4, h5, h6 {
     color: var(--md-primary-text);
     padding: 1rem 0;
     box-shadow: var(--md-shadow-2);
-    /* Removed sticky header styles as requested */
 }
 
 .header-content {
@@ -413,22 +411,24 @@ input[type="text"]:focus, input[type="date"]:focus, select:focus {
 /* Sprint Cards */
 .sprint-cards-container {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minminmax(280px, 1fr)); /* Adjusted min-width slightly */
-    gap: 1.5rem; /* Slightly reduced gap for more compact look */
+    /* Adjusted min-width for smaller cards to fit more per row */
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1rem; /* Reduced gap between cards */
     margin-top: 1.5rem;
 }
 
 .sprint-card {
-    padding: 1.2rem 1.5rem; /* Adjusted vertical padding */
+    /* Significantly reduced padding for a more compact card */
+    padding: 0.8rem 1rem;
     border-radius: 8px;
     box-shadow: var(--md-shadow-1);
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-    border-left: 8px solid var(--md-primary-light); /* Lighter primary blue accent */
+    border-left: 6px solid var(--md-primary-light); /* Slightly thinner accent border */
     background: var(--md-surface);
-    overflow: hidden; /* Ensures content doesn't break rounded corners/borders */
+    overflow: hidden;
 }
 
 .sprint-card.completed {
@@ -447,37 +447,40 @@ input[type="text"]:focus, input[type="date"]:focus, select:focus {
 }
 
 .sprint-card-header {
-    margin-bottom: 0.8rem; /* Slightly less margin for more compactness */
-    padding-bottom: 0.8rem; /* Add padding to separate from progress */
-    border-bottom: 1px solid var(--md-border-color); /* Subtle separator */
+    /* Reduced margins and padding for tighter header */
+    margin-bottom: 0.6rem;
+    padding-bottom: 0.6rem;
+    border-bottom: 1px solid var(--md-border-color);
 }
 
 .sprint-card-title {
+    /* Slightly smaller title font for compactness */
+    font-size: 1.15rem;
     margin: 0;
-    font-size: 1.25rem; /* Slightly smaller for better fit, but still prominent */
     font-weight: 700;
     color: var(--md-text-high-emphasis);
-    line-height: 1.3; /* Ensure good line height for multi-line titles */
+    line-height: 1.2; /* Tighter line height */
 }
 
 .sprint-card-dates {
-    font-size: 0.85rem; /* Slightly smaller for dates */
+    /* Reduced spacing for dates */
+    font-size: 0.8rem; /* Smaller date font */
     color: var(--md-text-medium-emphasis);
     display: flex;
     flex-wrap: wrap;
-    gap: 0.8rem; /* Reduced gap for dates */
-    margin-top: 0.4rem; /* Adjusted margin */
+    gap: 0.5rem;
+    margin-top: 0.3rem;
 }
 
 .sprint-card-dates span {
     display: flex;
     align-items: center;
-    gap: 0.25rem; /* Smaller gap between icon and text */
+    gap: 0.2rem; /* Even smaller gap between icon and text */
 }
 
 .sprint-card-dates .fas {
-    color: var(--md-primary); /* Primary blue for date icons (more prominent) */
-    font-size: 0.75rem; /* Slightly smaller icons */
+    color: var(--md-primary);
+    font-size: 0.7rem; /* Even smaller icons */
 }
 
 .sprint-card.completed .sprint-card-dates .fas { color: var(--md-success); }
@@ -485,23 +488,24 @@ input[type="text"]:focus, input[type="date"]:focus, select:focus {
 
 
 .progress-section {
-    margin-top: 0.8rem; /* Adjusted margin */
-    margin-bottom: 1rem;
+    /* Reduced margins for progress section */
+    margin-top: 0.6rem;
+    margin-bottom: 0.8rem;
 }
 
 .progress-bar-container {
     width: 100%;
-    height: 8px; /* Slightly thinner progress bar */
+    height: 6px; /* Thinner progress bar */
     background: var(--md-border-color);
-    border-radius: 4px; /* Matches bar height */
+    border-radius: 3px; /* Matches bar height */
     overflow: hidden;
-    margin-bottom: 0.4rem; /* Adjusted margin */
+    margin-bottom: 0.3rem;
 }
 
 .progress-bar-fill {
     height: 100%;
     background: var(--md-secondary);
-    border-radius: 4px;
+    border-radius: 3px;
     transition: width 0.4s ease-out;
 }
 .sprint-card.completed .progress-bar-fill { background: var(--md-success); }
@@ -509,23 +513,24 @@ input[type="text"]:focus, input[type="date"]:focus, select:focus {
 
 
 .progress-text {
-    font-size: 0.85rem; /* Slightly smaller progress text */
+    font-size: 0.8rem; /* Smaller progress text */
     color: var(--md-text-high-emphasis);
     margin: 0;
     font-weight: 500;
 }
 
 .sprint-card-actions {
-    margin-top: 1.2rem; /* Increased margin to separate from progress */
-    padding-top: 1rem; /* Padding before the button */
-    border-top: 1px solid var(--md-border-color); /* Separator line for actions */
+    /* Reduced margins and padding for actions section */
+    margin-top: 1rem;
+    padding-top: 0.8rem;
+    border-top: 1px solid var(--md-border-color);
 }
 
 .sprint-card-actions .btn {
     width: 100%;
     justify-content: center;
-    padding: 0.7rem 1rem; /* Slightly smaller padding for card button */
-    font-size: 0.95rem; /* Slightly smaller font for card button */
+    padding: 0.6rem 0.8rem; /* Smaller padding for card button */
+    font-size: 0.9rem; /* Smaller font for card button */
     background: var(--md-secondary);
     color: var(--md-secondary-text);
 }
@@ -700,10 +705,7 @@ input[type="text"]:focus, input[type="date"]:focus, select:focus {
 
 /* Media Queries for Responsiveness */
 @media (max-width: 768px) {
-    /* Removed body padding for sticky header as requested to ignore */
-    body {
-        padding-top: 0;
-    }
+    /* body padding and sticky header related styles are not touched as per request */
 
     .header-content {
         flex-direction: column;
@@ -784,18 +786,27 @@ input[type="text"]:focus, input[type="date"]:focus, select:focus {
     }
 
     .sprint-cards-container {
+        /* On mobile, keep it single column as cards are already quite compact */
         grid-template-columns: 1fr;
         gap: 1.2rem;
     }
     .sprint-card {
-        padding: 1.2rem;
-        border-left-width: 6px;
+        /* Mobile specific adjustments to keep it compact but readable */
+        padding: 1rem; /* Slightly reduced mobile padding */
+        border-left-width: 5px; /* Thinner border for mobile */
     }
     .sprint-card-title {
-        font-size: 1.15rem;
+        font-size: 1.1rem; /* Smaller title on mobile */
     }
     .sprint-card-dates {
-        font-size: 0.85rem;
+        font-size: 0.8rem; /* Smaller dates on mobile */
+    }
+    .progress-text {
+        font-size: 0.75rem; /* Even smaller progress text on mobile */
+    }
+    .sprint-card-actions .btn {
+        font-size: 0.85rem; /* Smaller button font on mobile */
+        padding: 0.5rem 0.7rem;
     }
 
     .welcome-panel {
