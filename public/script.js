@@ -2,37 +2,44 @@ document.addEventListener('DOMContentLoaded', () => {
     const API_BASE = 'https://sprint101-1.onrender.com'; // Your backend URL
 
     // --- DOM Elements ---
-    const sprintForm = document.getElementById('sprintForm');
-    const goalsContainer = document.getElementById('goalsContainer'); // For Create Sprint form
-    const addGoalButton = document.getElementById('addGoal');
-    const createSprintButton = sprintForm.querySelector('button[type="submit"]');
-    const cancelSprintButton = document.getElementById('cancelSprintBtn');
-
-    const viewSprintsBtn = document.getElementById('viewSprintsBtn');
-    const createSprintBtn = document.getElementById('createSprintBtn');
-
-    const welcomeSection = document.getElementById('welcomeSection');
-    const welcomeCreateSprintBtn = document.getElementById('welcomeCreateSprintBtn');
-    const welcomeViewSprintsBtn = document.getElementById('welcomeViewSprintsBtn');
-
-    const createSprintSection = document.getElementById('createSprintSection');
-    const manageGoalsSection = document.getElementById('manageGoalsSection');
-    const currentUpcomingSprintsSection = document.getElementById('currentUpcomingSprintsSection');
-    const pastSprintsSection = document.getElementById('pastSprintsSection');
-    const currentSprintsList = document.getElementById('currentSprintsList');
-    const pastSprintsList = document.getElementById('pastSprintsList');
-
-    // Elements for Manage Goals page header
-    const managedSprintName = document.getElementById('managedSprintName');
-    const manageSprintStartDate = document.getElementById('manageSprintStartDate');
-    const manageSprintEndDate = document.getElementById('manageSprintEndDate');
-    const manageSprintProgressBar = document.getElementById('manageSprintProgressBar');
-    const manageSprintAchievement = document.getElementById('manageSprintAchievement');
-    const manageGoalsCardsContainer = document.getElementById('manageGoalsCardsContainer'); // Container for goal cards
-
-    const saveGoalsBtn = document.getElementById('saveGoalsBtn');
-    const backToSprintsBtn = document.getElementById('backToSprintsBtn');
-    const toastContainer = document.getElementById('toast-container');
+    // Grouping related DOM elements for better readability
+    const elements = {
+        forms: {
+            sprintForm: document.getElementById('sprintForm'),
+            goalsContainer: document.getElementById('goalsContainer'), // For Create Sprint form
+        },
+        buttons: {
+            addGoal: document.getElementById('addGoal'),
+            createSprint: document.querySelector('#sprintForm button[type="submit"]'),
+            cancelSprint: document.getElementById('cancelSprintBtn'),
+            viewSprints: document.getElementById('viewSprintsBtn'),
+            createSprint: document.getElementById('createSprintBtn'),
+            welcomeCreateSprint: document.getElementById('welcomeCreateSprintBtn'),
+            welcomeViewSprints: document.getElementById('welcomeViewSprintsBtn'),
+            saveGoals: document.getElementById('saveGoalsBtn'),
+            backToSprints: document.getElementById('backToSprintsBtn'),
+        },
+        sections: {
+            welcome: document.getElementById('welcomeSection'),
+            createSprint: document.getElementById('createSprintSection'),
+            manageGoals: document.getElementById('manageGoalsSection'),
+            currentUpcomingSprints: document.getElementById('currentUpcomingSprintsSection'),
+            pastSprints: document.getElementById('pastSprintsSection'),
+        },
+        lists: {
+            currentSprints: document.getElementById('currentSprintsList'),
+            pastSprints: document.getElementById('pastSprintsList'),
+            manageGoalsCards: document.getElementById('manageGoalsCardsContainer'), // Container for goal cards
+        },
+        manageGoalsHeader: {
+            name: document.getElementById('managedSprintName'),
+            startDate: document.getElementById('manageSprintStartDate'),
+            endDate: document.getElementById('manageSprintEndDate'),
+            progressBar: document.getElementById('manageSprintProgressBar'),
+            achievement: document.getElementById('manageSprintAchievement'),
+        },
+        toastContainer: document.getElementById('toast-container'),
+    };
 
 
     // --- Custom Toast / Snackbar Function ---
@@ -49,7 +56,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         toast.innerHTML = `<i class="${iconClass}"></i><span>${message}</span>`;
-        toastContainer.appendChild(toast);
+        elements.toastContainer.appendChild(toast);
 
         setTimeout(() => {
             toast.classList.add('show');
@@ -65,11 +72,11 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- Section Management ---
     function showSection(sectionId) {
         const changeableSections = [
-            welcomeSection, // Added welcome section to hide it consistently
-            createSprintSection,
-            manageGoalsSection,
-            currentUpcomingSprintsSection,
-            pastSprintsSection
+            elements.sections.welcome,
+            elements.sections.createSprint,
+            elements.sections.manageGoals,
+            elements.sections.currentUpcomingSprints,
+            elements.sections.pastSprints,
         ];
 
         changeableSections.forEach(sec => {
@@ -77,39 +84,39 @@ document.addEventListener('DOMContentLoaded', () => {
             sec.classList.remove('fade-in-up');
         });
 
-        viewSprintsBtn.classList.remove('active');
-        createSprintBtn.classList.remove('active');
+        elements.buttons.viewSprints.classList.remove('active');
+        elements.buttons.createSprint.classList.remove('active');
 
         let targetElementForScroll = null;
 
         switch (sectionId) {
             case 'create':
-                createSprintSection.style.display = 'block';
-                createSprintSection.classList.add('fade-in-up');
-                createSprintBtn.classList.add('active');
-                targetElementForScroll = createSprintSection;
+                elements.sections.createSprint.style.display = 'block';
+                elements.sections.createSprint.classList.add('fade-in-up');
+                elements.buttons.createSprint.classList.add('active');
+                targetElementForScroll = elements.sections.createSprint;
                 break;
             case 'manageGoals':
-                manageGoalsSection.style.display = 'block';
-                manageGoalsSection.classList.add('fade-in-up');
-                targetElementForScroll = manageGoalsSection;
+                elements.sections.manageGoals.style.display = 'block';
+                elements.sections.manageGoals.classList.add('fade-in-up');
+                targetElementForScroll = elements.sections.manageGoals;
                 break;
             case 'sprints':
             default:
-                currentUpcomingSprintsSection.style.display = 'block';
-                pastSprintsSection.style.display = 'block';
-                currentUpcomingSprintsSection.classList.add('fade-in-up');
-                pastSprintsSection.classList.add('fade-in-up');
-                viewSprintsBtn.classList.add('active');
+                elements.sections.currentUpcomingSprints.style.display = 'block';
+                elements.sections.pastSprints.style.display = 'block';
+                elements.sections.currentUpcomingSprints.classList.add('fade-in-up');
+                elements.sections.pastSprints.classList.add('fade-in-up');
+                elements.buttons.viewSprints.classList.add('active');
                 fetchSprints();
-                targetElementForScroll = currentUpcomingSprintsSection;
+                targetElementForScroll = elements.sections.currentUpcomingSprints;
                 break;
         }
 
         // Show welcome section if no other section is specifically shown
         if (!targetElementForScroll) {
-             welcomeSection.style.display = 'block';
-             welcomeSection.classList.add('fade-in-up');
+             elements.sections.welcome.style.display = 'block';
+             elements.sections.welcome.classList.add('fade-in-up');
         }
 
         if (targetElementForScroll) {
@@ -118,34 +125,34 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --- Event Listeners for Navigation ---
-    viewSprintsBtn.addEventListener('click', () => showSection('sprints'));
-    createSprintBtn.addEventListener('click', () => {
-        sprintForm.reset();
-        goalsContainer.innerHTML = '';
+    elements.buttons.viewSprints.addEventListener('click', () => showSection('sprints'));
+    elements.buttons.createSprint.addEventListener('click', () => {
+        elements.forms.sprintForm.reset();
+        elements.forms.goalsContainer.innerHTML = '';
         addGoalRow(); // Always add one empty row to start
         showSection('create');
     });
-    cancelSprintButton.addEventListener('click', () => {
-        sprintForm.reset();
-        goalsContainer.innerHTML = '';
+    elements.buttons.cancelSprint.addEventListener('click', () => {
+        elements.forms.sprintForm.reset();
+        elements.forms.goalsContainer.innerHTML = '';
         addGoalRow(); // Keep one row for next time
         showSection('sprints');
     });
 
-    welcomeCreateSprintBtn.addEventListener('click', () => {
-        sprintForm.reset();
-        goalsContainer.innerHTML = '';
+    elements.buttons.welcomeCreateSprint.addEventListener('click', () => {
+        elements.forms.sprintForm.reset();
+        elements.forms.goalsContainer.innerHTML = '';
         addGoalRow();
         showSection('create');
     });
-    welcomeViewSprintsBtn.addEventListener('click', () => showSection('sprints'));
+    elements.buttons.welcomeViewSprints.addEventListener('click', () => showSection('sprints'));
 
 
     // --- Goal Management (Create Sprint Form) ---
     // MODIFIED: Added `form-group` divs and changed input to textarea for description
     function addGoalRow(goal = { description: '', type: 'Dev Complete' }) {
         const goalItem = document.createElement('div');
-        goalItem.classList.add('goal-item'); // This will be a flex container for its contents
+        goalItem.classList.add('goal-item');
         const uniqueId = Date.now() + Math.floor(Math.random() * 1000); // More robust unique ID
 
         goalItem.innerHTML = `
@@ -165,24 +172,23 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
             <button type="button" class="remove-goal btn btn-danger"><i class="fas fa-trash-can"></i></button>
         `;
-        goalsContainer.appendChild(goalItem);
+        elements.forms.goalsContainer.appendChild(goalItem);
 
         goalItem.querySelector('.remove-goal').addEventListener('click', () => {
-            // Add a class for fade-out effect before removal
             goalItem.classList.add('removing');
             goalItem.addEventListener('transitionend', function handler() {
                 goalItem.remove();
-                goalItem.removeEventListener('transitionend', handler); // Clean up listener
+                goalItem.removeEventListener('transitionend', handler);
             });
         });
     }
 
-    addGoalRow(); // Add one initial goal row when the page loads
-    addGoalButton.addEventListener('click', () => addGoalRow());
+    addGoalRow();
+    elements.buttons.addGoal.addEventListener('click', () => addGoalRow());
 
 
     // --- Create Sprint Form Submission ---
-    sprintForm.addEventListener('submit', async (e) => {
+    elements.forms.sprintForm.addEventListener('submit', async (e) => {
         e.preventDefault();
 
         const podNameInput = document.getElementById('podName');
@@ -216,42 +222,29 @@ document.addEventListener('DOMContentLoaded', () => {
         const goalTypeSelects = Array.from(document.querySelectorAll('.goal-type'));
 
         const goals = [];
-        let hasEmptyGoalDescription = false;
-        let hasShortGoalDescription = false;
-
-        goalDescriptionInputs.forEach((input, index) => {
-            const description = input.value.trim();
-            const type = goalTypeSelects[index].value;
-
-            if (!description) {
-                hasEmptyGoalDescription = true;
-                input.focus();
-                return; // Skips this goal and continues forEach
-            }
-
-            if (description.length < 12) {
-                hasShortGoalDescription = true;
-                input.focus();
-                return; // Skips this goal and continues forEach
-            }
-
-            goals.push({
-                description: description,
-                type: type,
-                status: 'Not Done'
-            });
-        });
-
-        // Use `some` for more efficient validation checks (stops on first true)
+        
+        // Consolidated validation using 'some' to stop early if an error is found
         if (goalDescriptionInputs.some(input => !input.value.trim())) {
              showToast('Please fill out all goal descriptions or remove empty goal rows.', 'error');
+             // Find the first empty input and focus it
+             goalDescriptionInputs.find(input => !input.value.trim()).focus();
              return;
         }
         if (goalDescriptionInputs.some(input => input.value.trim().length < 12)) {
              showToast('Each goal description must be at least 12 characters long.', 'error');
+             // Find the first short input and focus it
+             goalDescriptionInputs.find(input => input.value.trim().length < 12).focus();
              return;
         }
 
+        // Build goals array after all validations pass
+        goalDescriptionInputs.forEach((input, index) => {
+            goals.push({
+                description: input.value.trim(),
+                type: goalTypeSelects[index].value,
+                status: 'Not Done'
+            });
+        });
 
         if (goals.length < 3) {
             showToast('A sprint must have at least 3 goals. Please add more or fill out existing ones.', 'error');
@@ -259,9 +252,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
 
-        createSprintButton.disabled = true;
-        createSprintButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creating...';
-        cancelSprintButton.disabled = true;
+        elements.buttons.createSprint.disabled = true;
+        elements.buttons.createSprint.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creating...';
+        elements.buttons.cancelSprint.disabled = true;
 
         const newSprint = {
             podName: podNameInput.value,
@@ -281,9 +274,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (response.ok) {
                 showToast('Sprint created successfully!', 'success');
-                sprintForm.reset();
-                goalsContainer.innerHTML = '';
-                addGoalRow(); // Add one initial goal row for the next sprint creation
+                elements.forms.sprintForm.reset();
+                elements.forms.goalsContainer.innerHTML = '';
+                addGoalRow();
                 showSection('sprints');
             } else {
                 const errorData = await response.json();
@@ -293,25 +286,25 @@ document.addEventListener('DOMContentLoaded', () => {
             console.error('Error:', error);
             showToast('An error occurred while creating the sprint. Please check your network and try again.', 'error');
         } finally {
-            createSprintButton.disabled = false;
-            createSprintButton.innerHTML = '<i class="fas fa-plus"></i> Create Sprint';
-            cancelSprintButton.disabled = false;
+            elements.buttons.createSprint.disabled = false;
+            elements.buttons.createSprint.innerHTML = '<i class="fas fa-plus"></i> Create Sprint';
+            elements.buttons.cancelSprint.disabled = false;
         }
     });
 
 
     // --- Fetch and Display Sprints ---
     async function fetchSprints() {
-        currentSprintsList.innerHTML = '<p class="empty-state"><i class="fas fa-spinner fa-spin"></i> Loading current & upcoming sprints...</p>';
-        pastSprintsList.innerHTML = '<p class="empty-state"><i class="fas fa-spinner fa-spin"></i> Loading past sprints...</p>';
+        elements.lists.currentSprints.innerHTML = '<p class="empty-state"><i class="fas fa-spinner fa-spin"></i> Loading current & upcoming sprints...</p>';
+        elements.lists.pastSprints.innerHTML = '<p class="empty-state"><i class="fas fa-spinner fa-spin"></i> Loading past sprints...</p>';
 
         try {
             const response = await fetch(`${API_BASE}/api/sprints`);
             if (response.ok) {
                 const sprints = await response.json();
 
-                currentSprintsList.innerHTML = '';
-                pastSprintsList.innerHTML = '';
+                elements.lists.currentSprints.innerHTML = '';
+                elements.lists.pastSprints.innerHTML = '';
 
                 const now = new Date();
                 const currentUpcomingSprints = [];
@@ -330,29 +323,29 @@ document.addEventListener('DOMContentLoaded', () => {
                 pastSprints.sort((a, b) => new Date(b.endDate) - new Date(a.endDate));
 
                 if (currentUpcomingSprints.length === 0) {
-                    currentSprintsList.innerHTML = '<p class="empty-state"><i class="fas fa-check-circle"></i> No current or upcoming sprints. Time to create one!</p>';
+                    elements.lists.currentSprints.innerHTML = '<p class="empty-state"><i class="fas fa-check-circle"></i> No current or upcoming sprints. Time to create one!</p>';
                 } else {
                     currentUpcomingSprints.forEach(sprint => {
-                        currentSprintsList.appendChild(createSprintCardElement(sprint, false));
+                        elements.lists.currentSprints.appendChild(createSprintCardElement(sprint, false));
                     });
                 }
 
                 if (pastSprints.length === 0) {
-                    pastSprintsList.innerHTML = '<p class="empty-state"><i class="fas fa-box-open"></i> No past sprints recorded yet.</p>';
+                    elements.lists.pastSprints.innerHTML = '<p class="empty-state"><i class="fas fa-box-open"></i> No past sprints recorded yet.</p>';
                 } else {
                     pastSprints.forEach(sprint => {
-                        pastSprintsList.appendChild(createSprintCardElement(sprint, true));
+                        elements.lists.pastSprints.appendChild(createSprintCardElement(sprint, true));
                     });
                 }
 
             } else {
-                currentSprintsList.innerHTML = '<p class="empty-state error-message"><i class="fas fa-exclamation-triangle"></i> Error loading sprints. Please try again.</p>';
-                pastSprintsList.innerHTML = '<p class="empty-state error-message"><i class="fas fa-exclamation-triangle"></i> Error loading past sprints.</p>';
+                elements.lists.currentSprints.innerHTML = '<p class="empty-state error-message"><i class="fas fa-exclamation-triangle"></i> Error loading sprints. Please try again.</p>';
+                elements.lists.pastSprints.innerHTML = '<p class="empty-state error-message"><i class="fas fa-exclamation-triangle"></i> Error loading past sprints.</p>';
             }
         } catch (error) {
             console.error('Error fetching sprints:', error);
-            currentSprintsList.innerHTML = '<p class="empty-state error-message"><i class="fas fa-exclamation-triangle"></i> Network error or server unreachable. Please check your connection.</p>';
-            pastSprintsList.innerHTML = '<p class="empty-state error-message"><i class="fas fa-exclamation-triangle"></i> Network error or server unreachable.</p>';
+            elements.lists.currentSprints.innerHTML = '<p class="empty-state error-message"><i class="fas fa-exclamation-triangle"></i> Network error or server unreachable. Please check your connection.</p>';
+            elements.lists.pastSprints.innerHTML = '<p class="empty-state error-message"><i class="fas fa-exclamation-triangle"></i> Network error or server unreachable.</p>';
         }
     }
 
@@ -430,11 +423,12 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // MODIFIED: Added `form-group` divs and labels for goal description, type, and status
+    // MODIFIED: Labels for description and type removed for this view.
+    // Goal description bold, Goal type has rounded border.
     async function openManageGoalsPanel(sprintId, readOnly = false, editStatusOnly = false) {
         showSection('manageGoals');
 
-        manageGoalsCardsContainer.innerHTML = '<p class="empty-state"><i class="fas fa-spinner fa-spin"></i> Loading goals...</p>';
+        elements.lists.manageGoalsCards.innerHTML = '<p class="empty-state"><i class="fas fa-spinner fa-spin"></i> Loading goals...</p>';
 
         let sprintData;
         try {
@@ -445,60 +439,58 @@ document.addEventListener('DOMContentLoaded', () => {
             sprintData = await sprintResponse.json();
 
             // Populate sprint details header
-            managedSprintName.textContent = sprintData.podName;
-            manageSprintStartDate.textContent = new Date(sprintData.startDate).toLocaleDateString('en-IN', { day: '2-digit', month: '2-digit', year: 'numeric' });
-            manageSprintEndDate.textContent = new Date(sprintData.endDate).toLocaleDateString('en-IN', { day: '2-digit', month: '2-digit', year: 'numeric' });
+            elements.manageGoalsHeader.name.textContent = sprintData.podName;
+            elements.manageGoalsHeader.startDate.textContent = new Date(sprintData.startDate).toLocaleDateString('en-IN', { day: '2-digit', month: '2-digit', year: 'numeric' });
+            elements.manageGoalsHeader.endDate.textContent = new Date(sprintData.endDate).toLocaleDateString('en-IN', { day: '2-digit', month: '2-digit', year: 'numeric' });
 
             const totalGoals = sprintData.goals.length;
             const completedGoals = sprintData.goals.filter(goal => goal.status === 'Done').length;
             const achievementPercentage = totalGoals > 0 ? Math.round((completedGoals / totalGoals) * 100) : 0;
-            manageSprintProgressBar.style.width = `${achievementPercentage}%`;
-            manageSprintAchievement.textContent = achievementPercentage;
+            elements.manageGoalsHeader.progressBar.style.width = `${achievementPercentage}%`;
+            elements.manageGoalsHeader.achievement.textContent = achievementPercentage;
 
-            manageGoalsCardsContainer.innerHTML = ''; // Clear loading message
+            elements.lists.manageGoalsCards.innerHTML = ''; // Clear loading message
 
             if (sprintData.goals.length === 0) {
-                manageGoalsCardsContainer.innerHTML = '<p class="empty-state"><i class="fas fa-clipboard"></i> No goals defined for this sprint.</p>';
+                elements.lists.manageGoalsCards.innerHTML = '<p class="empty-state"><i class="fas fa-clipboard"></i> No goals defined for this sprint.</p>';
             } else {
                 sprintData.goals.forEach((goal) => {
                     const goalCard = document.createElement('div');
                     goalCard.classList.add('goal-card');
-                    goalCard.dataset.goalId = goal._id; // Assuming _id is available from backend
+                    goalCard.dataset.goalId = goal._id;
 
                     const isDescriptionEditable = !readOnly && !editStatusOnly;
                     const isTypeEditable = !readOnly && !editStatusOnly;
-                    const isStatusEditable = !readOnly; // Status is editable unless overall readOnly
+                    const isStatusEditable = !readOnly;
 
-// Inside openManageGoalsPanel, within the forEach loop for sprintData.goals.forEach((goal) => {
-// ...
-goalCard.innerHTML = `
-    <div class="goal-card-content">
-        <div class="goal-card-details">
-            <div class="form-group goal-card-description-group">
-                <textarea id="goal-card-desc-${goal._id}" class="goal-card-description-input" rows="2" placeholder="Goal Description"
-                    ${isDescriptionEditable ? '' : 'readonly'}>${goal.description}</textarea>
-            </div>
-            <div class="form-group goal-card-type-group">
-                <select id="goal-card-type-${goal._id}" class="goal-card-type-select"
-                    ${isTypeEditable ? '' : 'disabled'}>
-                    <option value="Live" ${goal.type === 'Live' ? 'selected' : ''}>Live</option>
-                    <option value="QA Complete" ${goal.type === 'QA Complete' ? 'selected' : ''}>QA Complete</option>
-                    <option value="Dev Complete" ${goal.type === 'Dev Complete' ? 'selected' : ''}>Dev Complete</option>
-                </select>
-            </div>
-        </div>
-        <div class="form-group goal-card-status-group">
-            <label for="goal-card-status-${goal._id}">Status</label> <select id="goal-card-status-${goal._id}" class="goal-card-status-select ${goal.status === 'Done' ? 'status-done' : 'status-not-done'}"
-                ${isStatusEditable ? '' : 'disabled'}>
-                <option value="Not Done" ${goal.status === 'Not Done' ? 'selected' : ''}>Not Done</option>
-                <option value="Done" ${goal.status === 'Done' ? 'selected' : ''}>Done</option>
-            </select>
-        </div>
-    </div>
-    ${(!readOnly && !editStatusOnly) ? `<button type="button" class="goal-card-delete-btn btn btn-danger"><i class="fas fa-trash-alt"></i></button>` : ''}
-`;
-// ...                    `;
-                    manageGoalsCardsContainer.appendChild(goalCard);
+                    goalCard.innerHTML = `
+                        <div class="goal-card-content">
+                            <div class="goal-card-details">
+                                <div class="form-group goal-card-description-group">
+                                    <textarea id="goal-card-desc-${goal._id}" class="goal-card-description-input" rows="2" placeholder="Goal Description"
+                                        ${isDescriptionEditable ? '' : 'readonly'}>${goal.description}</textarea>
+                                </div>
+                                <div class="form-group goal-card-type-group">
+                                    <select id="goal-card-type-${goal._id}" class="goal-card-type-select"
+                                        ${isTypeEditable ? '' : 'disabled'}>
+                                        <option value="Live" ${goal.type === 'Live' ? 'selected' : ''}>Live</option>
+                                        <option value="QA Complete" ${goal.type === 'QA Complete' ? 'selected' : ''}>QA Complete</option>
+                                        <option value="Dev Complete" ${goal.type === 'Dev Complete' ? 'selected' : ''}>Dev Complete</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group goal-card-status-group">
+                                <label for="goal-card-status-${goal._id}">Status</label>
+                                <select id="goal-card-status-${goal._id}" class="goal-card-status-select ${goal.status === 'Done' ? 'status-done' : 'status-not-done'}"
+                                    ${isStatusEditable ? '' : 'disabled'}>
+                                    <option value="Not Done" ${goal.status === 'Not Done' ? 'selected' : ''}>Not Done</option>
+                                    <option value="Done" ${goal.status === 'Done' ? 'selected' : ''}>Done</option>
+                                </select>
+                            </div>
+                        </div>
+                        ${(!readOnly && !editStatusOnly) ? `<button type="button" class="goal-card-delete-btn btn btn-danger"><i class="fas fa-trash-alt"></i></button>` : ''}
+                    `;
+                    elements.lists.manageGoalsCards.appendChild(goalCard);
 
                     // Add event listener to status select to change styling
                     const statusSelect = goalCard.querySelector('.goal-card-status-select');
@@ -518,12 +510,11 @@ goalCard.innerHTML = `
                     const deleteBtn = goalCard.querySelector('.goal-card-delete-btn');
                     if (deleteBtn) {
                         deleteBtn.addEventListener('click', () => {
-                            goalCard.classList.add('deleted'); // Mark for deletion
-                            // CSS transition will handle the smooth removal
+                            goalCard.classList.add('deleted');
                             goalCard.addEventListener('transitionend', function handler() {
-                                goalCard.remove(); // Remove from DOM after transition
+                                goalCard.remove();
                                 showToast('Goal removed. Click Save Changes to finalize.', 'info', 2000);
-                                goalCard.removeEventListener('transitionend', handler); // Clean up listener
+                                goalCard.removeEventListener('transitionend', handler);
                             });
                         });
                     }
@@ -532,21 +523,20 @@ goalCard.innerHTML = `
 
         } catch (error) {
             console.error(`Error fetching goals for sprint ${sprintId}:`, error);
-            manageGoalsCardsContainer.innerHTML = '<p class="empty-state error-message"><i class="fas fa-exclamation-circle"></i> Failed to load goals.</p>';
+            elements.lists.manageGoalsCards.innerHTML = '<p class="empty-state error-message"><i class="fas fa-exclamation-circle"></i> Failed to load goals.</p>';
         }
 
-        // Show/hide Save button based on readOnly
-        saveGoalsBtn.style.display = readOnly ? 'none' : '';
-        saveGoalsBtn.setAttribute('data-sprint-id', sprintId);
+        elements.buttons.saveGoals.style.display = readOnly ? 'none' : '';
+        elements.buttons.saveGoals.setAttribute('data-sprint-id', sprintId);
     }
 
     // --- Save Goals Button ---
-    saveGoalsBtn.addEventListener('click', async function() {
+    elements.buttons.saveGoals.addEventListener('click', async function() {
         const sprintId = this.getAttribute('data-sprint-id');
         const goalCards = document.querySelectorAll('#manageGoalsCardsContainer .goal-card');
         const updatedGoals = [];
 
-        try { // Wrap the goal collection and validation in a try block to catch validation errors
+        try {
             goalCards.forEach(card => {
                 if (!card.classList.contains('deleted')) {
                     const descriptionInput = card.querySelector('.goal-card-description-input');
@@ -555,22 +545,20 @@ goalCard.innerHTML = `
 
                     const description = descriptionInput.value.trim();
 
-                    // Validation 1: Description not empty
                     if (!description) {
                         showToast('Goal description cannot be empty. Please fill out or delete empty goals.', 'error');
                         descriptionInput.focus();
-                        throw new Error('Validation Failed: Empty Goal'); // Throw to break out of forEach
+                        throw new Error('Validation Failed: Empty Goal');
                     }
 
-                    // Validation 2: Description min length
                     if (description.length < 12) {
                         showToast('Goal description must be at least 12 characters long.', 'error');
                         descriptionInput.focus();
-                        throw new Error('Validation Failed: Short Goal'); // Throw to break out of forEach
+                        throw new Error('Validation Failed: Short Goal');
                     }
 
                     updatedGoals.push({
-                        _id: card.dataset.goalId, // Include ID for backend to identify existing goals
+                        _id: card.dataset.goalId,
                         description: description,
                         type: typeSelect.value,
                         status: statusSelect.value
@@ -578,24 +566,23 @@ goalCard.innerHTML = `
                 }
             });
 
-            // Validation 3: Minimum 3 goals after deletion
             if (updatedGoals.length < 3) {
                 showToast('A sprint must have at least 3 goals. Cannot save with fewer.', 'error');
-                throw new Error('Validation Failed: Too few goals'); // Throw to break out
+                throw new Error('Validation Failed: Too few goals');
             }
 
         } catch (validationError) {
-            console.warn(validationError.message); // Log the specific validation error
-            saveGoalsBtn.disabled = false;
-            saveGoalsBtn.innerHTML = 'Save Changes';
-            backToSprintsBtn.disabled = false;
-            return; // Stop function execution
+            console.warn(validationError.message);
+            elements.buttons.saveGoals.disabled = false;
+            elements.buttons.saveGoals.innerHTML = 'Save Changes';
+            elements.buttons.backToSprints.disabled = false;
+            return;
         }
 
 
-        saveGoalsBtn.disabled = true;
-        saveGoalsBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
-        backToSprintsBtn.disabled = true;
+        elements.buttons.saveGoals.disabled = true;
+        elements.buttons.saveGoals.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+        elements.buttons.backToSprints.disabled = true;
 
         try {
             const response = await fetch(`${API_BASE}/api/sprints/${sprintId}/goals`, {
@@ -614,15 +601,15 @@ goalCard.innerHTML = `
             console.error('Error saving goals:', error);
             showToast('An error occurred while saving goals. Please check your network and try again.', 'error');
         } finally {
-            saveGoalsBtn.disabled = false;
-            saveGoalsBtn.innerHTML = 'Save Changes';
-            backToSprintsBtn.disabled = false;
+            elements.buttons.saveGoals.disabled = false;
+            elements.buttons.saveGoals.innerHTML = 'Save Changes';
+            elements.buttons.backToSprints.disabled = false;
             showSection('sprints');
         }
     });
 
     // --- Back to Sprints Button ---
-    backToSprintsBtn.addEventListener('click', function() {
+    elements.buttons.backToSprints.addEventListener('click', function() {
         showSection('sprints');
     });
 
