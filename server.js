@@ -16,7 +16,7 @@ console.log("MONGODB_URI from .env:", process.env.MONGODB_URI); // <-- ADD THIS
 
 const app = express();
 // app.use(cors());
-app.use(cors({ origin: 'https://zany-guide-x5qqq7grv97c6wq9-3000.app.github.dev' }));
+app.use(cors({ origin: 'https://sprint101.onrender.com/' }));
 
 
 const PORT = process.env.PORT || 3000;
