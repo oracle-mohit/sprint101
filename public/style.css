@@ -498,7 +498,7 @@ textarea[readonly] {
     background-color: #c82333; /* Darker red */
 }
 
-/* --- Manage Goals Page Styles (NEW TABULAR VIEW) --- */
+/* --- Manage Goals Page Styles (REWORKED) --- */
 .sprint-details-header {
     background: var(--md-background);
     padding: 1.2rem 1.5rem;
@@ -530,162 +530,168 @@ textarea[readonly] {
     margin-top: 1rem;
 }
 
-/* Container for the new table */
-.goals-table-container {
-    overflow-x: auto; /* Enable horizontal scrolling on small screens if table is too wide */
+/* New container for manage goals list */
+.manage-goals-list-container {
     margin-top: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem; /* Space between goal items */
+}
+
+/* Individual Goal Item in Manage Goals Section */
+.manage-goal-item {
     background: var(--md-surface);
     border-radius: 8px;
     box-shadow: var(--md-shadow-1);
     padding: 1.5rem;
+    position: relative; /* For positioning delete button */
+    display: flex;
+    flex-direction: column; /* Stack elements within the card */
+    gap: 1rem;
+    border: 1px solid var(--md-border-color); /* Subtle border */
+    transition: border-color 0.2s, box-shadow 0.2s;
 }
 
-.goals-table {
+.manage-goal-item.removing {
+    opacity: 0;
+    transform: translateX(-20px);
+    height: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+    margin-top: 0;
+    margin-bottom: 0;
+    border-color: transparent;
+    overflow: hidden;
+    transition: all 0.3s ease-out;
+}
+
+.manage-goal-item:hover {
+    border-color: var(--md-primary-light);
+    box-shadow: var(--md-shadow-2);
+}
+
+.manage-goal-item .form-group {
+    margin-bottom: 0; /* Override default form-group margin */
+}
+
+/* Goal Description in Manage Section */
+.manage-goal-description {
     width: 100%;
-    border-collapse: collapse; /* Remove space between table cells */
-    table-layout: fixed; /* Ensures columns respect width settings */
-}
-
-.goals-table thead th {
-    background-color: var(--md-primary-light);
-    color: var(--md-primary-text);
     padding: 0.8rem 1rem;
-    text-align: left;
-    font-weight: 600;
-    font-size: 0.9rem;
-    border-bottom: 2px solid var(--md-primary-dark);
-    position: sticky; /* Keep headers visible on vertical scroll */
-    top: 0;
-    z-index: 1; /* Ensure headers are above table content */
-    font-family: var(--font-body); /* Table headers use body font */
-}
-
-.goals-table tbody tr {
-    border-bottom: 1px solid var(--md-border-color);
-    transition: background-color 0.2s ease-in-out;
-}
-
-.goals-table tbody tr:last-child {
-    border-bottom: none; /* No border for the last row */
-}
-
-.goals-table tbody tr:hover {
-    background-color: #f5f5f5; /* Subtle hover effect */
-}
-
-.goals-table td {
-    padding: 0.8rem 1rem;
-    vertical-align: top; /* Align content to the top of the cell */
-    font-size: 0.95rem;
-    color: var(--md-text-high-emphasis);
-    font-family: var(--font-body); /* Table cell text uses body font */
-}
-
-/* Column Widths for the table */
-.goals-table th:nth-child(1),
-.goals-table td:nth-child(1) { /* Description */
-    width: 45%;
-}
-.goals-table th:nth-child(2),
-.goals-table td:nth-child(2) { /* Type */
-    width: 15%;
-}
-.goals-table th:nth-child(3),
-.goals-table td:nth-child(3) { /* Status */
-    width: 20%;
-}
-.goals-table th:nth-child(4),
-.goals-table td:nth-child(4) { /* Actions */
-    width: 20%;
-    text-align: center;
-}
-
-/* Styling for editable fields within table cells */
-.goals-table .goal-table-description-input,
-.goals-table .goal-table-type-select,
-.goals-table .goal-table-status-select {
-    width: 100%;
-    padding: 0.5rem 0.75rem;
     border: 1px solid var(--md-border-color);
     border-radius: 4px;
-    font-size: 0.9rem;
+    font-size: 1rem;
+    background: var(--md-background);
     box-sizing: border-box;
-    font-family: var(--font-body); /* Table inputs/selects use body font */
-}
-
-.goals-table .goal-table-description-input {
-    min-height: 50px;
+    color: var(--md-text-high-emphasis);
     resize: vertical;
-    line-height: 1.4;
+    min-height: 80px;
+    font-family: var(--font-body);
 }
 
-/* Styling for read-only/disabled fields within table cells */
-.goals-table .goal-table-description-input[readonly] {
+.manage-goal-description:focus {
+    outline: none;
+    border-color: var(--md-primary);
+    box-shadow: 0 0 0 2px var(--md-primary-light);
+    background: var(--md-surface);
+}
+
+.manage-goal-description[readonly] {
     background: transparent;
     border-color: transparent;
     box-shadow: none;
-    color: var(--md-text-high-emphasis);
-    font-weight: bold; /* Make description bold */
+    font-weight: bold;
     padding: 0;
     resize: none;
     overflow: hidden;
-    line-height: 1.4;
+    cursor: default;
 }
 
-.goals-table .goal-table-type-select[disabled] {
-    background: var(--md-background); /* Subtle background for the 'tag' */
-    border: 1px solid var(--md-border-color); /* Border around the value */
-    border-radius: 4px; /* Rounded corners */
-    box-shadow: none;
-    cursor: default;
-    color: var(--md-text-high-emphasis);
+/* Type and Status Selects for Manage Section */
+.manage-goal-type,
+.manage-goal-status {
+    width: auto; /* Allow content to dictate width */
+    padding: 0.6rem 1rem;
+    border: 1px solid var(--md-border-color);
+    border-radius: 20px; /* Pill shape */
+    background: var(--md-background);
+    font-size: 0.9rem;
     font-weight: 500;
-    padding: 4px 8px; /* Padding for the border to look good */
-    -webkit-appearance: none;
+    color: var(--md-text-high-emphasis);
+    -webkit-appearance: none; /* Remove default select arrow */
     -moz-appearance: none;
     appearance: none;
-    text-align: center; /* Center the text inside the bordered box */
-    width: auto; /* Allow width to shrink to content */
-    display: inline-block; /* Essential for width:auto and padding */
-    min-width: 80px; /* Ensure minimum width */
-}
-
-.goals-table .goal-table-status-select[disabled] {
-    background: transparent;
-    border-color: transparent;
-    box-shadow: none;
-    cursor: default;
-    padding: 0;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
-    text-align: left;
-    width: auto;
-    font-weight: 600; /* Status text should be bold */
-}
-
-/* Status colors within Table Cells */
-.goals-table .goal-table-status-select.status-done {
-    color: var(--md-success);
-}
-.goals-table .goal-table-status-select.status-not-done {
-    color: var(--md-error);
-}
-
-.goals-table .goal-table-delete-btn {
-    background-color: var(--md-error);
-    color: white;
-    border: none;
-    padding: 0.5rem 0.75rem;
-    border-radius: 5px;
     cursor: pointer;
-    font-size: 0.9em;
-    transition: background-color 0.3s ease;
-    font-family: var(--font-body); /* Use body font for this button */
+    transition: all 0.2s ease;
+    text-align: center;
+    font-family: var(--font-body); /* Ensure consistent font */
 }
-.goals-table .goal-table-delete-btn:hover {
-    background-color: #c82333;
+
+.manage-goal-type:not([disabled]):hover,
+.manage-goal-status:not([disabled]):hover {
+    border-color: var(--md-primary);
+    box-shadow: 0 0 0 2px var(--md-primary-light);
 }
+
+.manage-goal-type[disabled],
+.manage-goal-status[disabled] {
+    cursor: default;
+    background: var(--md-background); /* Keep a subtle background when disabled */
+    border-color: var(--md-border-color); /* Keep the border */
+    box-shadow: none;
+    text-align: center;
+    color: var(--md-text-medium-emphasis); /* Toned down color for disabled */
+}
+
+/* Status colors within Manage Goals */
+.manage-goal-status.status-done {
+    background-color: var(--md-success-light-bg);
+    color: var(--md-success);
+    border-color: var(--md-success);
+    font-weight: 600;
+}
+.manage-goal-status.status-not-done {
+    background-color: var(--md-error-light-bg);
+    color: var(--md-error);
+    border-color: var(--md-error);
+    font-weight: 600;
+}
+
+/* Layout for Type and Status controls */
+.manage-goal-controls {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    flex-wrap: wrap; /* Allow wrapping on small screens */
+    margin-top: 0.5rem; /* Space from description */
+}
+
+/* Delete Button for Manage Goals Section */
+.manage-goal-delete-btn {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background-color: transparent;
+    color: var(--md-text-disabled);
+    border: none;
+    padding: 0.5rem;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 1.1em;
+    transition: all 0.2s ease;
+    z-index: 10; /* Ensure it's clickable over other elements */
+}
+.manage-goal-delete-btn:hover {
+    color: var(--md-error);
+    background-color: rgba(239, 83, 80, 0.1); /* Light red background on hover */
+    transform: scale(1.1);
+}
+
+/* Hide labels for type and status inside goal items, as they are self-explanatory or handled by placeholders */
+.manage-goal-item label {
+    display: none;
+}
+
 
 /* --- Sprint List Sections --- */
 #currentUpcomingSprintsSection {
@@ -901,7 +907,6 @@ textarea[readonly] {
 }
 .welcome-actions .btn-primary:hover {
     background: var(--md-secondary-dark);
-    box-shadow: var(--md-shadow-2);
 }
 
 .welcome-actions .btn-secondary {
@@ -1070,83 +1075,26 @@ textarea[readonly] {
         width: 100%;
     }
 
-    /* Manage Goals Page - Mobile Adjustments for Table */
-    .goals-table-container {
+    /* Manage Goals Page - Mobile Adjustments for Individual Goals */
+    .manage-goal-item {
         padding: 1rem;
     }
-    .goals-table {
-        display: block; /* Make table behave like a block for responsive stacking */
-        width: 100%; /* Ensure it takes full width of its container */
+    .manage-goal-description {
+        min-height: 60px; /* Adjust for mobile */
     }
-    .goals-table thead {
-        display: none; /* Hide table headers on small screens */
+    .manage-goal-delete-btn {
+        top: 0.5rem;
+        right: 0.5rem;
+        font-size: 1em;
     }
-    .goals-table tbody, .goals-table tr, .goals-table td {
-        display: block; /* Make table body, rows, and cells behave like blocks */
-        width: 100%;
+    .manage-goal-controls {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.8rem;
     }
-    .goals-table tr {
-        margin-bottom: 1rem; /* Add space between stacked rows */
-        border: 1px solid var(--md-border-color);
-        border-radius: 8px;
-        padding: 0.8rem;
-        background-color: var(--md-surface);
-        box-shadow: var(--md-shadow-0);
-    }
-    .goals-table td {
-        text-align: right; /* Align cell content to the right */
-        padding: 0.5rem 0.8rem;
-        position: relative;
-        border: none; /* Remove individual cell borders */
-    }
-    .goals-table td::before { /* Add pseudo-elements for labels */
-        content: attr(data-label); /* Use data-label attribute for content */
-        position: absolute;
-        left: 0.8rem;
-        font-weight: 600;
-        color: var(--md-text-medium-emphasis);
-        text-align: left;
-        width: 100px; /* Width for the pseudo-label */
-        font-family: var(--font-body); /* Pseudo-labels use body font */
-    }
-
-    /* Adjust specific cells for mobile table view */
-    .goals-table td:nth-child(1) { /* Description */
-        text-align: left; /* Keep description left-aligned */
-    }
-    .goals-table td:nth-child(1)::before {
-        content: 'Description:';
-    }
-    .goals-table td:nth-child(2)::before {
-        content: 'Type:';
-    }
-    .goals-table td:nth-child(3)::before {
-        content: 'Status:';
-    }
-    .goals-table td:nth-child(4) { /* Actions */
-        text-align: center;
-        padding-top: 1rem;
-        border-top: 1px dashed var(--md-border-color);
-    }
-    .goals-table td:nth-child(4)::before {
-        content: ''; /* No label for actions */
-    }
-
-    /* Adjust inputs/selects within mobile table cells */
-    .goals-table .goal-table-description-input[readonly],
-    .goals-table .goal-table-type-select[disabled],
-    .goals-table .goal-table-status-select[disabled] {
-        width: auto; /* Allow content to dictate width */
-        display: inline-block; /* For padding/border to work */
-        padding: 0; /* Remove padding for text-like appearance */
-        text-align: right; /* Align text to the right for mobile view */
-    }
-    .goals-table .goal-table-description-input[readonly] {
-        width: 100%; /* Description can take full width */
-        text-align: left; /* Keep description left-aligned */
-    }
-    .goals-table .goal-table-type-select[disabled] {
-        padding: 4px 8px; /* Re-add padding for the tag look */
+    .manage-goal-type,
+    .manage-goal-status {
+        width: 100%; /* Make them full width for better touch targets */
     }
 
 
