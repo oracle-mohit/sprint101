@@ -249,19 +249,68 @@ input[type="text"]:focus, input[type="date"]:focus, select:focus, textarea:focus
     background: var(--md-surface);
 }
 
-input[readonly], select[disabled], textarea[readonly] {
-    background: #f5f5f5;
-    color: var(--md-text-medium-emphasis);
-    cursor: default;
-    border-color: #eee;
-    box-shadow: none;
-}
-input[readonly]:focus, select[disabled]:focus, textarea[readonly]:focus {
-    background: #f5f5f5;
-    border-color: #eee;
-    box-shadow: none;
+/* Styles for read-only/disabled input fields - make them look like plain text */
+input[readonly],
+select[disabled],
+textarea[readonly] {
+    background: transparent; /* Make background transparent */
+    border-color: transparent; /* Remove the border */
+    box-shadow: none; /* Ensure no box shadow */
+    cursor: default; /* Keep default cursor */
+    color: var(--md-text-high-emphasis); /* Use high emphasis color for readability */
+    padding-left: 0;   /* Remove left padding to make it look like text */
+    padding-right: 0;  /* Remove right padding */
+    outline: none; /* Remove outline on focus */
+    -webkit-appearance: none; /* For selects, remove browser-default styling */
+    -moz-appearance: none;
+    appearance: none;
 }
 
+/* Remove focus styles for read-only/disabled fields */
+input[readonly]:focus,
+select[disabled]:focus,
+textarea[readonly]:focus {
+    background: transparent;
+    border-color: transparent;
+    box-shadow: none;
+    outline: none;
+}
+
+/* For selects, remove the dropdown arrow when disabled/read-only */
+select[disabled]::-ms-expand {
+    display: none; /* For IE10+ */
+}
+
+/* Ensure textarea keeps its min-height but looks like text */
+textarea[readonly] {
+    min-height: 60px; /* Keep defined min-height */
+    resize: none; /* Disable resizing for read-only textareas */
+    overflow: hidden; /* Hide scrollbar if content exceeds min-height */
+}
+
+/* Specific adjustments for goal card elements if needed, to override general input styles */
+.goal-card-description-input[readonly],
+.goal-card-type-select[disabled],
+.goal-card-status-select[disabled] {
+    background: transparent;
+    border-color: transparent;
+    box-shadow: none;
+    color: var(--md-text-high-emphasis);
+    font-weight: 500; /* Make text slightly bolder */
+    padding: 0; /* Adjust padding to blend into the card more */
+}
+
+.goal-card-status-select[disabled] {
+    text-align: left; /* Align status text to left */
+    width: auto; /* Allow width to shrink to content if desired */
+    padding: 0;
+}
+.goal-card-status-select[disabled].status-done {
+    color: var(--md-success);
+}
+.goal-card-status-select[disabled].status-not-done {
+    color: var(--md-error);
+}
 
 /* --- Buttons (General) --- */
 .btn {
