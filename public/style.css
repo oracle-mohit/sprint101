@@ -1,670 +1,770 @@
-/* Basic Reset & Body Styling */
-body {
-    font-family: 'Inter', Arial, sans-serif; /* Prioritize Inter, fallback to Arial */
-    margin: 0;
-    padding: 0;
-    background-color: #f0f2f5;
-    color: #333;
-    line-height: 1.6;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
+/* --- Material Design & Theme Variables --- */
+:root {
+    /* Primary Colors: Vibrant Blue */
+    --md-primary: #2e65f0;
+    --md-primary-light: #6e92ff;
+    --md-primary-dark: #0037bc;
+    --md-primary-text: #ffffff; /* Text color on primary backgrounds */
+
+    /* Secondary Colors: Darker Blue (for strong actions, active states) */
+    --md-secondary: #1560bd;
+    --md-secondary-light: #508ee1;
+    --md-secondary-dark: #00358c;
+    --md-secondary-text: #ffffff; /* Text color on secondary backgrounds */
+
+    /* General UI Colors */
+    --md-background: #eceff1; /* Light grey background for body */
+    --md-surface: #ffffff; /* White background for cards, panels, forms */
+    --md-border-color: #e0e0e0; /* Lighter border color */
+
+    /* Text Colors for different emphasis levels */
+    --md-text-high-emphasis: rgba(0, 0, 0, 0.87); /* Black for main text */
+    --md-text-medium-emphasis: rgba(0, 0, 0, 0.60); /* Grey for secondary text */
+    --md-text-disabled: rgba(0, 0, 0, 0.38); /* Lighter grey for disabled text/elements */
+
+    /* Status Colors (toned down, used where appropriate) */
+    --md-success: #66BB6A; /* Green for success */
+    --md-success-light-bg: #E8F5E9; /* Very light green for success backgrounds */
+    --md-error: #EF5350; /* Red for error */
+    --md-error-light-bg: #FFEBEE; /* Very light red for error backgrounds */
+    --md-info: #2196F3; /* Standard Material Blue for info */
+    --md-warning: #FFC107; /* Amber for warning */
+
+    /* Custom Section & Card Colors based on new logic */
+    --section-bg-white: var(--md-surface); /* White background for sections */
+
+    /* Current & Upcoming Sprint Card Colors */
+    --card-current-bg: #E3F2FD; /* Light blue background for current cards */
+    --card-current-border: var(--md-primary-light); /* Light blue border matches title */
+    --card-current-title-color: var(--md-primary-light); /* Light blue for current card titles */
+    --card-current-action-btn: var(--md-primary-light); /* Light blue for current action buttons */
+    --card-current-action-btn-hover: var(--md-primary-dark); /* Darker blue on hover */
+    --card-current-progress-fill: var(--md-primary-light); /* Light blue for current progress bars */
+
+    /* Past Sprint Card Colors */
+    --card-past-bg: #F3E5F5; /* Light purple background for past cards */
+    --card-past-border: #9C27B0; /* Darker purple for past card border */
+    --card-past-title-color: #A06ECF; /* Light purple for past card titles */
+    --card-past-action-btn: var(--card-past-title-color); /* Light purple for past action buttons */
+    --card-past-action-btn-hover: #7B3F9A; /* Darker purple on hover */
+    --card-past-progress-fill: var(--card-past-title-color); /* Light purple for past progress bars */
+
+    /* Material Shadows (Elevation) */
+    --md-shadow-0: none;
+    --md-shadow-1: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+    --md-shadow-2: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+    --md-shadow-3: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
 }
 
-/* --- Header Styling --- */
+/* --- Global Reset & Base Styles --- */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Inter', Arial, sans-serif;
+    background: var(--md-background);
+    color: var(--md-text-high-emphasis);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Poppins', sans-serif;
+    color: var(--md-text-high-emphasis);
+    margin: 0;
+}
+
+/* --- Header Section --- */
 .app-header {
-    background-color: #007bff; /* Primary blue */
-    color: #fff;
-    padding: 1rem 20px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    position: sticky;
-    top: 0;
-    z-index: 1000;
+    background: var(--md-primary);
+    color: var(--md-primary-text);
+    padding: 1rem 0;
+    box-shadow: var(--md-shadow-2);
 }
 
 .header-content {
-    max-width: 1200px;
+    max-width: 1000px;
     margin: 0 auto;
     display: flex;
-    justify-content: space-between;
     align-items: center;
+    justify-content: space-between;
+    padding: 0 1.5rem;
 }
 
 .app-brand {
     display: flex;
     align-items: center;
-    font-size: 1.8em;
-    font-weight: 700;
+    gap: 0.75rem;
 }
 
 .app-icon {
-    margin-right: 10px;
-    color: #ffd700; /* Gold accent */
+    font-size: 1.8rem;
+    color: var(--md-primary-light);
 }
 
 .app-title {
-    font-family: 'Poppins', sans-serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
 }
 
-.header-actions .btn {
-    background: none;
-    border: 1px solid rgba(255,255,255,0.5);
-    color: #fff;
-    padding: 10px 15px;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 0.9em;
-    font-weight: 500;
-    transition: all 0.3s ease;
-    margin-left: 10px;
+.header-actions {
+    display: flex;
+    gap: 0.75rem;
 }
 
-.header-actions .btn:hover {
-    background-color: rgba(255,255,255,0.1);
-    border-color: #fff;
+.btn-header {
+    font-size: 0.95rem;
+    padding: 0.5rem 1.2rem;
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: var(--md-shadow-0);
 }
 
-.header-actions .btn.active {
-    background-color: #fff;
-    color: #007bff;
-    border-color: #fff;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+.btn-header:hover {
+    background: rgba(255, 255, 255, 0.25);
+    transform: none;
+    box-shadow: var(--md-shadow-0);
 }
 
-/* --- Main Content Layout --- */
+.btn-header.active {
+    background: var(--md-surface);
+    color: var(--md-primary);
+    box-shadow: var(--md-shadow-1);
+}
+
+.btn-header.active:hover {
+    background: #f0f0f0;
+}
+
+/* --- Main Layout & Card General Styles --- */
 .main-wrapper {
-    flex-grow: 1; /* Allows main content to take available vertical space */
-    padding: 20px 0;
+    max-width: 1000px;
+    margin: 2rem auto;
+    padding: 0 1.5rem;
 }
 
-.content-container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 20px;
-}
-
-/* --- General Panel Card Styling --- */
 .panel-card {
-    background-color: #fff;
-    border-radius: 12px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
-    padding: 30px;
-    margin-bottom: 25px;
-    transition: all 0.3s ease-out;
+    background: var(--md-surface);
+    border-radius: 8px;
+    box-shadow: var(--md-shadow-1);
+    margin-bottom: 2.5rem;
+    padding: 2.5rem;
+    transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.panel-card .panel-title, .form-section-title {
-    font-family: 'Poppins', sans-serif;
-    color: #0056b3;
-    font-size: 1.8em;
-    margin-top: 0;
-    margin-bottom: 20px;
-    border-bottom: 2px solid #eee;
-    padding-bottom: 10px;
+.panel-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--md-shadow-2);
+}
+
+.form-section-title {
+    font-size: 1.6rem;
+    font-weight: 700;
     display: flex;
     align-items: center;
+    gap: 0.8rem;
+    color: var(--md-primary-dark);
+    margin: 0 0 1.8rem 0;
+}
+.form-section-title .fas {
+    color: var(--md-primary);
 }
 
-.panel-card .panel-title i, .form-section-title i {
-    margin-right: 10px;
-    color: #007bff;
+.panel-title {
+    font-size: 1.6rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    margin: 0 0 1.8rem 0;
+    color: var(--md-primary-dark);
+}
+.panel-title .fas {
+    color: var(--md-primary);
 }
 
-/* --- Welcome Panel --- */
-.welcome-panel {
-    text-align: center;
-    padding: 50px 30px;
-    margin-top: 50px; /* Space from header */
+#currentUpcomingSprintsSection .panel-title,
+#pastSprintsSection .panel-title {
+    color: var(--md-text-high-emphasis);
+}
+#currentUpcomingSprintsSection .panel-title .fas,
+#pastSprintsSection .panel-title .fas {
+    color: var(--md-text-medium-emphasis);
 }
 
-.welcome-message {
-    font-size: 1.1em;
-    color: #555;
-    margin-bottom: 30px;
-}
-
-.welcome-actions .btn {
-    margin: 0 10px;
-    padding: 12px 25px;
-    font-size: 1em;
-}
-
-/* --- Forms General Styling --- */
 .form-section-subtitle {
-    font-family: 'Poppins', sans-serif;
-    color: #007bff;
-    font-size: 1.3em;
-    margin-top: 25px;
-    margin-bottom: 15px;
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--md-primary-dark);
     display: flex;
     align-items: center;
+    gap: 0.6rem;
+    margin-bottom: 1rem;
 }
 
-.form-section-subtitle i {
-    margin-right: 8px;
-    color: #007bff;
+/* --- Form Elements (General) --- */
+.form-section {
+    margin-bottom: 2.5rem;
 }
 
 .form-group {
-    display: flex;
-    flex-direction: column;
-    margin-bottom: 15px; /* Standard vertical spacing for form groups */
-}
-
-.form-group label {
-    font-weight: 600;
-    color: #555;
-    margin-bottom: 8px;
-    font-size: 0.95em;
-}
-
-input[type="text"],
-input[type="date"],
-textarea,
-select {
-    width: 100%;
-    padding: 10px 12px;
-    border: 1px solid #dcdcdc;
-    border-radius: 8px;
-    box-sizing: border-box;
-    font-size: 1em;
-    font-family: 'Inter', sans-serif;
-    transition: border-color 0.3s ease, box-shadow 0.3s ease;
-}
-
-input[type="text"]:focus,
-input[type="date"]:focus,
-textarea:focus,
-select:focus {
-    border-color: #007bff;
-    box-shadow: 0 0 0 3px rgba(0,123,255,0.25);
-    outline: none;
-}
-
-textarea {
-    resize: vertical;
-    min-height: 80px;
+    margin-bottom: 1.5rem;
 }
 
 .form-row {
     display: flex;
-    gap: 20px;
-    margin-bottom: 15px;
+    gap: 2rem;
 }
 
 .form-row .form-group {
-    flex: 1; /* Distribute space evenly in a row */
-    margin-bottom: 0; /* Handled by gap */
+    flex: 1;
+    margin-bottom: 0;
 }
 
-
-/* --- Dynamic Goal Field Layout (Create Sprint Form) --- */
-/* ADDED: Styles for the dynamically added goal fields */
-.goal-input-container {
-    border: 1px solid #e0e0e0;
-    border-radius: 8px;
-    padding: 15px;
-    background-color: #f9f9f9;
-}
-
-.goal-headers {
-    display: flex;
-    justify-content: space-between;
+label {
+    display: block;
+    margin-bottom: 0.5rem;
     font-weight: 600;
-    color: #777;
-    margin-bottom: 10px;
-    padding-bottom: 5px;
-    border-bottom: 1px dashed #e0e0e0;
+    color: var(--md-text-medium-emphasis);
+    font-size: 0.95rem;
 }
 
-.goal-header-description { flex-basis: 65%; text-align: left; }
-.goal-header-type { flex-basis: 35%; text-align: left; }
-.goal-header-actions { width: 50px; } /* For the trash icon */
-
-.goals-list {
-    display: flex;
-    flex-direction: column; /* Stacks individual goal-item vertically */
-    gap: 15px; /* Space between each goal row */
+input[type="text"], input[type="date"], select, textarea {
+    width: 100%;
+    padding: 0.8rem 1rem;
+    border: 1px solid var(--md-border-color);
+    border-radius: 4px;
+    font-size: 1rem;
+    background: var(--md-background);
+    box-sizing: border-box;
+    color: var(--md-text-high-emphasis);
+    transition: border-color 0.2s, box-shadow 0.2s, background-color 0.2s;
 }
 
-.goal-item {
-    display: flex; /* Makes each goal row a flex container */
-    align-items: flex-start; /* Aligns items to the top (important for textareas) */
-    gap: 15px; /* Space between the fields wrapper and the remove button */
-    padding: 10px;
-    border: 1px solid #dde7f0;
-    border-radius: 8px;
-    background-color: #fff;
-    transition: all 0.3s ease, height 0.3s ease, padding 0.3s ease, margin 0.3s ease, opacity 0.3s ease; /* For remove animation */
-    overflow: hidden; /* Important for height transition */
+input[type="text"]:focus, input[type="date"]:focus, select:focus, textarea:focus {
+    outline: none;
+    border-color: var(--md-primary);
+    box-shadow: 0 0 0 2px var(--md-primary-light);
+    background: var(--md-surface);
 }
 
-.goal-item.removing {
-    opacity: 0;
-    transform: translateX(-20px);
-    height: 0; /* Target height to collapse */
-    padding-top: 0;
-    padding-bottom: 0;
-    margin-top: 0;
-    margin-bottom: 0;
-    border-color: transparent;
+input[readonly], select[disabled], textarea[readonly] {
+    background: #f5f5f5;
+    color: var(--md-text-medium-emphasis);
+    cursor: default;
+    border-color: #eee;
+    box-shadow: none;
 }
-
-.goal-fields-wrapper {
-    display: flex; /* Flex container for description and type */
-    flex-wrap: wrap; /* Allow description and type to wrap if space is tight */
-    gap: 15px; /* Space between description and type inputs */
-    flex-grow: 1; /* Allows this wrapper to take available space */
-}
-
-/* Specific sizing for Description and Type groups within Create Sprint form */
-.form-group.goal-description-group {
-    flex-basis: calc(70% - 7.5px); /* Allocate more space for description */
-    min-width: 200px; /* Ensure description field doesn't get too small */
-    margin-bottom: 0; /* Reset margin-bottom, handled by gap */
-}
-.form-group.goal-type-group {
-    flex-basis: calc(30% - 7.5px); /* Allocate remaining space for type */
-    min-width: 100px; /* Ensure type field doesn't get too small */
-    margin-bottom: 0; /* Reset margin-bottom, handled by gap */
-}
-
-/* Ensure inputs/selects/textareas fill their new flex parent */
-.goal-description,
-.goal-type {
-    width: 100%; /* Fill the width of their .form-group parent */
-}
-
-/* Button to remove a goal in Create Sprint form */
-.remove-goal {
-    flex-shrink: 0; /* Prevent button from shrinking */
-    align-self: center; /* Vertically center the trash button */
-    margin-left: auto; /* Push button to the right */
-    background-color: #dc3545; /* Red color */
-    color: white;
-    border: none;
-    padding: 8px 12px;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 0.9em;
-    transition: background-color 0.3s ease;
-}
-.remove-goal:hover {
-    background-color: #c82333;
-}
-
-/* --- Manage Goals Panel Styling --- */
-.sprint-details-header {
-    background-color: #eaf5ff;
-    border: 1px solid #cce0f5;
-    border-radius: 8px;
-    padding: 15px 20px;
-    margin-bottom: 25px;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    align-items: center;
-    gap: 15px;
-}
-
-.sprint-details-dates span {
-    display: inline-block;
-    margin-right: 15px;
-    font-size: 0.95em;
-    color: #444;
-}
-.sprint-details-dates i {
-    color: #007bff;
-    margin-right: 5px;
-}
-
-.sprint-details-progress {
-    flex-grow: 1;
-    min-width: 250px;
-}
-
-.progress-bar-container {
-    background-color: #e0e0e0;
-    border-radius: 5px;
-    height: 10px;
-    overflow: hidden;
-    margin-bottom: 5px;
-}
-
-.progress-bar-fill {
-    height: 100%;
-    background-color: #28a745; /* Green for progress */
-    border-radius: 5px;
-    transition: width 0.5s ease-in-out;
-}
-
-.progress-text {
-    font-size: 0.9em;
-    color: #666;
-    text-align: right;
-    margin-top: 0;
-}
-
-.goals-cards-container {
-    display: grid;
-    gap: 20px;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Responsive grid of goal cards */
-    margin-top: 20px;
-}
-
-.goal-card {
-    display: flex; /* Make the goal card a flex container */
-    align-items: flex-start; /* Align items to the top */
-    gap: 15px; /* Space between content and delete button */
-    padding: 15px;
-    border: 1px solid #d0e0f0;
-    border-radius: 10px;
-    background-color: #fff;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-    transition: all 0.3s ease, height 0.3s ease, padding 0.3s ease, margin 0.3s ease, opacity 0.3s ease;
-    overflow: hidden; /* Crucial for collapse animation */
-}
-
-.goal-card.deleted {
-    opacity: 0;
-    transform: translateX(-20px);
-    height: 0;
-    padding-top: 0;
-    padding-bottom: 0;
-    margin-top: 0;
-    margin-bottom: 0;
-    border-color: transparent;
-}
-
-.goal-card-content {
-    display: flex; /* Contains goal details and status */
-    flex-direction: row; /* Details on left, status on right */
-    flex-wrap: wrap; /* Allow wrapping on smaller screens */
-    gap: 15px; /* Space between details and status blocks */
-    flex-grow: 1; /* Takes most of the available space */
-    align-items: flex-start;
-}
-
-.goal-card-details {
-    display: flex; /* Contains description and type */
-    flex-direction: row; /* Description and Type side-by-side */
-    flex-wrap: wrap;
-    gap: 15px; /* Space between description and type */
-    flex-grow: 1; /* Takes remaining space within goal-card-content */
-    min-width: 60%; /* Ensure this part stays a reasonable width */
-}
-
-/* Specific sizing for description, type, and status within goal cards */
-.form-group.goal-card-description-group {
-    flex-basis: calc(65% - 7.5px); /* More space for description in card */
-    min-width: 180px;
-    margin-bottom: 0;
-}
-.form-group.goal-card-type-group {
-    flex-basis: calc(35% - 7.5px); /* Less space for type in card */
-    min-width: 80px;
-    margin-bottom: 0;
-}
-.form-group.goal-card-status-group {
-    flex-basis: auto; /* Status width based on content */
-    min-width: 100px; /* Minimum width for status dropdown */
-    flex-shrink: 0; /* Prevent status from shrinking too much */
-    margin-bottom: 0;
-}
-
-/* Styling for select inputs within goal cards */
-.goal-card-description-input,
-.goal-card-type-select,
-.goal-card-status-select {
-    width: 100%; /* Fill the width of their form-group parent */
-}
-
-.goal-card-status-select {
-    font-weight: 600;
-    text-align: center;
-}
-
-.goal-card-status-select.status-done {
-    background-color: #d4edda; /* Light green */
-    color: #155724; /* Dark green text */
-    border-color: #28a745;
-}
-
-.goal-card-status-select.status-not-done {
-    background-color: #f8d7da; /* Light red */
-    color: #721c24; /* Dark red text */
-    border-color: #dc3545;
-}
-
-.goal-card-delete-btn {
-    flex-shrink: 0; /* Prevent delete button from shrinking */
-    align-self: center; /* Vertically center */
-    margin-left: auto; /* Push button to the right */
-    background-color: #dc3545; /* Red */
-    color: white;
-    border: none;
-    padding: 8px 12px;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 0.9em;
-    transition: background-color 0.3s ease;
-}
-.goal-card-delete-btn:hover {
-    background-color: #c82333;
+input[readonly]:focus, select[disabled]:focus, textarea[readonly]:focus {
+    background: #f5f5f5;
+    border-color: #eee;
+    box-shadow: none;
 }
 
 
-/* --- Button Styles --- */
+/* --- Buttons (General) --- */
 .btn {
-    padding: 10px 20px;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 1em;
-    font-weight: 600;
-    transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
     display: inline-flex;
     align-items: center;
-    justify-content: center;
-    gap: 8px; /* Space between icon and text */
+    gap: 0.75rem;
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 4px;
+    font-size: 1.05rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s ease-out, transform 0.1s ease-out, box-shadow 0.2s ease-out;
+    box-shadow: var(--md-shadow-0);
+}
+
+.btn:hover {
+    transform: translateY(-1px);
+    box-shadow: var(--md-shadow-1);
+}
+
+.btn:active {
+    transform: translateY(0);
+    box-shadow: var(--md-shadow-0);
 }
 
 .btn-primary {
-    background-color: #007bff;
-    color: #fff;
-    border: 1px solid #007bff;
+    background: var(--md-secondary);
+    color: var(--md-secondary-text);
+    box-shadow: var(--md-shadow-1);
 }
 
 .btn-primary:hover {
-    background-color: #0056b3;
-    border-color: #0056b3;
+    background: var(--md-secondary-dark);
+    box-shadow: var(--md-shadow-2);
 }
 
 .btn-secondary {
-    background-color: #6c757d;
-    color: #fff;
-    border: 1px solid #6c757d;
+    background: var(--md-primary-light);
+    color: var(--md-primary-text);
+    box-shadow: var(--md-shadow-1);
 }
 
 .btn-secondary:hover {
-    background-color: #5a6268;
-    border-color: #545b62;
+    background: var(--md-primary);
+    box-shadow: var(--md-shadow-2);
 }
 
 .btn-tertiary {
-    background-color: #f8f9fa;
-    color: #333;
-    border: 1px solid #ccc;
+    background: var(--md-border-color);
+    color: var(--md-text-high-emphasis);
 }
 
 .btn-tertiary:hover {
-    background-color: #e2e6ea;
-    border-color: #d6d8db;
+    background: #c5c5c5;
 }
 
 .btn-danger {
-    background-color: #dc3545;
+    background: var(--md-error);
     color: #fff;
-    border: 1px solid #dc3545;
 }
 .btn-danger:hover {
-    background-color: #c82333;
-    border-color: #bd2130;
-}
-
-.form-actions-inline {
-    text-align: right; /* To align the "Add Another Goal" button */
-    margin-top: 15px;
+    background: #d32f2f;
 }
 
 .form-actions-bottom {
     display: flex;
     justify-content: flex-end;
-    gap: 15px;
-    margin-top: 30px;
-    padding-top: 20px;
-    border-top: 1px solid #eee;
+    gap: 1.2rem;
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--md-border-color);
 }
 
-/* --- Sprint List Cards --- */
+.form-actions-inline {
+    display: flex;
+    gap: 1.2rem;
+    margin-top: 1rem;
+}
+
+/* --- Create Sprint Goals Input List --- */
+.goal-input-container {
+    margin-top: 1rem;
+}
+
+.goal-headers {
+    display: flex;
+    gap: 1rem;
+    font-weight: 600;
+    margin-bottom: 0.8rem;
+    color: var(--md-text-medium-emphasis);
+    font-size: 0.9rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--md-border-color);
+}
+
+.goal-header-description { flex: 2; }
+.goal-header-type { flex: 1; }
+.goal-header-actions { flex: 0.5; text-align: right; }
+
+.goals-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+}
+
+.goal-item {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    background: #fafafa;
+    padding: 0.8rem 1.5rem;
+    border-radius: 4px;
+    border: 1px solid var(--md-border-color);
+    box-shadow: 0 1px 1px rgba(0,0,0,0.05);
+}
+
+/* --- Manage Goals Page Styles --- */
+.sprint-details-header {
+    background: var(--md-background);
+    padding: 1.2rem 1.5rem;
+    border-radius: 8px;
+    margin-bottom: 2rem;
+    box-shadow: inset 0 0 0 1px var(--md-border-color);
+}
+
+.sprint-details-dates {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    margin-bottom: 1rem;
+    font-size: 0.95rem;
+    color: var(--md-text-medium-emphasis);
+}
+
+.sprint-details-dates strong {
+    color: var(--md-text-high-emphasis);
+}
+
+.sprint-details-dates .fas {
+    color: var(--md-primary);
+    font-size: 0.9rem;
+}
+
+.sprint-details-progress {
+    margin-top: 1rem;
+}
+
+/* Individual Goal Card in Manage Goals */
+.goals-cards-container {
+    display: grid;
+    /* --- KEY FIX --- */
+    grid-template-columns: 1fr; /* Forces 1 card per line, taking full width */
+    gap: 1.5rem;
+    margin-top: 1.5rem;
+}
+
+.goal-card {
+    background: var(--md-surface);
+    border-radius: 8px;
+    box-shadow: var(--md-shadow-1);
+    padding: 1rem 1.2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+    transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    border-left: 5px solid var(--md-primary-light);
+}
+
+.goal-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--md-shadow-2);
+}
+
+.goal-card-content {
+    display: flex;
+    align-items: flex-start;
+    /* --- KEY FIX: Adjusted flex distribution --- */
+    gap: 1.5rem; /* Increased gap slightly for more separation */
+    width: 100%;
+}
+
+.goal-card-details {
+    flex: 1; /* Allows this section to grow and take available space */
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    min-width: 0; /* Ensures content inside can shrink when space is tight */
+}
+
+/* Styles for goal description (now textarea) */
+.goal-card-description-input {
+    min-height: 60px;
+    resize: vertical;
+    line-height: 1.4;
+    padding: 0.6rem 0.8rem;
+    border: 1px solid var(--md-border-color);
+    border-radius: 4px;
+    font-size: 0.95rem;
+    background: var(--md-background);
+    box-sizing: border-box;
+    color: var(--md-text-high-emphasis);
+    transition: border-color 0.2s, box-shadow 0.2s, background-color 0.2s;
+}
+.goal-card-description-input:focus {
+    outline: none;
+    border-color: var(--md-primary);
+    box-shadow: 0 0 0 2px var(--md-primary-light);
+    background: var(--md-surface);
+}
+
+/* Styling for goal type select */
+.goal-card-type-select {
+    width: 100%;
+    padding: 0.6rem 0.8rem;
+    border: 1px solid var(--md-border-color);
+    border-radius: 4px;
+    font-size: 0.9rem;
+    background: var(--md-background);
+    box-sizing: border-box;
+    color: var(--md-text-high-emphasis);
+    transition: border-color 0.2s, box-shadow 0.2s, background-color 0.2s;
+}
+.goal-card-type-select:focus {
+    outline: none;
+    border-color: var(--md-primary);
+    box-shadow: 0 0 0 2px var(--md-primary-light);
+    background: var(--md-surface);
+}
+
+/* Styling for goal status select */
+.goal-card-status-select {
+    flex-shrink: 0; /* Prevents status dropdown from shrinking too much */
+    /* --- KEY FIX: Removed fixed min-width, let content dictate or set a relative width --- */
+    width: 120px; /* Give it a fixed width so details can grow without being pushed */
+    padding: 0.6rem 0.8rem;
+    border: 1px solid var(--md-border-color);
+    border-radius: 4px;
+    font-size: 0.95rem;
+    background: var(--md-background);
+    color: var(--md-text-high-emphasis);
+    transition: border-color 0.2s, box-shadow 0.2s, background-color 0.2s;
+    text-align: center;
+}
+.goal-card-status-select:focus {
+    outline: none;
+    border-color: var(--md-primary);
+    box-shadow: 0 0 0 2px var(--md-primary-light);
+    background: var(--md-surface);
+}
+
+/* Status colors within Goal Cards in Manage Goals */
+.goal-card-status-select.status-done {
+    color: var(--md-success);
+    font-weight: 600;
+}
+.goal-card-status-select.status-not-done {
+    color: var(--md-error);
+    font-weight: 600;
+}
+
+.goal-card-delete-btn {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: none;
+    border: none;
+    color: var(--md-text-disabled);
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: color 0.2s, transform 0.2s;
+    padding: 5px;
+    border-radius: 50%;
+}
+.goal-card-delete-btn:hover {
+    color: var(--md-error);
+    transform: scale(1.1);
+}
+.goal-card-delete-btn:active {
+    transform: scale(0.9);
+}
+
+/* --- Sprint List Sections --- */
+#currentUpcomingSprintsSection {
+    background: var(--section-bg-white);
+}
+
+#pastSprintsSection {
+    background: var(--section-bg-white);
+}
+
+/* --- Sprint Cards List --- */
 .sprint-cards-container {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-    gap: 25px;
-    margin-top: 20px;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1rem;
+    margin-top: 1.5rem;
 }
 
 .sprint-card {
-    background-color: #fff;
-    border-radius: 12px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
-    padding: 20px 25px;
+    padding: 0.8rem 1rem;
+    border-radius: 8px;
+    box-shadow: var(--md-shadow-1);
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
+
+    border-left: 6px solid var(--card-current-border);
+    background: var(--card-current-bg);
+}
+
+.sprint-card.sprint-card--past {
+    border-left-color: var(--card-past-border);
+    background: var(--card-past-bg);
 }
 
 .sprint-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+    transform: translateY(-3px);
+    box-shadow: var(--md-shadow-2);
 }
 
 .sprint-card-header {
-    margin-bottom: 15px;
+    margin-bottom: 0.6rem;
+    padding-bottom: 0.6rem;
+    border-bottom: 1px solid var(--md-border-color);
 }
 
+/* Card Titles (POD Name) */
 .sprint-card-title {
-    font-family: 'Poppins', sans-serif;
-    font-size: 1.5em;
-    color: #0056b3;
-    margin-top: 0;
-    margin-bottom: 10px;
+    font-size: 1.15rem;
+    font-weight: 700;
+    line-height: 1.2;
+    margin: 0;
+    color: var(--card-current-title-color);
+}
+
+.sprint-card.sprint-card--past .sprint-card-title {
+    color: var(--card-past-title-color);
+}
+
+.sprint-card-dates {
+    font-size: 0.8rem;
+    color: var(--md-text-medium-emphasis);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 0.3rem;
 }
 
 .sprint-card-dates span {
-    display: block;
-    font-size: 0.9em;
-    color: #666;
-    margin-bottom: 5px;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
 }
-.sprint-card-dates i {
-    color: #007bff;
-    margin-right: 5px;
+
+.sprint-card-dates .fas {
+    color: var(--md-primary);
+    font-size: 0.7rem;
 }
 
 .progress-section {
-    margin-bottom: 20px;
+    margin-top: 0.6rem;
+    margin-bottom: 0.8rem;
+}
+
+.progress-bar-container {
+    width: 100%;
+    height: 9px;
+    background: var(--md-border-color);
+    border-radius: 4.5px;
+    overflow: hidden;
+    margin-bottom: 0.3rem;
+}
+
+.progress-bar-fill {
+    height: 100%;
+    background: var(--card-current-progress-fill);
+    border-radius: 4.5px;
+    transition: width 0.4s ease-out;
+}
+
+.sprint-card.sprint-card--past .progress-bar-fill {
+    background: var(--card-past-progress-fill);
+}
+
+.progress-text {
+    font-size: 0.8rem;
+    color: var(--md-text-high-emphasis);
+    font-weight: 500;
+    margin: 0;
 }
 
 .sprint-card-actions {
-    text-align: right;
-    margin-top: 15px;
-    padding-top: 15px;
-    border-top: 1px solid #eee;
+    margin-top: 1rem;
+    padding-top: 0.8rem;
+    border-top: 1px solid var(--md-border-color);
 }
 
-/* Sprint card status indicators */
-.sprint-card.completed {
-    border: 2px solid #28a745;
-    background-color: #e6ffe6; /* Light green background */
+.sprint-card-actions .btn {
+    width: 100%;
+    justify-content: center;
+    padding: 0.6rem 0.8rem;
+    font-size: 0.9rem;
+    background: var(--card-current-action-btn);
+    color: var(--md-primary-text);
 }
-.sprint-card.overdue {
-    border: 2px solid #dc3545;
-    background-color: #ffe6e6; /* Light red background */
-}
-
-/* --- Toast / Snackbar Styling --- */
-#toast-container {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    z-index: 2000;
-    display: flex;
-    flex-direction: column-reverse; /* New toasts appear at the bottom */
-    gap: 10px;
+.sprint-card-actions .btn:hover {
+    background: var(--card-current-action-btn-hover);
 }
 
-.toast {
-    background-color: #333;
-    color: #fff;
-    padding: 12px 20px;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    min-width: 250px;
-    opacity: 0;
-    transform: translateY(20px);
-    transition: opacity 0.3s ease, transform 0.3s ease;
+.sprint-card.sprint-card--past .sprint-card-actions .btn {
+    background: var(--card-past-action-btn);
+}
+.sprint-card.sprint-card--past .sprint-card-actions .btn:hover {
+    background: var(--card-past-action-btn-hover);
 }
 
-.toast.show {
-    opacity: 1;
-    transform: translateY(0);
-}
-
-.toast i {
-    font-size: 1.2em;
-}
-
-.toast.success { background-color: #28a745; }
-.toast.error { background-color: #dc3545; }
-.toast.info { background-color: #17a2b8; }
-.toast.default { background-color: #333; }
-
-/* --- Empty State Messages --- */
+/* --- Utility & State Styles --- */
 .empty-state {
+    color: var(--md-text-medium-emphasis);
+    font-size: 1.1rem;
     text-align: center;
-    color: #777;
-    padding: 40px 20px;
-    font-style: italic;
-    background-color: #fefefe;
-    border: 1px dashed #e0e0e0;
+    margin: 3rem 0;
+    padding: 1.5rem;
+    border: 1px dashed var(--md-border-color);
     border-radius: 8px;
-    margin-top: 20px;
-}
-.empty-state i {
-    display: block;
-    font-size: 2.5em;
-    margin-bottom: 15px;
-    color: #bbb;
-}
-.empty-state.error-message {
-    color: #dc3545;
-    border-color: #f5c6cb;
-    background-color: #f8d7da;
-}
-.empty-state.error-message i {
-    color: #dc3545;
+    background: var(--md-surface);
 }
 
-
-/* --- Transitions and Animations --- */
-.fade-in-up {
-    animation: fadeInUp 0.5s ease-out forwards;
+.empty-state .fas {
+    margin-right: 0.5rem;
+    color: var(--md-primary-light);
 }
 
+.error-message {
+    color: var(--md-error);
+    font-weight: 500;
+}
+
+/* --- Welcome Panel Specific Styles --- */
+.welcome-panel {
+    text-align: center;
+    padding: 3rem 2rem;
+    background: linear-gradient(135deg, var(--md-primary) 0%, var(--md-primary-light) 100%);
+    color: var(--md-primary-text);
+    box-shadow: var(--md-shadow-3);
+    margin-bottom: 3rem;
+}
+
+.welcome-panel .panel-title {
+    color: var(--md-primary-text);
+    justify-content: center;
+    font-size: 2rem;
+    margin-bottom: 1.5rem;
+}
+
+.welcome-panel .panel-title .fas {
+    color: var(--md-primary-light);
+}
+
+.welcome-message {
+    font-size: 1.15rem;
+    line-height: 1.7;
+    margin-bottom: 2.5rem;
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: auto;
+    opacity: 0.9;
+}
+
+.welcome-actions {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+}
+
+.welcome-actions .btn {
+    min-width: 180px;
+    box-shadow: var(--md-shadow-1);
+}
+
+.welcome-actions .btn-primary {
+    background: var(--md-secondary);
+    color: var(--md-secondary-text);
+}
+.welcome-actions .btn-primary:hover {
+    background: var(--md-secondary-dark);
+    box-shadow: var(--md-shadow-2);
+}
+
+.welcome-actions .btn-secondary {
+    background: rgba(255, 255, 255, 0.2);
+    color: var(--md-primary-text);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+.welcome-actions .btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+/* --- Animations --- */
 @keyframes fadeInUp {
     from {
         opacity: 0;
@@ -676,141 +776,245 @@ textarea {
     }
 }
 
+.fade-in-up {
+    animation: fadeInUp 0.6s ease-out forwards;
+}
 
-/* --- Footer Styling --- */
-footer {
+/* --- Toast / Snackbar Styles --- */
+#toast-container {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    z-index: 1000;
+    pointer-events: none;
+}
+
+.toast {
+    background-color: #323232;
+    color: #ffffff;
+    padding: 12px 24px;
+    border-radius: 4px;
+    box-shadow: var(--md-shadow-2);
+    font-size: 0.95rem;
+    min-width: 250px;
+    max-width: 400px;
     text-align: center;
-    padding: 20px;
-    margin-top: auto; /* Pushes footer to the bottom */
-    background-color: #333;
-    color: #fff;
-    font-size: 0.9em;
-    box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+    transform: translateY(20px);
+    pointer-events: auto;
+    display: flex;
+    align-items: center;
+    gap: 10px;
 }
 
-/* --- Responsive Design --- */
-@media (max-width: 992px) {
-    .content-container {
-        padding: 0 15px;
-    }
-    .panel-card {
-        padding: 25px;
-    }
-    .sprint-cards-container {
-        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-        gap: 20px;
-    }
+.toast.show {
+    opacity: 1;
+    transform: translateY(0);
 }
 
+.toast.success {
+    background-color: var(--md-success);
+}
+
+.toast.error {
+    background-color: var(--md-error);
+}
+
+.toast.info {
+    background-color: var(--md-info);
+}
+
+.toast .fas {
+    font-size: 1.2rem;
+}
+
+/* --- Media Queries for Responsiveness --- */
 @media (max-width: 768px) {
+    body {
+        padding-top: 0;
+    }
+
     .header-content {
         flex-direction: column;
-        gap: 15px;
         text-align: center;
-    }
-    .header-actions {
-        display: flex;
-        justify-content: center;
-        width: 100%;
+        gap: 1rem;
+        padding: 0 1rem;
     }
     .app-brand {
-        font-size: 1.5em;
+        margin-bottom: 0.5rem;
     }
-    .panel-card .panel-title, .form-section-title {
-        font-size: 1.5em;
+    .app-icon {
+        font-size: 1.3rem;
+    }
+    .app-title {
+        font-size: 1.2rem;
+    }
+    .header-actions {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    .btn-header {
+        font-size: 0.9rem;
+        padding: 0.4rem 0.8rem;
+    }
+
+    .main-wrapper {
+        padding: 0 1rem;
+        margin: 1.5rem auto;
+    }
+    .panel-card {
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+    }
+    .form-section-title, .panel-title {
+        font-size: 1.4rem;
+        margin-bottom: 1.2rem;
+        justify-content: center;
         text-align: center;
-        display: block;
-    }
-    .panel-card .panel-title i, .form-section-title i {
-        margin-right: 0;
-        margin-bottom: 10px;
-        display: block;
     }
     .form-row {
         flex-direction: column;
-        gap: 10px;
+        gap: 1.2rem;
+    }
+    .form-group {
+        margin-bottom: 1rem;
     }
 
-    /* Responsive adjustments for dynamic goal inputs (Create Sprint) */
-    .goal-fields-wrapper {
-        flex-direction: column; /* Stack description and type vertically on smaller screens */
-        gap: 10px;
+    .form-actions-bottom, .form-actions-inline, .welcome-actions {
+        flex-direction: column;
+        gap: 0.8rem;
     }
-    .form-group.goal-description-group,
-    .form-group.goal-type-group {
-        flex-basis: 100%; /* Take full width when stacked */
-        max-width: 100%;
-        min-width: unset;
+    .btn {
+        width: 100%;
+    }
+
+    .goal-headers {
+        display: none;
     }
     .goal-item {
-        flex-direction: column; /* Stack fields and remove button vertically */
-        align-items: stretch;
-        gap: 10px;
+        flex-wrap: wrap;
+        gap: 0.8rem;
+        padding: 0.8rem;
     }
-    .remove-goal {
-        align-self: flex-end; /* Keep button aligned right at the bottom */
-        width: auto;
+    .goal-item input, .goal-item select {
+        flex-basis: 100%;
+        margin-bottom: 0.5rem;
+    }
+    .goal-item .remove-goal {
+        width: 100%;
     }
 
-    /* Responsive adjustments for Manage Goals cards */
+    .goals-table { /* This class is no longer used for manage goals, but kept for create sprint form */
+        font-size: 0.85rem;
+    }
+    .goals-table th, .goals-table td {
+        padding: 0.8rem;
+        font-size: 0.9rem;
+    }
+    .goals-table td input, .goals-table td select {
+        font-size: 0.9rem;
+    }
+
+    .sprint-cards-container {
+        grid-template-columns: 1fr;
+        gap: 1.2rem;
+    }
+    .sprint-card {
+        padding: 1rem;
+        border-left-width: 5px;
+    }
+    .sprint-card-title {
+        font-size: 1.1rem;
+    }
+    .sprint-card-dates {
+        font-size: 0.8rem;
+    }
+    .progress-text {
+        font-size: 0.75rem;
+    }
+    .sprint-card-actions .btn {
+        font-size: 0.85rem;
+        padding: 0.5rem 0.7rem;
+    }
+
+    .welcome-panel {
+        padding: 2rem 1.5rem;
+        margin-bottom: 2rem;
+    }
+    .welcome-panel .panel-title {
+        font-size: 1.5rem;
+    }
+    .welcome-message {
+        font-size: 1rem;
+        margin-bottom: 1.5rem;
+    }
+
+    /* Toast adjustments for mobile */
+    #toast-container {
+        left: 10px;
+        right: 10px;
+        transform: translateX(0);
+        width: auto;
+    }
+    .toast {
+        min-width: unset;
+        max-width: unset;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    /* Manage Goals Page - Mobile Adjustments */
+    .sprint-details-header {
+        padding: 1rem;
+        margin-bottom: 1.5rem;
+    }
+    .sprint-details-dates {
+        flex-direction: column;
+        gap: 0.5rem;
+        margin-bottom: 0.8rem;
+    }
     .goal-card {
-        flex-direction: column; /* Stack card content and delete button */
-        align-items: stretch;
-        gap: 10px;
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 0.8rem;
     }
     .goal-card-content {
-        flex-direction: column; /* Stack details and status */
-        gap: 10px;
+        flex-direction: column;
+        align-items: flex-start;
+        width: 100%;
+        gap: 0.8rem;
     }
-    .goal-card-details {
-        flex-direction: column; /* Stack description and type */
-        gap: 10px;
-    }
-    .form-group.goal-card-description-group,
-    .form-group.goal-card-type-group,
-    .form-group.goal-card-status-group {
-        flex-basis: 100%; /* Take full width when stacked */
-        max-width: 100%;
+    .goal-card-status-select {
+        width: 100%;
         min-width: unset;
     }
     .goal-card-delete-btn {
-        align-self: flex-end; /* Align button to the right for better mobile tap target */
-        width: auto;
-    }
-
-    .sprint-details-header {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-    .sprint-details-dates span {
-        margin-right: 0;
-        margin-bottom: 5px;
-    }
-    .sprint-details-progress {
-        width: 100%;
-    }
-    .form-actions-bottom {
-        flex-direction: column;
-        gap: 10px;
-    }
-    .form-actions-bottom .btn {
-        width: 100%; /* Full width buttons */
+        position: static;
+        margin-top: 0.5rem;
+        align-self: flex-end;
     }
 }
 
 @media (max-width: 480px) {
-    .header-actions .btn {
-        padding: 8px 12px;
-        font-size: 0.85em;
+    .app-brand {
+        flex-direction: column;
+        gap: 0.2rem;
     }
-    .welcome-actions .btn {
-        padding: 10px 20px;
-        font-size: 0.9em;
+    .app-icon {
+        margin-bottom: -5px;
+    }
+    .app-title {
+        font-size: 1.1rem;
     }
     .panel-card {
-        padding: 20px;
+        padding: 1.2rem;
     }
-    .sprint-cards-container {
-        grid-template-columns: 1fr; /* Single column on very small screens */
+    .form-section-title, .panel-title {
+        font-size: 1.3rem;
     }
 }
