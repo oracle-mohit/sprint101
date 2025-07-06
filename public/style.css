@@ -1,58 +1,53 @@
-/* Material Design & Theme Variables - Updated for two-color blue palette */
+/* --- Material Design & Theme Variables --- */
 :root {
-    /* Primary Color: Vibrant Blue */
+    /* Primary Colors: Vibrant Blue */
     --md-primary: #2e65f0;
-    --md-primary-light: #6e92ff; /* Lighter shade for accents/hover */
-    --md-primary-dark: #0037bc; /* Darker shade for accents/hover */
-    --md-primary-text: #ffffff;
+    --md-primary-light: #6e92ff;
+    --md-primary-dark: #0037bc;
+    --md-primary-text: #ffffff; /* Text color on primary backgrounds */
 
-    /* Secondary Color: Darker Blue (for strong actions, active states) */
+    /* Secondary Colors: Darker Blue (for strong actions, active states) */
     --md-secondary: #1560bd;
-    --md-secondary-light: #508ee1; /* Lighter shade for accents/hover */
-    --md-secondary-dark: #00358c; /* Darker shade for accents/hover */
-    --md-secondary-text: #ffffff;
+    --md-secondary-light: #508ee1;
+    --md-secondary-dark: #00358c;
+    --md-secondary-text: #ffffff; /* Text color on secondary backgrounds */
 
     /* General UI Colors */
-    --md-background: #eceff1; /* Light grey background */
-    --md-surface: #ffffff; /* Card/panel background (default for forms, welcome) */
-    --md-border-color: #e0e0e0; /* Lighter border */
+    --md-background: #eceff1; /* Light grey background for body */
+    --md-surface: #ffffff; /* White background for cards, panels, forms */
+    --md-border-color: #e0e0e0; /* Lighter border color */
 
-    /* Text Colors */
-    --md-text-high-emphasis: rgba(0, 0, 0, 0.87);
-    --md-text-medium-emphasis: rgba(0, 0, 0, 0.60);
-    --md-text-disabled: rgba(0, 0, 0, 0.38);
-    --md-text-on-primary: #ffffff;
-    --md-text-on-secondary: #ffffff;
+    /* Text Colors for different emphasis levels */
+    --md-text-high-emphasis: rgba(0, 0, 0, 0.87); /* Black for main text */
+    --md-text-medium-emphasis: rgba(0, 0, 0, 0.60); /* Grey for secondary text */
+    --md-text-disabled: rgba(0, 0, 0, 0.38); /* Lighter grey for disabled text/elements */
 
-    /* Status Colors (remain standard for clarity in manage goals, but not on cards) */
-    --md-success: #66BB6A; /* Toned down Green */
-    --md-success-light-bg: #E8F5E9; /* Lightest Green */
-    --md-error: #EF5350; /* Toned down Red */
-    --md-error-light-bg: #FFEBEE; /* Lightest Red */
+    /* Status Colors (toned down, used where appropriate) */
+    --md-success: #66BB6A; /* Green for success */
+    --md-success-light-bg: #E8F5E9; /* Very light green for success backgrounds */
+    --md-error: #EF5350; /* Red for error */
+    --md-error-light-bg: #FFEBEE; /* Very light red for error backgrounds */
     --md-info: #2196F3; /* Standard Material Blue for info */
-    --md-warning: #FFC107; /* Amber */
+    --md-warning: #FFC107; /* Amber for warning */
 
-    /* --- UPDATED SECTION & CARD COLORS --- */
-    /* Section backgrounds are now white */
-    --section-current-bg: var(--md-surface); /* White */
-    --section-past-bg: var(--md-surface);     /* White */
+    /* Custom Section & Card Colors based on new logic */
+    --section-bg-white: var(--md-surface); /* White background for sections */
 
-    /* Card backgrounds now take the previous section background colors */
-    --card-current-bg: #E3F2FD; /* Very light blue for Current/Upcoming cards background */
-    --card-current-border: var(--md-primary); /* Primary blue for Current/Upcoming card border */
-    --card-current-title-color: var(--md-primary-light); /* Light blue for Current card titles */
-    --card-current-action-btn: var(--card-current-title-color); /* Action button matches title color */
-    --card-current-action-btn-hover: var(--md-primary-dark); /* Darker hover for current action button */
-    --card-current-progress-fill: var(--card-current-title-color); /* Achievement bar matches title color */
+    /* Current & Upcoming Sprint Card Colors */
+    --card-current-bg: #E3F2FD; /* Light blue background for current cards */
+    --card-current-border: var(--md-primary-light); /* Light blue border matches title */
+    --card-current-title-color: var(--md-primary-light); /* Light blue for current card titles */
+    --card-current-action-btn: var(--md-primary-light); /* Light blue for current action buttons */
+    --card-current-action-btn-hover: var(--md-primary-dark); /* Darker blue on hover */
+    --card-current-progress-fill: var(--md-primary-light); /* Light blue for current progress bars */
 
-    --card-past-bg: #F3E5F5;    /* Very light purple for Past cards background */
-    --card-past-title-color: #A06ECF; /* A distinct light purple for Past card titles */
-    --card-past-border: var(--card-past-title-color); /* Left border matches title color */
-    --card-past-action-btn: var(--card-past-title-color); /* Action button matches title color */
-    --card-past-action-btn-hover: #7B3F9A; /* Darker hover for past action button */
-    --card-past-progress-fill: var(--card-past-title-color); /* Achievement bar matches title color */
-    /* --- END UPDATED SECTION & CARD COLORS --- */
-
+    /* Past Sprint Card Colors */
+    --card-past-bg: #F3E5F5; /* Light purple background for past cards */
+    --card-past-border: #9C27B0; /* Darker purple for past card border */
+    --card-past-title-color: #A06ECF; /* Light purple for past card titles */
+    --card-past-action-btn: var(--card-past-title-color); /* Light purple for past action buttons */
+    --card-past-action-btn-hover: #7B3F9A; /* Darker purple on hover */
+    --card-past-progress-fill: var(--card-past-title-color); /* Light purple for past progress bars */
 
     /* Material Shadows (Elevation) */
     --md-shadow-0: none;
@@ -61,7 +56,7 @@
     --md-shadow-3: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
 }
 
-/* Global Reset & Base Styles */
+/* --- Global Reset & Base Styles --- */
 body {
     margin: 0;
     padding: 0;
@@ -76,10 +71,10 @@ body {
 h1, h2, h3, h4, h5, h6 {
     font-family: 'Poppins', sans-serif;
     color: var(--md-text-high-emphasis);
-    margin-top: 0;
+    margin: 0; /* Remove default margins */
 }
 
-/* Header */
+/* --- Header Section --- */
 .app-header {
     background: var(--md-primary);
     color: var(--md-primary-text);
@@ -111,7 +106,6 @@ h1, h2, h3, h4, h5, h6 {
     font-size: 1.5rem;
     font-weight: 700;
     letter-spacing: 0.5px;
-    color: var(--md-primary-text);
 }
 
 .header-actions {
@@ -119,7 +113,31 @@ h1, h2, h3, h4, h5, h6 {
     gap: 0.75rem;
 }
 
-/* Main Layout */
+.btn-header {
+    font-size: 0.95rem;
+    padding: 0.5rem 1.2rem;
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: var(--md-shadow-0); /* No shadow by default for header buttons */
+}
+
+.btn-header:hover {
+    background: rgba(255, 255, 255, 0.25);
+    transform: none; /* No lift for header buttons */
+    box-shadow: var(--md-shadow-0);
+}
+
+.btn-header.active {
+    background: var(--md-surface);
+    color: var(--md-primary);
+    box-shadow: var(--md-shadow-1);
+}
+
+.btn-header.active:hover {
+    background: #f0f0f0;
+}
+
+/* --- Main Layout & Card General Styles --- */
 .main-wrapper {
     max-width: 1000px;
     margin: 2rem auto;
@@ -127,7 +145,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .panel-card {
-    background: var(--md-surface);
+    background: var(--md-surface); /* Default for most white sections/cards */
     border-radius: 8px;
     box-shadow: var(--md-shadow-1);
     margin-bottom: 2.5rem;
@@ -140,37 +158,35 @@ h1, h2, h3, h4, h5, h6 {
     box-shadow: var(--md-shadow-2);
 }
 
+/* Section Titles (used for Welcome, and forms) */
 .form-section-title {
-    margin-top: 0;
-    margin-bottom: 1.8rem;
     font-size: 1.6rem;
     font-weight: 700;
     display: flex;
     align-items: center;
     gap: 0.8rem;
     color: var(--md-primary-dark);
+    margin: 0 0 1.8rem 0; /* Top, Right, Bottom, Left */
 }
 .form-section-title .fas {
     color: var(--md-primary);
 }
 
-
-/* --- SECTION HEADINGS --- */
+/* Main Panel Titles (used for Sprint Sections) */
 .panel-title {
-    margin-top: 0;
-    margin-bottom: 1.8rem;
     font-size: 1.6rem;
     font-weight: 700;
     display: flex;
     align-items: center;
     gap: 0.8rem;
-    color: var(--md-primary-dark);
+    margin: 0 0 1.8rem 0;
+    color: var(--md-primary-dark); /* Default is primary-dark (blue) */
 }
 .panel-title .fas {
     color: var(--md-primary);
 }
 
-/* Specific override for Current & Upcoming and Past Sprints section titles to be black */
+/* Override for Current & Upcoming and Past Sprints section titles to be black */
 #currentUpcomingSprintsSection .panel-title,
 #pastSprintsSection .panel-title {
     color: var(--md-text-high-emphasis);
@@ -179,9 +195,18 @@ h1, h2, h3, h4, h5, h6 {
 #pastSprintsSection .panel-title .fas {
     color: var(--md-text-medium-emphasis);
 }
-/* --- END SECTION HEADINGS --- */
 
+.form-section-subtitle {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--md-primary-dark);
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-bottom: 1rem;
+}
 
+/* --- Form Elements --- */
 .form-section {
     margin-bottom: 2.5rem;
 }
@@ -197,7 +222,7 @@ h1, h2, h3, h4, h5, h6 {
 
 .form-row .form-group {
     flex: 1;
-    margin-bottom: 0;
+    margin-bottom: 0; /* Reset margin for groups within a row */
 }
 
 label {
@@ -227,7 +252,7 @@ input[type="text"]:focus, input[type="date"]:focus, select:focus {
     background: var(--md-surface);
 }
 
-/* Buttons */
+/* --- Buttons --- */
 .btn {
     display: inline-flex;
     align-items: center;
@@ -291,58 +316,22 @@ input[type="text"]:focus, input[type="date"]:focus, select:focus {
     background: #d32f2f;
 }
 
-/* Header Buttons */
-.btn-header {
-    font-size: 0.95rem;
-    padding: 0.5rem 1.2rem;
-    background: rgba(255, 255, 255, 0.15);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    box-shadow: none;
-}
-
-.btn-header:hover {
-    background: rgba(255, 255, 255, 0.25);
-    transform: none;
-    box-shadow: none;
-}
-
-.btn-header.active {
-    background: var(--md-surface);
-    color: var(--md-primary);
-    box-shadow: var(--md-shadow-1);
-}
-
-.btn-header.active:hover {
-    background: #f0f0f0;
-}
-
-.form-actions-bottom, .form-actions-inline {
+.form-actions-bottom {
     display: flex;
+    justify-content: flex-end;
     gap: 1.2rem;
     margin-top: 2rem;
     padding-top: 1.5rem;
     border-top: 1px solid var(--md-border-color);
 }
 
-.form-actions-bottom {
-    justify-content: flex-end;
-}
-
 .form-actions-inline {
+    display: flex;
+    gap: 1.2rem;
     margin-top: 1rem;
 }
 
-.form-section-subtitle {
-    font-size: 1.2rem;
-    font-weight: 600;
-    color: var(--md-primary-dark);
-    margin-bottom: 1rem;
-    display: flex;
-    align-items: center;
-    gap: 0.6rem;
-}
-
-/* Goal Input & Table Styles */
+/* --- Create Sprint Goals Input --- */
 .goal-input-container {
     margin-top: 1rem;
 }
@@ -381,7 +370,7 @@ input[type="text"]:focus, input[type="date"]:focus, select:focus {
 
 .goal-item input, .goal-item select {
     flex: 1;
-    margin-top: 0;
+    margin: 0; /* Override default input margin */
     padding: 0.6rem 0.8rem;
     font-size: 0.95rem;
     background: var(--md-surface);
@@ -389,12 +378,13 @@ input[type="text"]:focus, input[type="date"]:focus, select:focus {
 
 .goal-item .goal-description { flex: 2; }
 .goal-item .goal-type { flex: 1; }
+
 .goal-item .remove-goal {
     padding: 0.6rem 0.8rem;
     font-size: 0.95rem;
 }
 
-/* Manage Goals Page - Sprint Details Header */
+/* --- Manage Goals Page Styles --- */
 .sprint-details-header {
     background: var(--md-background);
     padding: 1.2rem 1.5rem;
@@ -424,7 +414,6 @@ input[type="text"]:focus, input[type="date"]:focus, select:focus {
 .sprint-details-progress {
     margin-top: 1rem;
 }
-
 
 /* Manage Goals Page - Individual Goal Card */
 .goals-cards-container {
@@ -490,7 +479,6 @@ input[type="text"]:focus, input[type="date"]:focus, select:focus {
     border-color: #eee;
 }
 
-
 .goal-card-type-select {
     width: 100%;
     padding: 0.6rem 0.8rem;
@@ -514,7 +502,6 @@ input[type="text"]:focus, input[type="date"]:focus, select:focus {
     cursor: not-allowed;
     border-color: #eee;
 }
-
 
 .goal-card-status-select {
     flex-shrink: 0;
@@ -571,19 +558,16 @@ input[type="text"]:focus, input[type="date"]:focus, select:focus {
     transform: scale(0.9);
 }
 
-
-/* --- SECTION BACKGROUNDS --- */
+/* --- Sprint List Sections --- */
 #currentUpcomingSprintsSection {
-    background: var(--section-current-bg);
+    background: var(--section-bg-white); /* White background for section */
 }
 
 #pastSprintsSection {
-    background: var(--section-past-bg);
+    background: var(--section-bg-white); /* White background for section */
 }
-/* --- END SECTION BACKGROUNDS --- */
 
-
-/* Sprint Cards */
+/* --- Sprint Cards List --- */
 .sprint-cards-container {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
@@ -601,14 +585,14 @@ input[type="text"]:focus, input[type="date"]:focus, select:focus {
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     overflow: hidden;
 
-    /* Base colors for CURRENT & UPCOMING sprint cards */
-    border-left: 6px solid var(--card-current-border); /* NOW MATCHES POD NAME COLOR */
+    /* Default (Current & Upcoming) Sprint Card Colors */
+    border-left: 6px solid var(--card-current-border);
     background: var(--card-current-bg);
 }
 
 /* Past Sprint Card Specific Styles */
 .sprint-card.sprint-card--past {
-    border-left-color: var(--card-past-border); /* NOW MATCHES POD NAME COLOR */
+    border-left-color: var(--card-past-border);
     background: var(--card-past-bg);
 }
 
@@ -623,20 +607,18 @@ input[type="text"]:focus, input[type="date"]:focus, select:focus {
     border-bottom: 1px solid var(--md-border-color);
 }
 
-/* --- CARD TITLES (POD NAME) --- */
+/* Card Titles (POD Name) */
 .sprint-card-title {
     font-size: 1.15rem;
-    margin: 0;
     font-weight: 700;
-    color: var(--card-current-title-color);
     line-height: 1.2;
+    margin: 0; /* Ensure no default margin */
+    color: var(--card-current-title-color); /* Light blue for Current card titles */
 }
 
 .sprint-card.sprint-card--past .sprint-card-title {
-    color: var(--card-past-title-color);
+    color: var(--card-past-title-color); /* Light purple for Past card titles */
 }
-/* --- END CARD TITLES --- */
-
 
 .sprint-card-dates {
     font-size: 0.8rem;
@@ -654,10 +636,9 @@ input[type="text"]:focus, input[type="date"]:focus, select:focus {
 }
 
 .sprint-card-dates .fas {
-    color: var(--md-primary); /* Icons will follow the card's main theme color */
+    color: var(--md-primary);
     font-size: 0.7rem;
 }
-
 
 .progress-section {
     margin-top: 0.6rem;
@@ -666,33 +647,29 @@ input[type="text"]:focus, input[type="date"]:focus, select:focus {
 
 .progress-bar-container {
     width: 100%;
-    /* Increased height by 50% from 6px to 9px */
-    height: 9px;
+    height: 9px; /* Increased height by 50% from 6px */
     background: var(--md-border-color);
-    border-radius: 4.5px; /* Adjust border-radius to match new height */
+    border-radius: 4.5px; /* Adjusted border-radius to match new height */
     overflow: hidden;
     margin-bottom: 0.3rem;
 }
 
-/* --- PROGRESS BAR FILL --- */
 .progress-bar-fill {
     height: 100%;
     background: var(--card-current-progress-fill); /* Matches Current card title/border color */
-    border-radius: 4.5px; /* Adjust border-radius to match new height */
+    border-radius: 4.5px;
     transition: width 0.4s ease-out;
 }
 
 .sprint-card.sprint-card--past .progress-bar-fill {
     background: var(--card-past-progress-fill); /* Matches Past card title/border color */
 }
-/* --- END PROGRESS BAR FILL --- */
-
 
 .progress-text {
     font-size: 0.8rem;
     color: var(--md-text-high-emphasis);
-    margin: 0;
     font-weight: 500;
+    margin: 0; /* Ensure no default margin */
 }
 
 .sprint-card-actions {
@@ -701,29 +678,26 @@ input[type="text"]:focus, input[type="date"]:focus, select:focus {
     border-top: 1px solid var(--md-border-color);
 }
 
-/* --- SPRINT CARD ACTION BUTTONS --- */
 .sprint-card-actions .btn {
     width: 100%;
     justify-content: center;
     padding: 0.6rem 0.8rem;
     font-size: 0.9rem;
-    background: var(--card-current-action-btn); /* Matches Current card title/border color */
+    background: var(--card-current-action-btn); /* Matches Current card theme color */
     color: var(--md-primary-text);
 }
 .sprint-card-actions .btn:hover {
-    background: var(--card-current-action-btn-hover); /* Darker hover for Current */
+    background: var(--card-current-action-btn-hover);
 }
 
 .sprint-card.sprint-card--past .sprint-card-actions .btn {
-    background: var(--card-past-action-btn); /* Matches Past card title/border color */
+    background: var(--card-past-action-btn); /* Matches Past card theme color */
 }
 .sprint-card.sprint-card--past .sprint-card-actions .btn:hover {
-    background: var(--card-past-action-btn-hover); /* Darker hover for Past */
+    background: var(--card-past-action-btn-hover);
 }
-/* --- END SPRINT CARD ACTION BUTTONS --- */
 
-
-/* Empty State & Errors */
+/* --- Utility & State Styles --- */
 .empty-state {
     color: var(--md-text-medium-emphasis);
     font-size: 1.1rem;
@@ -745,7 +719,7 @@ input[type="text"]:focus, input[type="date"]:focus, select:focus {
     font-weight: 500;
 }
 
-/* Welcome Panel Specific Styles */
+/* --- Welcome Panel Specific Styles --- */
 .welcome-panel {
     text-align: center;
     padding: 3rem 2rem;
@@ -805,7 +779,7 @@ input[type="text"]:focus, input[type="date"]:focus, select:focus {
     background: rgba(255, 255, 255, 0.3);
 }
 
-/* Animations */
+/* --- Animations --- */
 @keyframes fadeInUp {
     from {
         opacity: 0;
@@ -874,8 +848,7 @@ input[type="text"]:focus, input[type="date"]:focus, select:focus {
     font-size: 1.2rem;
 }
 
-
-/* Media Queries for Responsiveness */
+/* --- Media Queries for Responsiveness --- */
 @media (max-width: 768px) {
     body {
         padding-top: 0;
@@ -951,6 +924,9 @@ input[type="text"]:focus, input[type="date"]:focus, select:focus {
         width: 100%;
     }
 
+    .goals-table { /* This class is no longer used for manage goals, but kept for create sprint form */
+        font-size: 0.85rem;
+    }
     .goals-table th, .goals-table td {
         padding: 0.8rem;
         font-size: 0.9rem;
@@ -1056,9 +1032,5 @@ input[type="text"]:focus, input[type="date"]:focus, select:focus {
     }
     .form-section-title, .panel-title {
         font-size: 1.3rem;
-    }
-
-    .goals-table {
-        font-size: 0.85rem;
     }
 }
