@@ -1,1076 +1,455 @@
-/* --- Material Design & Theme Variables --- */
+/* Basic Colors */
 :root {
-    /* Primary Colors: Vibrant Blue */
-    --md-primary: #2e65f0;
-    --md-primary-light: #6e92ff;
-    --md-primary-dark: #0037bc;
-    --md-primary-text: #ffffff; /* Text color on primary backgrounds */
-
-    /* Secondary Colors: Darker Blue (for strong actions, active states) */
-    --md-secondary: #1560bd;
-    --md-secondary-light: #508ee1;
-    --md-secondary-dark: #00358c;
-    --md-secondary-text: #ffffff; /* Text color on secondary backgrounds */
-
-    /* General UI Colors */
-    --md-background: #eceff1; /* Light grey background for body */
-    --md-surface: #ffffff; /* White background for cards, panels, forms */
-    --md-border-color: #e0e0e0; /* Lighter border color */
-
-    /* Text Colors for different emphasis levels */
-    --md-text-high-emphasis: rgba(0, 0, 0, 0.87); /* Black for main text */
-    --md-text-medium-emphasis: rgba(0, 0, 0, 0.60); /* Grey for secondary text */
-    --md-text-disabled: rgba(0, 0, 0, 0.38); /* Lighter grey for disabled text/elements */
-
-    /* Status Colors (toned down, used where appropriate) */
-    --md-success: #66BB6A; /* Green for success */
-    --md-success-light-bg: #E8F5E9; /* Very light green for success backgrounds */
-    --md-error: #EF5350; /* Red for error */
-    --md-error-light-bg: #FFEBEE; /* Very light red for error backgrounds */
-    --md-info: #2196F3; /* Standard Material Blue for info */
-    --md-warning: #FFC107; /* Amber for warning */
-
-    /* Custom Section & Card Colors based on new logic */
-    --section-bg-white: var(--md-surface); /* White background for sections */
-
-    /* Current & Upcoming Sprint Card Colors */
-    --card-current-bg: #E3F2FD; /* Light blue background for current cards */
-    --card-current-border: var(--md-primary-light); /* Light blue border matches title */
-    --card-current-title-color: var(--md-primary-light); /* Light blue for current card titles */
-    --card-current-action-btn: var(--md-primary-light); /* Light blue for current action buttons */
-    --card-current-action-btn-hover: var(--md-primary-dark); /* Darker blue on hover */
-    --card-current-progress-fill: var(--md-primary-light); /* Light blue for current progress bars */
-
-    /* Past Sprint Card Colors */
-    --card-past-bg: #F3E5F5; /* Light purple background for past cards */
-    --card-past-border: #9C27B0; /* Darker purple for past card border */
-    --card-past-title-color: #A06ECF; /* Light purple for past card titles */
-    --card-past-action-btn: var(--card-past-title-color); /* Light purple for past action buttons */
-    --card-past-action-btn-hover: #7B3F9A; /* Darker purple on hover */
-    --card-past-progress-fill: var(--card-past-title-color); /* Light purple for past progress bars */
-
-    /* Material Shadows (Elevation) */
-    --md-shadow-0: none;
-    --md-shadow-1: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
-    --md-shadow-2: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
-    --md-shadow-3: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
-
-    /* --- Consistent Font Families --- */
-    --font-heading: 'Poppins', sans-serif;
-    --font-body: 'Inter', Arial, sans-serif;
+    --primary-color: #007bff;
+    --secondary-color: #6c757d;
+    --accent-color: #28a745; /* Green for success */
+    --danger-color: #dc3545; /* Red for error */
+    --background-color: #f8f9fa;
+    --surface-color: #ffffff;
+    --border-color: #dee2e6;
+    --text-color: #343a40;
 }
 
-/* --- Global Reset & Base Styles --- */
 body {
+    font-family: sans-serif;
     margin: 0;
     padding: 0;
-    font-family: var(--font-body); /* Use body font for general text */
-    background: var(--md-background);
-    color: var(--md-text-high-emphasis);
+    background: var(--background-color);
+    color: var(--text-color);
     line-height: 1.6;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    min-height: 100vh; /* Ensure body takes full viewport height */
-    display: flex;
-    flex-direction: column; /* For sticky footer */
 }
 
-h1, h2, h3, h4, h5, h6 {
-    font-family: var(--font-heading); /* Use heading font for all headings */
-    color: var(--md-text-high-emphasis);
-    margin: 0;
+h1, h2, h3 {
+    color: var(--text-color);
+    margin-top: 0;
+    margin-bottom: 1rem;
 }
 
-/* Ensure font consistency for specific elements that might override */
-p, span, div, a, li {
-    font-family: var(--font-body);
-}
-
-/* --- Header Section --- */
+/* Header */
 .app-header {
-    background: var(--md-primary);
-    color: var(--md-primary-text);
+    background: var(--primary-color);
+    color: #fff;
     padding: 1rem 0;
-    box-shadow: var(--md-shadow-2);
-    position: sticky; /* Keep header visible on scroll */
-    top: 0;
-    z-index: 1000;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 .header-content {
-    max-width: 1200px; /* Increased max-width for full-screen feel */
+    max-width: 960px;
     margin: 0 auto;
     display: flex;
-    align-items: center;
     justify-content: space-between;
-    padding: 0 1.5rem;
-}
-
-.app-brand {
-    display: flex;
     align-items: center;
-    gap: 0.75rem;
-}
-
-.app-icon {
-    font-size: 1.8rem;
-    color: var(--md-primary-light);
+    padding: 0 1rem;
 }
 
 .app-title {
     font-size: 1.5rem;
-    font-weight: 700;
-    letter-spacing: 0.5px;
-    font-family: var(--font-heading); /* Ensure app title uses heading font */
+    font-weight: bold;
 }
 
-.header-actions {
-    display: flex;
-    gap: 0.75rem;
+.header-actions .btn {
+    background: none;
+    border: 1px solid rgba(255,255,255,0.5);
+    color: #fff;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background-color 0.2s, border-color 0.2s;
 }
 
-.btn-header {
-    font-size: 0.95rem;
-    padding: 0.5rem 1.2rem;
-    background: rgba(255, 255, 255, 0.15);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    box-shadow: var(--md-shadow-0);
-    font-family: var(--font-body); /* Header buttons use body font */
+.header-actions .btn:hover {
+    background-color: rgba(255,255,255,0.2);
 }
 
-.btn-header:hover {
-    background: rgba(255, 255, 255, 0.25);
-    transform: none;
-    box-shadow: var(--md-shadow-0);
+.header-actions .btn.active {
+    background-color: #fff;
+    color: var(--primary-color);
+    border-color: #fff;
 }
 
-.btn-header.active {
-    background: var(--md-surface);
-    color: var(--md-primary);
-    box-shadow: var(--md-shadow-1);
-}
-
-.btn-header.active:hover {
-    background: #f0f0f0;
-}
-
-/* --- Main Layout & Card General Styles --- */
+/* Main Layout */
 .main-wrapper {
-    flex-grow: 1; /* Allows main content to take available vertical space */
-    width: 100%; /* Take full width */
     padding: 2rem 0;
 }
 
 .content-container {
-    max-width: 1200px; /* Max width for content within the full screen */
+    max-width: 960px;
     margin: 0 auto;
-    padding: 0 1.5rem;
+    padding: 0 1rem;
 }
 
-.panel-card {
-    background: var(--md-surface);
+.section {
+    background: var(--surface-color);
     border-radius: 8px;
-    box-shadow: var(--md-shadow-1);
-    margin-bottom: 2.5rem;
-    padding: 2.5rem;
-    transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    margin-bottom: 2rem;
+    padding: 2rem;
 }
 
-.panel-card:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--md-shadow-2);
-}
-
-.form-section-title {
-    font-size: 1.6rem;
-    font-weight: 700;
-    display: flex;
-    align-items: center;
-    gap: 0.8rem;
-    color: var(--md-primary-dark);
-    margin: 0 0 1.8rem 0;
-    font-family: var(--font-heading); /* Form titles use heading font */
-}
-.form-section-title .fas {
-    color: var(--md-primary);
-}
-
-.panel-title {
-    font-size: 1.6rem;
-    font-weight: 700;
-    display: flex;
-    align-items: center;
-    gap: 0.8rem;
-    margin: 0 0 1.8rem 0;
-    color: var(--md-primary-dark);
-    font-family: var(--font-heading); /* Panel titles use heading font */
-}
-.panel-title .fas {
-    color: var(--md-primary);
-}
-
-/* Specific panel title colors for sprint lists */
-#currentUpcomingSprintsSection .panel-title,
-#pastSprintsSection .panel-title {
-    color: var(--md-text-high-emphasis);
-}
-#currentUpcomingSprintsSection .panel-title .fas,
-#pastSprintsSection .panel-title .fas {
-    color: var(--md-text-medium-emphasis);
-}
-
-.form-section-subtitle {
-    font-size: 1.2rem;
-    font-weight: 600;
-    color: var(--md-primary-dark);
-    display: flex;
-    align-items: center;
-    gap: 0.6rem;
-    margin-bottom: 1rem;
-    font-family: var(--font-heading); /* Subtitles use heading font */
-}
-
-/* --- Form Elements (General) --- */
-.form-section {
-    margin-bottom: 2.5rem;
-}
-
+/* Forms */
 .form-group {
-    margin-bottom: 1.5rem;
+    margin-bottom: 1rem;
 }
 
 .form-row {
     display: flex;
-    gap: 2rem;
+    gap: 1rem;
 }
 
 .form-row .form-group {
     flex: 1;
-    margin-bottom: 0;
 }
 
 label {
     display: block;
     margin-bottom: 0.5rem;
-    font-weight: 600;
-    color: var(--md-text-medium-emphasis);
-    font-size: 0.95rem;
-    font-family: var(--font-body); /* Labels use body font */
+    font-weight: bold;
 }
 
 input[type="text"],
 input[type="date"],
-select, /* Apply to all selects, then override disabled state */
-textarea { /* Apply to all textareas, then override readonly state */
+select,
+textarea {
     width: 100%;
-    padding: 0.8rem 1rem;
-    border: 1px solid var(--md-border-color);
+    padding: 0.5rem;
+    border: 1px solid var(--border-color);
     border-radius: 4px;
     font-size: 1rem;
-    background: var(--md-background);
     box-sizing: border-box;
-    color: var(--md-text-high-emphasis);
-    transition: border-color 0.2s, box-shadow 0.2s, background-color 0.2s;
-    font-family: var(--font-body); /* Consistent font for inputs */
 }
 
-/* Placeholder text consistency */
-input::placeholder,
-textarea::placeholder {
-    font-family: var(--font-body);
-    color: var(--md-text-disabled); /* Lighter color for placeholder */
-    opacity: 1; /* Firefox default opacity is lower */
-}
-
-input[type="text"]:focus,
-input[type="date"]:focus,
-select:not([disabled]):focus, /* Focus only on editable selects */
-textarea:not([readonly]):focus { /* Focus only on editable textareas */
-    outline: none;
-    border-color: var(--md-primary);
-    box-shadow: 0 0 0 2px var(--md-primary-light);
-    background: var(--md-surface);
-}
-
-/* Styles for read-only/disabled input fields - make them look like plain text */
 input[readonly],
 textarea[readonly],
 select[disabled] {
-    background: transparent; /* Make background transparent */
-    border-color: transparent; /* Remove the border */
-    box-shadow: none; /* Ensure no box shadow */
-    cursor: default; /* Keep default cursor */
-    color: var(--md-text-high-emphasis); /* Use high emphasis color for readability */
-    padding-left: 0;   /* Remove left padding to make it look like text */
-    padding-right: 0;  /* Remove right padding */
-    outline: none; /* Remove outline on focus */
+    background: #e9ecef; /* Light grey for disabled/readonly */
+    cursor: default;
 }
 
-/* Specific adjustments for disabled select to look like text/tag */
-select[disabled] {
-    -webkit-appearance: none; /* Remove default select arrow */
-    -moz-appearance: none;
-    appearance: none;
-    text-align: left;
+textarea {
+    min-height: 80px;
+    resize: vertical;
 }
 
-
-/* Ensure textarea keeps its min-height but looks like text */
-textarea[readonly] {
-    min-height: 60px; /* Keep defined min-height */
-    resize: none; /* Disable resizing for read-only textareas */
-    overflow: hidden; /* Hide scrollbar if content exceeds min-height */
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-top: 1.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border-color);
 }
 
-
-/* --- Buttons (General) --- */
+/* Buttons */
 .btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.75rem;
     padding: 0.75rem 1.5rem;
     border: none;
     border-radius: 4px;
-    font-size: 1.05rem;
-    font-weight: 600;
+    font-size: 1rem;
+    font-weight: bold;
     cursor: pointer;
-    transition: background 0.2s ease-out, transform 0.1s ease-out, box-shadow 0.2s ease-out;
-    box-shadow: var(--md-shadow-0);
-    font-family: var(--font-body); /* Consistent font for CTAs */
-}
-
-.btn:hover {
-    transform: translateY(-1px);
-    box-shadow: var(--md-shadow-1);
-}
-
-.btn:active {
-    transform: translateY(0);
-    box-shadow: var(--md-shadow-0);
+    transition: background-color 0.2s, opacity 0.2s;
 }
 
 .btn-primary {
-    background: var(--md-secondary);
-    color: var(--md-secondary-text);
-    box-shadow: var(--md-shadow-1);
+    background: var(--primary-color);
+    color: #fff;
 }
 
 .btn-primary:hover {
-    background: var(--md-secondary-dark);
-    box-shadow: var(--md-shadow-2);
-}
-
-.btn-secondary {
-    background: var(--md-primary-light);
-    color: var(--md-primary-text);
-    box-shadow: var(--md-shadow-1);
-}
-
-.btn-secondary:hover {
-    background: var(--md-primary);
-    box-shadow: var(--md-shadow-2);
-}
-
-.btn-tertiary {
-    background: var(--md-border-color);
-    color: var(--md-text-high-emphasis);
-}
-
-.btn-tertiary:hover {
-    background: #c5c5c5;
+    background: #0056b3;
 }
 
 .btn-danger {
-    background: var(--md-error);
+    background: var(--danger-color);
     color: #fff;
 }
 .btn-danger:hover {
-    background: #d32f2f;
+    background: #c82333;
 }
 
-.form-actions-bottom {
-    display: flex;
-    justify-content: flex-end;
-    gap: 1.2rem;
-    margin-top: 2rem;
-    padding-top: 1.5rem;
-    border-top: 1px solid var(--md-border-color);
-}
-
-.form-actions-inline {
-    display: flex;
-    gap: 1.2rem;
-    margin-top: 1rem;
-}
-
-/* --- Create Sprint Goals Input List (Consistency with Manage Goals) --- */
-.goal-input-container {
-    margin-top: 1rem;
-}
-
-/* Remove .goal-headers as individual goal items will manage their own labels */
-.goal-headers {
-    display: none;
-}
-
+/* Goal List in Create Sprint */
 .goals-list {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem; /* Consistent with .manage-goals-list-container */
-}
-
-/* Consolidated styling for both Add Sprint and Manage Goals items */
-.goal-item,
-.manage-goal-item {
-    background: var(--md-surface);
-    border-radius: 8px;
-    box-shadow: var(--md-shadow-1);
-    padding: 1.5rem;
-    position: relative; /* For positioning delete button */
-    display: flex;
-    flex-direction: column; /* Stack elements within the card */
-    gap: 1rem;
-    border: 1px solid var(--md-border-color); /* Subtle border */
-    transition: border-color 0.2s, box-shadow 0.2s;
-}
-
-.goal-item:hover,
-.manage-goal-item:hover {
-    border-color: var(--md-primary-light);
-    box-shadow: var(--md-shadow-2);
-}
-
-.goal-item.removing,
-.manage-goal-item.removing {
-    opacity: 0;
-    transform: translateX(-20px);
-    height: 0;
-    padding-top: 0;
-    padding-bottom: 0;
-    margin-top: 0;
-    margin-bottom: 0;
-    border-color: transparent;
-    overflow: hidden;
-    transition: all 0.3s ease-out;
-}
-
-.goal-item .form-group,
-.manage-goal-item .form-group {
-    margin-bottom: 0; /* Override default form-group margin */
-}
-
-/* Unified styling for goal description textarea */
-.goal-description,
-.manage-goal-description {
-    width: 100%;
-    padding: 0.8rem 1rem;
-    border: 1px solid var(--md-border-color);
-    border-radius: 4px;
-    font-size: 1rem;
-    background: var(--md-background);
-    box-sizing: border-box;
-    color: var(--md-text-high-emphasis);
-    resize: vertical;
-    min-height: 80px;
-    font-family: var(--font-body);
-}
-
-.goal-description:focus,
-.manage-goal-description:focus {
-    outline: none;
-    border-color: var(--md-primary);
-    box-shadow: 0 0 0 2px var(--md-primary-light);
-    background: var(--md-surface);
-}
-
-.goal-description[readonly],
-.manage-goal-description[readonly] {
-    background: transparent;
-    border-color: transparent;
-    box-shadow: none;
-    font-weight: bold;
-    padding: 0;
-    resize: none;
-    overflow: hidden;
-    cursor: default;
-}
-
-/* Unified styling for Type selects */
-.goal-type,
-.manage-goal-type {
-    width: auto; /* Allow content to dictate width */
-    padding: 0.6rem 1rem;
-    border: 1px solid var(--md-border-color);
-    border-radius: 20px; /* Pill shape */
-    background: var(--md-background);
-    font-size: 0.9rem;
-    font-weight: 500;
-    color: var(--md-text-high-emphasis);
-    -webkit-appearance: none; /* Remove default select arrow */
-    -moz-appearance: none;
-    appearance: none;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    text-align: center;
-    font-family: var(--font-body); /* Ensure consistent font */
-}
-
-.goal-type:not([disabled]):hover,
-.manage-goal-type:not([disabled]):hover,
-.manage-goal-status:not([disabled]):hover { /* status select also gets hover */
-    border-color: var(--md-primary);
-    box-shadow: 0 0 0 2px var(--md-primary-light);
-}
-
-.goal-type[disabled],
-.manage-goal-type[disabled] {
-    cursor: default;
-    background: var(--md-background); /* Keep a subtle background when disabled */
-    border-color: var(--md-border-color); /* Keep the border */
-    box-shadow: none;
-    text-align: center;
-    color: var(--md-text-medium-emphasis); /* Toned down color for disabled */
-}
-
-/* Specific styling for Status select (only in Manage Goals) */
-.manage-goal-status {
-    width: auto;
-    padding: 0.6rem 1rem;
-    border: 1px solid var(--md-border-color);
-    border-radius: 20px;
-    background: var(--md-background);
-    font-size: 0.9rem;
-    font-weight: 500;
-    color: var(--md-text-high-emphasis);
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    text-align: center;
-    font-family: var(--font-body);
-}
-
-.manage-goal-status[disabled] {
-    cursor: default;
-    background: var(--md-background);
-    border-color: var(--md-border-color);
-    box-shadow: none;
-    text-align: center;
-    color: var(--md-text-medium-emphasis);
-}
-
-/* Status colors within Manage Goals */
-.manage-goal-status.status-done {
-    background-color: var(--md-success-light-bg);
-    color: var(--md-success);
-    border-color: var(--md-success);
-    font-weight: 600;
-}
-.manage-goal-status.status-not-done {
-    background-color: var(--md-error-light-bg);
-    color: var(--md-error);
-    border-color: var(--md-error);
-    font-weight: 600;
-}
-
-/* Layout for Type and Status controls in Manage Goals */
-.manage-goal-controls {
-    display: flex;
-    gap: 1rem;
-    align-items: center;
-    flex-wrap: wrap; /* Allow wrapping on small screens */
-    margin-top: 0.5rem; /* Space from description */
-}
-
-/* New layout for goal fields wrapper in Add Sprint, consistent with Manage Goals controls */
-.goal-fields-wrapper {
-    display: flex; /* Changed from old flex container */
-    flex-direction: column; /* Stack description, type */
-    gap: 1rem; /* Space between description and type inputs */
-    flex-grow: 1; /* Allows this wrapper to take available space */
-}
-
-/* Remove specific sizing for Add Sprint goal groups, let flex handle it */
-.form-group.goal-description-group,
-.form-group.goal-type-group {
-    flex-basis: auto; /* Revert from specific calc */
-    min-width: unset; /* Revert from specific min-width */
-    margin-bottom: 0; /* Handled by gap */
-}
-
-/* Delete Button for both sections */
-.remove-goal, /* For Add Sprint */
-.manage-goal-delete-btn { /* For Manage Goals */
-    position: absolute;
-    top: 1rem;
-    right: 1rem;
-    background-color: transparent;
-    color: var(--md-text-disabled);
-    border: none;
-    padding: 0.5rem;
-    border-radius: 50%;
-    cursor: pointer;
-    font-size: 1.1em;
-    transition: all 0.2s ease;
-    z-index: 10; /* Ensure it's clickable over other elements */
-    font-family: var(--font-body); /* Ensure consistent font for icon buttons */
-}
-.remove-goal:hover,
-.manage-goal-delete-btn:hover {
-    color: var(--md-error);
-    background-color: rgba(239, 83, 80, 0.1); /* Light red background on hover */
-    transform: scale(1.1);
-}
-
-/* Hide labels for type and status inside goal items, as they are self-explanatory or handled by placeholders */
-.goal-item label, /* Added for Add Sprint goals */
-.manage-goal-item label {
-    display: none;
-}
-
-
-/* --- Sprint List Sections --- */
-#currentUpcomingSprintsSection {
-    background: var(--section-bg-white);
-}
-
-#pastSprintsSection {
-    background: var(--section-bg-white);
-}
-
-/* --- Sprint Cards List (Main View) --- */
-.sprint-cards-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-    gap: 1.5rem; /* Increased gap for better visual separation */
-    margin-top: 1.5rem;
-}
-
-.sprint-card {
-    padding: 1rem 1.2rem; /* Adjusted padding */
-    border-radius: 12px; /* Slightly more rounded corners */
-    box-shadow: var(--md-shadow-1);
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-    overflow: hidden;
-
-    border-left: 6px solid var(--card-current-border);
-    background: var(--card-current-bg);
-}
-
-.sprint-card.sprint-card--past {
-    border-left-color: var(--card-past-border);
-    background: var(--card-past-bg);
-}
-
-.sprint-card:hover {
-    transform: translateY(-3px);
-    box-shadow: var(--md-shadow-2);
-}
-
-.sprint-card-header {
-    margin-bottom: 0.8rem; /* Adjusted margin */
-    padding-bottom: 0.8rem;
-    border-bottom: 1px solid var(--md-border-color);
-}
-
-/* Card Titles (POD Name) */
-.sprint-card-title {
-    font-size: 1.25rem; /* Slightly larger title */
-    font-weight: 700;
-    line-height: 1.2;
-    margin: 0;
-    color: var(--card-current-title-color);
-    font-family: var(--font-heading); /* Card titles use heading font */
-}
-
-.sprint-card.sprint-card--past .sprint-card-title {
-    color: var(--card-past-title-color);
-}
-
-.sprint-card-dates {
-    font-size: 0.85rem; /* Slightly larger dates */
-    color: var(--md-text-medium-emphasis);
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.75rem; /* Adjusted gap */
-    margin-top: 0.4rem;
-    font-family: var(--font-body); /* Card dates use body font */
-}
-
-.sprint-card-dates span {
-    display: flex;
-    align-items: center;
-    gap: 0.25rem;
-}
-
-.sprint-card-dates .fas {
-    color: var(--md-primary);
-    font-size: 0.75rem;
-}
-
-.progress-section {
-    margin-top: 0.8rem; /* Adjusted margin */
     margin-bottom: 1rem;
+}
+
+.goal-item {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start; /* Align items to the top for textarea */
+    background: #f1f1f1;
+    padding: 0.8rem;
+    border-radius: 4px;
+    margin-bottom: 0.5rem;
+}
+
+.goal-item:last-child {
+    margin-bottom: 0;
+}
+
+.goal-fields-wrapper {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column; /* Stack description and type vertically */
+    gap: 0.5rem;
+}
+
+.goal-fields-wrapper .form-group {
+    margin-bottom: 0; /* Remove margin-bottom from inner form-groups */
+}
+
+.remove-goal {
+    flex-shrink: 0;
+    align-self: center; /* Center vertically relative to goal-item */
+    background-color: var(--danger-color);
+    color: white;
+    border: none;
+    padding: 0.5rem 0.8rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9em;
+}
+
+/* Manage Goals Panel */
+.sprint-details {
+    background: #e9ecef;
+    padding: 1rem;
+    border-radius: 4px;
+    margin-bottom: 1.5rem;
+    font-size: 0.95rem;
+}
+
+.sprint-details span {
+    margin-right: 1rem;
 }
 
 .progress-bar-container {
     width: 100%;
-    height: 10px; /* Slightly taller progress bar */
-    background: var(--md-border-color);
-    border-radius: 5px;
+    height: 8px;
+    background: var(--border-color);
+    border-radius: 4px;
     overflow: hidden;
-    margin-bottom: 0.4rem;
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
 }
 
 .progress-bar-fill {
     height: 100%;
-    background: var(--card-current-progress-fill);
-    border-radius: 5px;
+    background: var(--accent-color);
+    border-radius: 4px;
     transition: width 0.4s ease-out;
 }
 
-.sprint-card.sprint-card--past .progress-bar-fill {
-    background: var(--card-past-progress-fill);
+/* Goals Table in Manage Goals */
+.goals-table-container {
+    overflow-x: auto;
+    margin-top: 1rem;
 }
 
-.progress-text {
-    font-size: 0.85rem; /* Slightly larger progress text */
-    color: var(--md-text-high-emphasis);
-    font-weight: 500;
-    margin: 0;
-    font-family: var(--font-body); /* Progress text uses body font */
+.goals-table {
+    width: 100%;
+    border-collapse: collapse;
 }
 
-.sprint-card-actions {
-    margin-top: 1.2rem; /* Adjusted margin */
-    padding-top: 1rem;
-    border-top: 1px solid var(--md-border-color);
+.goals-table th, .goals-table td {
+    border: 1px solid var(--border-color);
+    padding: 0.5rem;
+    text-align: left;
+    vertical-align: top;
+}
+
+.goals-table th {
+    background-color: var(--primary-color);
+    color: #fff;
+    font-weight: bold;
+}
+
+.goals-table .goal-table-description-input,
+.goals-table .goal-table-type-select,
+.goals-table .goal-table-status-select {
+    width: 100%;
+    padding: 0.3rem;
+    border: 1px solid var(--border-color);
+    border-radius: 3px;
+    font-size: 0.9rem;
+    box-sizing: border-box;
+}
+
+.goals-table .goal-table-description-input {
+    min-height: 50px;
+    resize: vertical;
+}
+
+.goals-table .goal-table-description-input[readonly] {
+    background: transparent;
+    border: none;
+    font-weight: normal;
+    padding: 0.3rem;
+    resize: none;
+    overflow: hidden;
+}
+
+.goals-table .goal-table-type-select[disabled],
+.goals-table .goal-table-status-select[disabled] {
+    background: #e9ecef;
+    cursor: default;
+    border: 1px solid var(--border-color);
+}
+
+.goals-table .goal-table-status-select.status-done {
+    color: var(--accent-color);
+    font-weight: bold;
+}
+.goals-table .goal-table-status-select.status-not-done {
+    color: var(--danger-color);
+    font-weight: bold;
+}
+
+.goals-table .goal-table-delete-btn {
+    background-color: var(--danger-color);
+    color: white;
+    border: none;
+    padding: 0.4rem 0.7rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.8em;
+}
+
+/* Sprint Cards List */
+.sprint-cards-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+    margin-top: 1.5rem;
+}
+
+.sprint-card {
+    background: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 1.2rem;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.sprint-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.sprint-card--past {
+    opacity: 0.7; /* Dim past sprints slightly */
+    border-left: 5px solid var(--secondary-color);
+}
+
+.sprint-card:not(.sprint-card--past) {
+    border-left: 5px solid var(--primary-color);
+}
+
+.sprint-card-title {
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+}
+
+.sprint-card-dates {
+    font-size: 0.85rem;
+    color: #666;
+    margin-bottom: 1rem;
 }
 
 .sprint-card-actions .btn {
     width: 100%;
-    justify-content: center;
-    padding: 0.7rem 1rem; /* Adjusted padding */
-    font-size: 0.95rem; /* Adjusted font size */
-    background: var(--card-current-action-btn);
-    color: var(--md-primary-text);
-    font-family: var(--font-body); /* Card action buttons use body font */
+    padding: 0.6rem 1rem;
+    font-size: 0.9rem;
+    background: var(--primary-color);
+    color: #fff;
 }
-.sprint-card-actions .btn:hover {
-    background: var(--card-current-action-btn-hover);
+.sprint-card--past .sprint-card-actions .btn {
+    background: var(--secondary-color);
 }
 
-.sprint-card.sprint-card--past .sprint-card-actions .btn {
-    background: var(--card-past-action-btn);
-}
-.sprint-card.sprint-card--past .sprint-card-actions .btn:hover {
-    background: var(--card-past-action-btn-hover);
-}
-
-/* --- Utility & State Styles --- */
 .empty-state {
-    color: var(--md-text-medium-emphasis);
-    font-size: 1.1rem;
     text-align: center;
-    margin: 3rem 0;
-    padding: 1.5rem;
-    border: 1px dashed var(--md-border-color);
-    border-radius: 8px;
-    background: var(--md-surface);
-    font-family: var(--font-body); /* Empty state messages use body font */
-}
-
-.empty-state .fas {
-    margin-right: 0.5rem;
-    color: var(--md-primary-light);
-}
-
-.error-message {
-    color: var(--md-error);
-    font-weight: 500;
-}
-
-/* --- Welcome Panel Specific Styles --- */
-.welcome-panel {
-    text-align: center;
-    padding: 3rem 2rem;
-    background: linear-gradient(135deg, var(--md-primary) 0%, var(--md-primary-light) 100%);
-    color: var(--md-primary-text);
-    box-shadow: var(--md-shadow-3);
-    margin-bottom: 3rem;
-}
-
-.welcome-panel .panel-title {
-    color: var(--md-primary-text);
-    justify-content: center;
-    font-size: 2rem;
-    margin-bottom: 1.5rem;
-    font-family: var(--font-heading); /* Welcome panel title uses heading font */
-}
-
-.welcome-panel .panel-title .fas {
-    color: var(--md-primary-light);
-}
-
-.welcome-message {
-    font-size: 1.15rem;
-    line-height: 1.7;
-    margin-bottom: 2.5rem;
-    max-width: 700px;
-    margin-left: auto;
-    margin-right: auto;
-    opacity: 0.9;
-    font-family: var(--font-body); /* Welcome message uses body font */
-}
-
-.welcome-actions {
-    display: flex;
-    justify-content: center;
-    gap: 1.5rem;
-}
-
-.welcome-actions .btn {
-    min-width: 180px;
-    box-shadow: var(--md-shadow-1);
-}
-
-.welcome-actions .btn-primary {
-    background: var(--md-secondary);
-    color: var(--md-secondary-text);
-}
-.welcome-actions .btn-primary:hover {
-    background: var(--md-secondary-dark);
-}
-
-.welcome-actions .btn-secondary {
-    background: rgba(255, 255, 255, 0.2);
-    color: var(--md-primary-text);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-}
-.welcome-actions .btn-secondary:hover {
-    background: rgba(255, 255, 255, 0.3);
-}
-
-/* --- Animations --- */
-@keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-.fade-in-up {
-    animation: fadeInUp 0.6s ease-out forwards;
-}
-
-/* --- Toast / Snackbar Styles --- */
-#toast-container {
-    position: fixed;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    z-index: 1000;
-    pointer-events: none;
-}
-
-.toast {
-    background-color: #323232;
-    color: #ffffff;
-    padding: 12px 24px;
+    color: #666;
+    padding: 2rem;
+    border: 1px dashed var(--border-color);
     border-radius: 4px;
-    box-shadow: var(--md-shadow-2);
-    font-size: 0.95rem;
-    min-width: 250px;
-    max-width: 400px;
-    text-align: center;
-    opacity: 0;
-    transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
-    transform: translateY(20px);
-    pointer-events: auto;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-family: var(--font-body); /* Toast messages use body font */
+    margin-top: 1.5rem;
 }
 
-.toast.show {
-    opacity: 1;
-    transform: translateY(0);
-}
-
-.toast.success {
-    background-color: var(--md-success);
-}
-
-.toast.error {
-    background-color: var(--md-error);
-}
-
-.toast.info {
-    background-color: var(--md-info);
-}
-
-.toast .fas {
-    font-size: 1.2rem;
-}
-
-/* --- Media Queries for Responsiveness --- */
-@media (max-width: 1200px) {
-    .header-content,
-    .content-container {
-        padding: 0 1rem; /* Reduce padding on slightly smaller desktops */
-    }
-}
-
+/* Responsive adjustments */
 @media (max-width: 768px) {
-    body {
-        padding-top: 0;
-    }
-
     .header-content {
         flex-direction: column;
-        text-align: center;
-        gap: 1rem;
-        padding: 0 1rem;
-    }
-    .app-brand {
-        flex-direction: row; /* Keep app brand row on smaller screens */
-        justify-content: center;
-        width: 100%;
-        margin-bottom: 0.5rem;
-    }
-    .app-icon {
-        font-size: 1.3rem;
-    }
-    .app-title {
-        font-size: 1.2rem;
-    }
-    .header-actions {
-        flex-wrap: wrap;
-        justify-content: center;
-    }
-    .btn-header {
-        font-size: 0.9rem;
-        padding: 0.4rem 0.8rem;
-    }
-
-    .main-wrapper {
-        padding: 0 1rem;
-        margin: 1.5rem auto;
-    }
-    .panel-card {
-        padding: 1.5rem;
-        margin-bottom: 1.5rem;
-    }
-    .form-section-title, .panel-title {
-        font-size: 1.4rem;
-        margin-bottom: 1.2rem;
-        justify-content: center;
-        text-align: center;
+        gap: 0.5rem;
     }
     .form-row {
         flex-direction: column;
-        gap: 1.2rem;
     }
-    .form-group {
-        margin-bottom: 1rem;
-    }
-
-    .form-actions-bottom, .form-actions-inline, .welcome-actions {
+    .form-actions {
         flex-direction: column;
-        gap: 0.8rem;
     }
     .btn {
         width: 100%;
     }
-
-    /* Consistent styling for goal items on mobile */
-    .goal-item,
-    .manage-goal-item {
-        padding: 1rem;
-        gap: 0.8rem; /* Reduced gap for smaller screens */
-    }
-    .goal-description,
-    .manage-goal-description {
-        min-height: 60px; /* Adjust for mobile */
-    }
-    .remove-goal,
-    .manage-goal-delete-btn {
-        top: 0.5rem;
-        right: 0.5rem;
-        font-size: 1em;
-    }
-    .goal-fields-wrapper, /* Apply flex column to stack description and type */
-    .manage-goal-controls {
+    .goal-item {
         flex-direction: column;
-        align-items: flex-start; /* Align elements to the start */
-        gap: 0.8rem;
+        align-items: stretch;
     }
-    .goal-type,
-    .manage-goal-type,
-    .manage-goal-status {
-        width: 100%; /* Make them full width for better touch targets */
-        text-align: left; /* Align text to left for full width selects */
-        padding-left: 1rem; /* Re-add padding for better appearance */
-        padding-right: 1rem;
-    }
-    .goal-type[disabled],
-    .manage-goal-type[disabled],
-    .manage-goal-status[disabled] {
-        text-align: left; /* Keep text left-aligned when disabled */
-        padding-left: 1rem; /* Keep padding consistent */
+    .remove-goal {
+        width: 100%;
+        margin-top: 0.5rem;
     }
 
-
-    .sprint-details-header {
-        padding: 1rem;
-        margin-bottom: 1.5rem;
-    }
-    .sprint-details-dates {
-        flex-direction: column;
-        gap: 0.5rem;
-        margin-bottom: 0.8rem;
-    }
-    .sprint-details-progress {
+    /* Table on mobile */
+    .goals-table, .goals-table tbody, .goals-table tr, .goals-table td {
+        display: block;
         width: 100%;
     }
-    .form-actions-bottom {
-        flex-direction: column;
-        gap: 10px;
+    .goals-table thead {
+        display: none;
     }
-    .form-actions-bottom .btn {
-        width: 100%; /* Full width buttons */
+    .goals-table tr {
+        margin-bottom: 1rem;
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
     }
-}
-
-@media (max-width: 480px) {
-    .app-title {
-        font-size: 1.1rem;
+    .goals-table td {
+        border: none;
+        position: relative;
+        padding-left: 35%; /* Space for pseudo-label */
+        text-align: right;
     }
-    .panel-card {
-        padding: 1.2rem;
+    .goals-table td::before {
+        content: attr(data-label);
+        position: absolute;
+        left: 0.5rem;
+        font-weight: bold;
+        text-align: left;
+        width: 30%;
     }
-    .form-section-title, .panel-title {
-        font-size: 1.3rem;
+    .goals-table td:nth-child(1) { /* Description */
+        text-align: left;
     }
-    .toast {
-        min-width: unset;
-        max-width: unset;
-        width: 100%;
-        box-sizing: border-box;
-        left: 10px;
-        right: 10px;
-        transform: translateX(0);
+    .goals-table td:nth-child(1)::before {
+        content: 'Description:';
+    }
+    .goals-table td:nth-child(2)::before {
+        content: 'Type:';
+    }
+    .goals-table td:nth-child(3)::before {
+        content: 'Status:';
+    }
+    .goals-table td:nth-child(4) { /* Actions */
+        text-align: center;
+        border-top: 1px dashed var(--border-color);
+        margin-top: 0.5rem;
+        padding-top: 0.5rem;
+    }
+    .goals-table td:nth-child(4)::before {
+        content: ''; /* No label for actions */
     }
 }
