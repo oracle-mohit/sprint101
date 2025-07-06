@@ -621,9 +621,11 @@ document.addEventListener('DOMContentLoaded', () => {
         showSection('sprints');
     });
 
+
     // --- Initial Load Logic ---
     function initialLoad() {
-        showSection('sprints');
+        // Instead of showing 'sprints' directly, show the 'welcome' section
+        showSection('welcome'); // Assuming 'welcome' is a valid sectionId for your welcome panel
     }
 
     initialLoad();
