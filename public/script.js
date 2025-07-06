@@ -469,35 +469,35 @@ document.addEventListener('DOMContentLoaded', () => {
                     const isTypeEditable = !readOnly && !editStatusOnly;
                     const isStatusEditable = !readOnly; // Status is editable unless overall readOnly
 
-                    goalCard.innerHTML = `
-                        <div class="goal-card-content">
-                            <div class="goal-card-details">
-                                <div class="form-group goal-card-description-group">
-                                    <label for="goal-card-desc-${goal._id}">Description</label>
-                                    <textarea id="goal-card-desc-${goal._id}" class="goal-card-description-input" rows="2" placeholder="Goal Description"
-                                        ${isDescriptionEditable ? '' : 'readonly'}>${goal.description}</textarea>
-                                </div>
-                                <div class="form-group goal-card-type-group">
-                                    <label for="goal-card-type-${goal._id}">Type</label>
-                                    <select id="goal-card-type-${goal._id}" class="goal-card-type-select"
-                                        ${isTypeEditable ? '' : 'disabled'}>
-                                        <option value="Live" ${goal.type === 'Live' ? 'selected' : ''}>Live</option>
-                                        <option value="QA Complete" ${goal.type === 'QA Complete' ? 'selected' : ''}>QA Complete</option>
-                                        <option value="Dev Complete" ${goal.type === 'Dev Complete' ? 'selected' : ''}>Dev Complete</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="form-group goal-card-status-group">
-                                <label for="goal-card-status-${goal._id}">Status</label>
-                                <select id="goal-card-status-${goal._id}" class="goal-card-status-select ${goal.status === 'Done' ? 'status-done' : 'status-not-done'}"
-                                    ${isStatusEditable ? '' : 'disabled'}>
-                                    <option value="Not Done" ${goal.status === 'Not Done' ? 'selected' : ''}>Not Done</option>
-                                    <option value="Done" ${goal.status === 'Done' ? 'selected' : ''}>Done</option>
-                                </select>
-                            </div>
-                        </div>
-                        ${(!readOnly && !editStatusOnly) ? `<button type="button" class="goal-card-delete-btn btn btn-danger"><i class="fas fa-trash-alt"></i></button>` : ''}
-                    `;
+// Inside openManageGoalsPanel, within the forEach loop for sprintData.goals.forEach((goal) => {
+// ...
+goalCard.innerHTML = `
+    <div class="goal-card-content">
+        <div class="goal-card-details">
+            <div class="form-group goal-card-description-group">
+                <textarea id="goal-card-desc-${goal._id}" class="goal-card-description-input" rows="2" placeholder="Goal Description"
+                    ${isDescriptionEditable ? '' : 'readonly'}>${goal.description}</textarea>
+            </div>
+            <div class="form-group goal-card-type-group">
+                <select id="goal-card-type-${goal._id}" class="goal-card-type-select"
+                    ${isTypeEditable ? '' : 'disabled'}>
+                    <option value="Live" ${goal.type === 'Live' ? 'selected' : ''}>Live</option>
+                    <option value="QA Complete" ${goal.type === 'QA Complete' ? 'selected' : ''}>QA Complete</option>
+                    <option value="Dev Complete" ${goal.type === 'Dev Complete' ? 'selected' : ''}>Dev Complete</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group goal-card-status-group">
+            <label for="goal-card-status-${goal._id}">Status</label> <select id="goal-card-status-${goal._id}" class="goal-card-status-select ${goal.status === 'Done' ? 'status-done' : 'status-not-done'}"
+                ${isStatusEditable ? '' : 'disabled'}>
+                <option value="Not Done" ${goal.status === 'Not Done' ? 'selected' : ''}>Not Done</option>
+                <option value="Done" ${goal.status === 'Done' ? 'selected' : ''}>Done</option>
+            </select>
+        </div>
+    </div>
+    ${(!readOnly && !editStatusOnly) ? `<button type="button" class="goal-card-delete-btn btn btn-danger"><i class="fas fa-trash-alt"></i></button>` : ''}
+`;
+// ...                    `;
                     manageGoalsCardsContainer.appendChild(goalCard);
 
                     // Add event listener to status select to change styling

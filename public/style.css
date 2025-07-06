@@ -288,16 +288,18 @@ textarea[readonly] {
     overflow: hidden; /* Hide scrollbar if content exceeds min-height */
 }
 
-/* Specific adjustments for goal card elements if needed, to override general input styles */
-.goal-card-description-input[readonly],
-.goal-card-type-select[disabled],
-.goal-card-status-select[disabled] {
+/* Styling for goal description (now textarea) when READONLY */
+.goal-card-description-input[readonly] {
     background: transparent;
     border-color: transparent;
     box-shadow: none;
     color: var(--md-text-high-emphasis);
-    font-weight: 500; /* Make text slightly bolder */
-    padding: 0; /* Adjust padding to blend into the card more */
+    font-weight: bold; /* ADDED: Make the text bold */
+    padding: 0;
+    resize: none;
+    overflow: hidden; /* Hide scrollbar if content exceeds min-height */
+    line-height: 1.4; /* Ensure good line spacing */
+    font-size: 0.95rem; /* Ensure consistent font size */
 }
 
 .goal-card-status-select[disabled] {
@@ -540,6 +542,23 @@ textarea[readonly] {
     border-color: var(--md-primary);
     box-shadow: 0 0 0 2px var(--md-primary-light);
     background: var(--md-surface);
+}
+
+/* Styling for goal type select when DISABLED */
+.goal-card-type-select[disabled] {
+    background: var(--md-background); /* Give it a subtle background, or keep transparent */
+    border: 1px solid var(--md-border-color); /* ADDED: Border around the value */
+    border-radius: 4px; /* ADDED: Rounded corners */
+    box-shadow: none;
+    cursor: default;
+    color: var(--md-text-high-emphasis);
+    font-weight: 500; /* Keep it medium bold */
+    padding: 4px 8px; /* ADDED: Some padding for the border to look good */
+    -webkit-appearance: none; /* Keep removing default arrow */
+    -moz-appearance: none;
+    appearance: none;
+    text-align: center; /* Center the text inside the bordered box */
+    min-width: 80px; /* Ensure it has a minimum width */
 }
 
 /* Styling for goal status select */
