@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const viewSprintsBtn = document.getElementById('viewSprintsBtn');
     const createSprintBtn = document.getElementById('createSprintBtn');
 
-    const welcomeSection = document.getElementById('welcomeSection');
+    const welcomeSection = document.getElementById('welcomeSection'); // Welcome section (always visible)
     const welcomeCreateSprintBtn = document.getElementById('welcomeCreateSprintBtn');
     const welcomeViewSprintsBtn = document.getElementById('welcomeViewSprintsBtn');
 
@@ -22,14 +22,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const currentSprintsList = document.getElementById('currentSprintsList');
     const pastSprintsList = document.getElementById('pastSprintsList');
 
-    // New elements for Manage Goals page header
-    const manageSprintName = document.getElementById('managedSprintName');
-    const manageSprintStartDate = document.getElementById('manageSprintStartDate');
-    const manageSprintEndDate = document.getElementById('manageSprintEndDate');
-    const manageSprintProgressBar = document.getElementById('manageSprintProgressBar');
-    const manageSprintAchievement = document.getElementById('manageSprintAchievement');
-    const manageGoalsCardsContainer = document.getElementById('manageGoalsCardsContainer'); // New container for goal cards
-
+    const managedSprintName = document.getElementById('managedSprintName');
+    const manageGoalsList = document.getElementById('manageGoalsList');
     const saveGoalsBtn = document.getElementById('saveGoalsBtn');
     const backToSprintsBtn = document.getElementById('backToSprintsBtn');
     const toastContainer = document.getElementById('toast-container');
@@ -309,7 +303,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     currentSprintsList.innerHTML = '<p class="empty-state"><i class="fas fa-check-circle"></i> No current or upcoming sprints. Time to create one!</p>';
                 } else {
                     currentUpcomingSprints.forEach(sprint => {
-                        currentSprintsList.appendChild(createSprintCardElement(sprint, false));
+                        currentSprintsList.appendChild(createSprintCardElement(sprint, false)); // false for not past
                     });
                 }
 
@@ -317,7 +311,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     pastSprintsList.innerHTML = '<p class="empty-state"><i class="fas fa-box-open"></i> No past sprints recorded yet.</p>';
                 } else {
                     pastSprints.forEach(sprint => {
-                        pastSprintsList.appendChild(createSprintCardElement(sprint, true));
+                        pastSprintsList.appendChild(createSprintCardElement(sprint, true)); // true for past
                     });
                 }
 
@@ -333,7 +327,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
 
-    // --- Create Sprint Card Element (for main Sprints view) ---
+    // --- Create Sprint Card Element ---
     function createSprintCardElement(sprint, isPastSprint) {
         const sprintCard = document.createElement('div');
         const now = new Date();
@@ -342,6 +336,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const hasStarted = startDate <= now;
 
         sprintCard.classList.add('sprint-card');
+        // --- NEW: Add a class for past sprints to control their base color ---
         if (isPastSprint) {
             sprintCard.classList.add('sprint-card--past');
         }
@@ -350,7 +345,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const completedGoals = sprint.goals.filter(goal => goal.status === 'Done').length;
         const achievementPercentage = totalGoals > 0 ? Math.round((completedGoals / totalGoals) * 100) : 0;
 
-        // updateSprintCardStyle is now simplified to only affect progress bar and button colors
+        // updateSprintCardStyle will now primarily affect progress bar and button colors
         updateSprintCardStyle(sprintCard, achievementPercentage, endDate, now, totalGoals);
 
         const ctaText = isPastSprint ? 'View Goals' : (hasStarted ? 'Manage Goals' : 'Manage Goals (Upcoming)');
@@ -383,10 +378,9 @@ document.addEventListener('DOMContentLoaded', () => {
         return sprintCard;
     }
 
-    // Simplified: This function now only adds 'completed' or 'overdue' classes
-    // which *only* affect progress bar and button colors (if defined in CSS).
-    // The main card background/border is handled by isPastSprint.
     function updateSprintCardStyle(cardElement, percentage, endDate, now, totalGoals) {
+        // These classes will now only influence the progress bar and button colors/icons,
+        // NOT the main card background or border-left color.
         cardElement.classList.remove('completed', 'overdue');
         const isOverdue = endDate < now && percentage < 100;
         const isCompleted = percentage === 100 && totalGoals > 0;
@@ -413,66 +407,69 @@ document.addEventListener('DOMContentLoaded', () => {
     async function openManageGoalsPanel(sprintId, readOnly = false, editStatusOnly = false) {
         showSection('manageGoals');
 
-        manageGoalsCardsContainer.innerHTML = '<p class="empty-state"><i class="fas fa-spinner fa-spin"></i> Loading goals...</p>';
-
-        let sprintData; // To store full sprint data
+        let sprintDetails;
         try {
             const sprintResponse = await fetch(`${API_BASE}/api/sprints/${sprintId}`);
-            if (!sprintResponse.ok) {
-                throw new Error('Failed to fetch sprint details');
-            }
-            sprintData = await sprintResponse.json();
-
-            // Populate sprint details header
-            manageSprintName.textContent = sprintData.podName;
-            manageSprintStartDate.textContent = new Date(sprintData.startDate).toLocaleDateString('en-IN', { day: '2-digit', month: '2-digit', year: 'numeric' });
-            manageSprintEndDate.textContent = new Date(sprintData.endDate).toLocaleDateString('en-IN', { day: '2-digit', month: '2-digit', year: 'numeric' });
-
-            const totalGoals = sprintData.goals.length;
-            const completedGoals = sprintData.goals.filter(goal => goal.status === 'Done').length;
-            const achievementPercentage = totalGoals > 0 ? Math.round((completedGoals / totalGoals) * 100) : 0;
-            manageSprintProgressBar.style.width = `${achievementPercentage}%`;
-            manageSprintAchievement.textContent = achievementPercentage;
-
-            manageGoalsCardsContainer.innerHTML = ''; // Clear loading message
-
-            if (sprintData.goals.length === 0) {
-                manageGoalsCardsContainer.innerHTML = '<p class="empty-state"><i class="fas fa-clipboard"></i> No goals defined for this sprint.</p>';
+            if (sprintResponse.ok) {
+                sprintDetails = await sprintResponse.json();
+                managedSprintName.textContent = sprintDetails.podName;
             } else {
-                sprintData.goals.forEach((goal, idx) => {
-                    const goalCard = document.createElement('div');
-                    goalCard.classList.add('goal-card');
-                    // Store original goal ID for tracking
-                    goalCard.dataset.goalId = goal._id; // Assuming _id is available from backend
+                managedSprintName.textContent = 'Sprint (Error fetching name)';
+                console.error('Failed to fetch sprint details for ID:', sprintId);
+            }
+        } catch (error) {
+            managedSprintName.textContent = 'Sprint (Network Error)';
+            console.error('Network error fetching sprint details:', error);
+        }
 
+        manageGoalsList.innerHTML = '<tr><td colspan="3" class="empty-state"><i class="fas fa-spinner fa-spin"></i> Loading goals...</td></tr>';
+        try {
+            const res = await fetch(`${API_BASE}/api/sprints/${sprintId}/goals`);
+            if (!res.ok) {
+                throw new Error('Failed to fetch goals');
+            }
+            const goals = await res.json();
+
+            manageGoalsList.innerHTML = '';
+
+            if (goals.length === 0) {
+                manageGoalsList.innerHTML = '<tr><td colspan="3" class="empty-state"><i class="fas fa-clipboard"></i> No goals defined for this sprint.</td></tr>';
+            } else {
+                goals.forEach((goal, idx) => {
+                    const row = document.createElement('tr');
+                    row.classList.add('goal-row');
                     const isDescriptionEditable = !readOnly && !editStatusOnly;
                     const isTypeEditable = !readOnly && !editStatusOnly;
-                    const isStatusEditable = !readOnly; // Status is editable even if description/type aren't (for 'Manage Goals')
+                    const isStatusEditable = !readOnly;
 
-                    goalCard.innerHTML = `
-                        <div class="goal-card-content">
-                            <div class="goal-card-details">
-                                <input type="text" class="goal-card-description-input" value="${goal.description}"
-                                    ${isDescriptionEditable ? '' : 'readonly'} data-idx="${idx}">
-                                <select class="goal-card-type-select" data-idx="${idx}"
-                                    ${isTypeEditable ? '' : 'disabled'}>
-                                    <option value="Live" ${goal.type === 'Live' ? 'selected' : ''}>Live</option>
-                                    <option value="QA Complete" ${goal.type === 'QA Complete' ? 'selected' : ''}>QA Complete</option>
-                                    <option value="Dev Complete" ${goal.type === 'Dev Complete' ? 'selected' : ''}>Dev Complete</option>
-                                </select>
-                            </div>
-                            <select class="goal-card-status-select ${goal.status === 'Done' ? 'status-done' : 'status-not-done'}" data-idx="${idx}"
-                                ${isStatusEditable ? '' : 'disabled'}>
+                    row.innerHTML = `
+                        <td>
+                            <input type="text" class="goal-desc-input" value="${goal.description}"
+                                ${isDescriptionEditable ? '' : 'readonly'}
+                                ${isDescriptionEditable ? '' : 'style="background:#f5f5f5; color:#888; cursor:not-allowed;"'}
+                                data-idx="${idx}">
+                        </td>
+                        <td>
+                            <select class="goal-type-select" data-idx="${idx}"
+                                ${isTypeEditable ? '' : 'disabled'}
+                                ${isTypeEditable ? '' : 'style="background:#f5f5f5; color:#888; cursor:not-allowed;"'}>
+                                <option value="Live" ${goal.type === 'Live' ? 'selected' : ''}>Live</option>
+                                <option value="QA Complete" ${goal.type === 'QA Complete' ? 'selected' : ''}>QA Complete</option>
+                                <option value="Dev Complete" ${goal.type === 'Dev Complete' ? 'selected' : ''}>Dev Complete</option>
+                            </select>
+                        </td>
+                        <td>
+                            <select class="goal-status-select ${goal.status === 'Done' ? 'status-done' : 'status-not-done'}" data-idx="${idx}"
+                                ${isStatusEditable ? '' : 'disabled'}
+                                ${isStatusEditable ? '' : 'style="background:#f5f5f5; color:#888; cursor:not-allowed;"'}>
                                 <option value="Not Done" ${goal.status === 'Not Done' ? 'selected' : ''}>Not Done</option>
                                 <option value="Done" ${goal.status === 'Done' ? 'selected' : ''}>Done</option>
                             </select>
-                        </div>
-                        ${(!readOnly && !editStatusOnly) ? `<button type="button" class="goal-card-delete-btn" data-idx="${idx}"><i class="fas fa-trash-alt"></i></button>` : ''}
+                        </td>
                     `;
-                    manageGoalsCardsContainer.appendChild(goalCard);
+                    manageGoalsList.appendChild(row);
 
-                    // Add event listener to status select to change styling
-                    const statusSelect = goalCard.querySelector('.goal-card-status-select');
+                    const statusSelect = row.querySelector('.goal-status-select');
                     if (statusSelect) {
                         statusSelect.addEventListener('change', (e) => {
                             if (e.target.value === 'Done') {
@@ -484,26 +481,14 @@ document.addEventListener('DOMContentLoaded', () => {
                             }
                         });
                     }
-
-                    // Add event listener for delete button
-                    const deleteBtn = goalCard.querySelector('.goal-card-delete-btn');
-                    if (deleteBtn) {
-                        deleteBtn.addEventListener('click', () => {
-                            // Mark for deletion by adding a class and visually hiding it
-                            goalCard.classList.add('deleted');
-                            goalCard.style.display = 'none'; // Or add a fade-out animation
-                            showToast('Goal marked for deletion. Click Save Changes to confirm.', 'info');
-                        });
-                    }
                 });
             }
 
         } catch (error) {
             console.error(`Error fetching goals for sprint ${sprintId}:`, error);
-            manageGoalsCardsContainer.innerHTML = '<p class="empty-state error-message"><i class="fas fa-exclamation-circle"></i> Failed to load goals.</p>';
+            manageGoalsList.innerHTML = '<tr><td colspan="3" class="empty-state error-message"><i class="fas fa-exclamation-circle"></i> Failed to load goals.</td></tr>';
         }
 
-        // Show/hide Save button based on readOnly
         saveGoalsBtn.style.display = readOnly ? 'none' : '';
         saveGoalsBtn.setAttribute('data-sprint-id', sprintId);
     }
@@ -511,46 +496,12 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- Save Goals Button ---
     saveGoalsBtn.addEventListener('click', async function() {
         const sprintId = this.getAttribute('data-sprint-id');
-        const goalCards = document.querySelectorAll('#manageGoalsCardsContainer .goal-card');
-        const updatedGoals = [];
-
-        // Filter out deleted goals and collect updated data
-        goalCards.forEach(card => {
-            if (!card.classList.contains('deleted')) {
-                const descriptionInput = card.querySelector('.goal-card-description-input');
-                const typeSelect = card.querySelector('.goal-card-type-select');
-                const statusSelect = card.querySelector('.goal-card-status-select');
-
-                // Basic validation for goals being saved
-                const description = descriptionInput.value.trim();
-                if (!description || description.length < 12) {
-                    showToast('All goal descriptions must be at least 12 characters long and not empty.', 'error');
-                    // Re-enable buttons and stop submission if validation fails
-                    saveGoalsBtn.disabled = false;
-                    saveGoalsBtn.innerHTML = 'Save Changes';
-                    backToSprintsBtn.disabled = false;
-                    descriptionInput.focus();
-                    throw new Error('Goal validation failed'); // Stop further processing
-                }
-
-                updatedGoals.push({
-                    _id: card.dataset.goalId, // Include ID for backend to identify existing goals
-                    description: description,
-                    type: typeSelect.value,
-                    status: statusSelect.value
-                });
-            }
-        });
-
-        // Ensure at least 3 goals remain after deletion
-        if (updatedGoals.length < 3) {
-            showToast('A sprint must have at least 3 goals. Cannot save with fewer.', 'error');
-            saveGoalsBtn.disabled = false;
-            saveGoalsBtn.innerHTML = 'Save Changes';
-            backToSprintsBtn.disabled = false;
-            return;
-        }
-
+        const rows = document.querySelectorAll('#manageGoalsList .goal-row');
+        const updatedGoals = Array.from(rows).map(row => ({
+            description: row.querySelector('.goal-desc-input').value,
+            type: row.querySelector('.goal-type-select').value,
+            status: row.querySelector('.goal-status-select').value
+        }));
 
         saveGoalsBtn.disabled = true;
         saveGoalsBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
