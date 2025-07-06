@@ -156,7 +156,7 @@ document.addEventListener('DOMContentLoaded', () => {
     sprintForm.addEventListener('submit', async (e) => {
         e.preventDefault();
 
-        const podNameInput = document.getElementById('podName'); // Get podName input
+        const podNameInput = document.getElementById('podName');
         const startDateInput = document.getElementById('startDate');
         const endDateInput = document.getElementById('endDate');
         const sprintStartDate = new Date(startDateInput.value);
@@ -165,21 +165,18 @@ document.addEventListener('DOMContentLoaded', () => {
         const today = new Date();
         today.setHours(0, 0, 0, 0);
 
-        // Validation 1: Pod Name cannot be empty
         if (!podNameInput.value.trim()) {
             showToast('POD Name is required.', 'error');
             podNameInput.focus();
             return;
         }
 
-        // Validation 2: Sprint End Date cannot be before Start Date
         if (sprintStartDate > sprintEndDate) {
             showToast('Sprint End Date cannot be before Start Date. Please correct your dates.', 'error');
             endDateInput.focus();
             return;
         }
 
-        // Validation 3: Sprint Start Date cannot be less than the current date
         if (sprintStartDate < today) {
             showToast('Sprint Start Date cannot be in the past. Please select today or a future date.', 'error');
             startDateInput.focus();
@@ -190,25 +187,23 @@ document.addEventListener('DOMContentLoaded', () => {
         const goalTypeSelects = Array.from(document.querySelectorAll('.goal-type'));
 
         const goals = [];
-        let hasEmptyGoalDescription = false; // Flag to check for empty goal descriptions
-        let hasShortGoalDescription = false; // Flag to check for short goal descriptions
+        let hasEmptyGoalDescription = false;
+        let hasShortGoalDescription = false;
 
         goalDescriptionInputs.forEach((input, index) => {
             const description = input.value.trim();
             const type = goalTypeSelects[index].value;
 
-            // Check if goal description is empty
             if (!description) {
                 hasEmptyGoalDescription = true;
-                input.focus(); // Focus on the first empty input found
-                return; // Skip adding this goal if empty
+                input.focus();
+                return;
             }
 
-            // Check for minimum goal description length
             if (description.length < 12) {
                 hasShortGoalDescription = true;
-                input.focus(); // Focus on the first short input found
-                return; // Skip adding this goal if too short
+                input.focus();
+                return;
             }
 
             goals.push({
@@ -218,27 +213,22 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         });
 
-        // Validation 4: Check if any goal description was empty
         if (hasEmptyGoalDescription) {
             showToast('Please fill out all goal descriptions or remove empty goal rows.', 'error');
             return;
         }
 
-        // Validation 5: Check if any goal description was too short
         if (hasShortGoalDescription) {
             showToast('Each goal description must be at least 12 characters long.', 'error');
             return;
         }
 
-        // Validation 6: Sprint will not be created if there are less than 3 Goals
         if (goals.length < 3) {
             showToast('A sprint must have at least 3 goals. Please add more or fill out existing ones.', 'error');
-            // Optionally, scroll to goals section: goalsContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
             return;
         }
 
 
-        // Disable button and show loading state
         createSprintButton.disabled = true;
         createSprintButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creating...';
         cancelSprintButton.disabled = true;
@@ -263,7 +253,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 showToast('Sprint created successfully!', 'success');
                 sprintForm.reset();
                 goalsContainer.innerHTML = '';
-                addGoalRow(); // Add a fresh initial goal row
+                addGoalRow();
                 showSection('sprints');
             } else {
                 const errorData = await response.json();
@@ -313,7 +303,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     currentSprintsList.innerHTML = '<p class="empty-state"><i class="fas fa-check-circle"></i> No current or upcoming sprints. Time to create one!</p>';
                 } else {
                     currentUpcomingSprints.forEach(sprint => {
-                        currentSprintsList.appendChild(createSprintCardElement(sprint, false));
+                        currentSprintsList.appendChild(createSprintCardElement(sprint, false)); // false for not past
                     });
                 }
 
@@ -321,7 +311,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     pastSprintsList.innerHTML = '<p class="empty-state"><i class="fas fa-box-open"></i> No past sprints recorded yet.</p>';
                 } else {
                     pastSprints.forEach(sprint => {
-                        pastSprintsList.appendChild(createSprintCardElement(sprint, true));
+                        pastSprintsList.appendChild(createSprintCardElement(sprint, true)); // true for past
                     });
                 }
 
@@ -346,11 +336,16 @@ document.addEventListener('DOMContentLoaded', () => {
         const hasStarted = startDate <= now;
 
         sprintCard.classList.add('sprint-card');
+        // --- NEW: Add a class for past sprints to control their base color ---
+        if (isPastSprint) {
+            sprintCard.classList.add('sprint-card--past');
+        }
 
         const totalGoals = sprint.goals.length;
         const completedGoals = sprint.goals.filter(goal => goal.status === 'Done').length;
         const achievementPercentage = totalGoals > 0 ? Math.round((completedGoals / totalGoals) * 100) : 0;
 
+        // updateSprintCardStyle will now primarily affect progress bar and button colors
         updateSprintCardStyle(sprintCard, achievementPercentage, endDate, now, totalGoals);
 
         const ctaText = isPastSprint ? 'View Goals' : (hasStarted ? 'Manage Goals' : 'Manage Goals (Upcoming)');
@@ -384,6 +379,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function updateSprintCardStyle(cardElement, percentage, endDate, now, totalGoals) {
+        // These classes will now only influence the progress bar and button colors/icons,
+        // NOT the main card background or border-left color.
         cardElement.classList.remove('completed', 'overdue');
         const isOverdue = endDate < now && percentage < 100;
         const isCompleted = percentage === 100 && totalGoals > 0;
