@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const viewSprintsBtn = document.getElementById('viewSprintsBtn');
     const createSprintBtn = document.getElementById('createSprintBtn');
 
-    const welcomeSection = document.getElementById('welcomeSection'); // Welcome section
+    const welcomeSection = document.getElementById('welcomeSection'); // Welcome section (always visible)
     const welcomeCreateSprintBtn = document.getElementById('welcomeCreateSprintBtn');
     const welcomeViewSprintsBtn = document.getElementById('welcomeViewSprintsBtn');
 
@@ -26,6 +26,42 @@ document.addEventListener('DOMContentLoaded', () => {
     const manageGoalsList = document.getElementById('manageGoalsList');
     const saveGoalsBtn = document.getElementById('saveGoalsBtn');
     const backToSprintsBtn = document.getElementById('backToSprintsBtn');
+    const toastContainer = document.getElementById('toast-container'); // New toast container
+
+
+    // --- Custom Toast / Snackbar Function ---
+    /**
+     * Displays a Material Design-style toast/snackbar message.
+     * @param {string} message The message to display.
+     * @param {'success'|'error'|'info'|'default'} type The type of toast (affects color and icon).
+     * @param {number} duration How long the toast should be visible in milliseconds. Default 3000ms.
+     */
+    function showToast(message, type = 'default', duration = 3000) {
+        const toast = document.createElement('div');
+        toast.classList.add('toast', type);
+
+        let iconClass = '';
+        switch (type) {
+            case 'success': iconClass = 'fas fa-check-circle'; break;
+            case 'error': iconClass = 'fas fa-times-circle'; break;
+            case 'info': iconClass = 'fas fa-info-circle'; break;
+            default: iconClass = 'fas fa-bell'; break; // Generic icon
+        }
+
+        toast.innerHTML = `<i class="${iconClass}"></i><span>${message}</span>`;
+        toastContainer.appendChild(toast);
+
+        // Show the toast with a slight delay for animation
+        setTimeout(() => {
+            toast.classList.add('show');
+        }, 10); // Small delay to allow CSS transition to work
+
+        // Hide and remove the toast after duration
+        setTimeout(() => {
+            toast.classList.remove('show');
+            toast.addEventListener('transitionend', () => toast.remove());
+        }, duration);
+    }
 
 
     // --- Section Management ---
@@ -142,7 +178,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const endDate = new Date(endDateInput.value);
 
         if (startDate > endDate) {
-            alert('Sprint End Date cannot be before Start Date. Please correct your dates.');
+            showToast('Sprint End Date cannot be before Start Date. Please correct your dates.', 'error');
             startDateInput.focus();
             return;
         }
@@ -188,18 +224,18 @@ document.addEventListener('DOMContentLoaded', () => {
             });
 
             if (response.ok) {
-                alert('Sprint created successfully!');
+                showToast('Sprint created successfully!', 'success');
                 sprintForm.reset();
                 goalsContainer.innerHTML = '';
                 addGoalRow();
                 showSection('sprints'); // Go back to sprints view and refresh
             } else {
                 const errorData = await response.json();
-                alert(`Error creating sprint: ${errorData.message || 'Unknown error'}`);
+                showToast(`Error creating sprint: ${errorData.message || 'Unknown error'}`, 'error');
             }
         } catch (error) {
             console.error('Error:', error);
-            alert('An error occurred while creating the sprint. Please check your network and try again.');
+            showToast('An error occurred while creating the sprint. Please check your network and try again.', 'error');
         } finally {
             createSprintButton.disabled = false;
             createSprintButton.innerHTML = '<i class="fas fa-plus"></i> Create Sprint';
@@ -446,14 +482,14 @@ document.addEventListener('DOMContentLoaded', () => {
             });
 
             if (response.ok) {
-                alert('Goals updated successfully!');
+                showToast('Goals updated successfully!', 'success');
             } else {
                 const errorData = await response.json();
-                alert(`Error saving goals: ${errorData.message || 'Unknown error'}`);
+                showToast(`Error saving goals: ${errorData.message || 'Unknown error'}`, 'error');
             }
         } catch (error) {
             console.error('Error saving goals:', error);
-            alert('An error occurred while saving goals.');
+            showToast('An error occurred while saving goals.', 'error');
         } finally {
             saveGoalsBtn.disabled = false;
             saveGoalsBtn.innerHTML = 'Save Changes';
@@ -468,8 +504,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // --- Initial Load Logic ---
-    // On page load, the Welcome section is already visible via HTML.
-    // We just need to load the sprint data and display the sprint sections below it.
     function initialLoad() {
         showSection('sprints'); // This will fetch and display the sprint cards
     }
