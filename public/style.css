@@ -54,13 +54,17 @@
     --md-shadow-1: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
     --md-shadow-2: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
     --md-shadow-3: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+
+    /* --- Consistent Font Families --- */
+    --font-heading: 'Poppins', sans-serif;
+    --font-body: 'Inter', Arial, sans-serif;
 }
 
 /* --- Global Reset & Base Styles --- */
 body {
     margin: 0;
     padding: 0;
-    font-family: 'Inter', Arial, sans-serif;
+    font-family: var(--font-body); /* Use body font for general text */
     background: var(--md-background);
     color: var(--md-text-high-emphasis);
     line-height: 1.6;
@@ -72,9 +76,14 @@ body {
 }
 
 h1, h2, h3, h4, h5, h6 {
-    font-family: 'Poppins', sans-serif;
+    font-family: var(--font-heading); /* Use heading font for all headings */
     color: var(--md-text-high-emphasis);
     margin: 0;
+}
+
+/* Ensure font consistency for specific elements that might override */
+p, span, div, a, li {
+    font-family: var(--font-body);
 }
 
 /* --- Header Section --- */
@@ -112,6 +121,7 @@ h1, h2, h3, h4, h5, h6 {
     font-size: 1.5rem;
     font-weight: 700;
     letter-spacing: 0.5px;
+    font-family: var(--font-heading); /* Ensure app title uses heading font */
 }
 
 .header-actions {
@@ -125,6 +135,7 @@ h1, h2, h3, h4, h5, h6 {
     background: rgba(255, 255, 255, 0.15);
     border: 1px solid rgba(255, 255, 255, 0.2);
     box-shadow: var(--md-shadow-0);
+    font-family: var(--font-body); /* Header buttons use body font */
 }
 
 .btn-header:hover {
@@ -178,6 +189,7 @@ h1, h2, h3, h4, h5, h6 {
     gap: 0.8rem;
     color: var(--md-primary-dark);
     margin: 0 0 1.8rem 0;
+    font-family: var(--font-heading); /* Form titles use heading font */
 }
 .form-section-title .fas {
     color: var(--md-primary);
@@ -191,6 +203,7 @@ h1, h2, h3, h4, h5, h6 {
     gap: 0.8rem;
     margin: 0 0 1.8rem 0;
     color: var(--md-primary-dark);
+    font-family: var(--font-heading); /* Panel titles use heading font */
 }
 .panel-title .fas {
     color: var(--md-primary);
@@ -214,6 +227,7 @@ h1, h2, h3, h4, h5, h6 {
     align-items: center;
     gap: 0.6rem;
     margin-bottom: 1rem;
+    font-family: var(--font-heading); /* Subtitles use heading font */
 }
 
 /* --- Form Elements (General) --- */
@@ -241,13 +255,13 @@ label {
     font-weight: 600;
     color: var(--md-text-medium-emphasis);
     font-size: 0.95rem;
-    font-family: 'Inter', sans-serif; /* Consistent font for labels */
+    font-family: var(--font-body); /* Labels use body font */
 }
 
 input[type="text"],
 input[type="date"],
-select:not([disabled]), /* Exclude disabled selects from general input styling */
-textarea:not([readonly]) { /* Exclude readonly textareas from general input styling */
+select, /* Apply to all selects, then override disabled state */
+textarea { /* Apply to all textareas, then override readonly state */
     width: 100%;
     padding: 0.8rem 1rem;
     border: 1px solid var(--md-border-color);
@@ -257,21 +271,21 @@ textarea:not([readonly]) { /* Exclude readonly textareas from general input styl
     box-sizing: border-box;
     color: var(--md-text-high-emphasis);
     transition: border-color 0.2s, box-shadow 0.2s, background-color 0.2s;
-    font-family: 'Inter', sans-serif; /* Consistent font for inputs */
+    font-family: var(--font-body); /* Consistent font for inputs */
 }
 
 /* Placeholder text consistency */
 input::placeholder,
 textarea::placeholder {
-    font-family: 'Inter', sans-serif;
+    font-family: var(--font-body);
     color: var(--md-text-disabled); /* Lighter color for placeholder */
     opacity: 1; /* Firefox default opacity is lower */
 }
 
 input[type="text"]:focus,
 input[type="date"]:focus,
-select:not([disabled]):focus,
-textarea:not([readonly]):focus {
+select:not([disabled]):focus, /* Focus only on editable selects */
+textarea:not([readonly]):focus { /* Focus only on editable textareas */
     outline: none;
     border-color: var(--md-primary);
     box-shadow: 0 0 0 2px var(--md-primary-light);
@@ -280,7 +294,8 @@ textarea:not([readonly]):focus {
 
 /* Styles for read-only/disabled input fields - make them look like plain text */
 input[readonly],
-textarea[readonly] {
+textarea[readonly],
+select[disabled] {
     background: transparent; /* Make background transparent */
     border-color: transparent; /* Remove the border */
     box-shadow: none; /* Ensure no box shadow */
@@ -290,6 +305,15 @@ textarea[readonly] {
     padding-right: 0;  /* Remove right padding */
     outline: none; /* Remove outline on focus */
 }
+
+/* Specific adjustments for disabled select to look like text/tag */
+select[disabled] {
+    -webkit-appearance: none; /* Remove default select arrow */
+    -moz-appearance: none;
+    appearance: none;
+    text-align: left;
+}
+
 
 /* Ensure textarea keeps its min-height but looks like text */
 textarea[readonly] {
@@ -312,7 +336,7 @@ textarea[readonly] {
     cursor: pointer;
     transition: background 0.2s ease-out, transform 0.1s ease-out, box-shadow 0.2s ease-out;
     box-shadow: var(--md-shadow-0);
-    font-family: 'Inter', sans-serif; /* Consistent font for CTAs */
+    font-family: var(--font-body); /* Consistent font for CTAs */
 }
 
 .btn:hover {
@@ -393,6 +417,7 @@ textarea[readonly] {
     font-size: 0.9rem;
     padding-bottom: 0.5rem;
     border-bottom: 1px solid var(--md-border-color);
+    font-family: var(--font-body); /* Headers for goal inputs use body font */
 }
 
 .goal-header-description { flex: 2; }
@@ -467,6 +492,7 @@ textarea[readonly] {
     cursor: pointer;
     font-size: 0.9em;
     transition: background-color 0.3s ease;
+    font-family: var(--font-body); /* Use body font for this button */
 }
 .remove-goal:hover {
     background-color: #c82333; /* Darker red */
@@ -488,6 +514,7 @@ textarea[readonly] {
     margin-bottom: 1rem;
     font-size: 0.95rem;
     color: var(--md-text-medium-emphasis);
+    font-family: var(--font-body); /* Dates use body font */
 }
 
 .sprint-details-dates strong {
@@ -530,6 +557,7 @@ textarea[readonly] {
     position: sticky; /* Keep headers visible on vertical scroll */
     top: 0;
     z-index: 1; /* Ensure headers are above table content */
+    font-family: var(--font-body); /* Table headers use body font */
 }
 
 .goals-table tbody tr {
@@ -550,6 +578,7 @@ textarea[readonly] {
     vertical-align: top; /* Align content to the top of the cell */
     font-size: 0.95rem;
     color: var(--md-text-high-emphasis);
+    font-family: var(--font-body); /* Table cell text uses body font */
 }
 
 /* Column Widths for the table */
@@ -581,7 +610,7 @@ textarea[readonly] {
     border-radius: 4px;
     font-size: 0.9rem;
     box-sizing: border-box;
-    font-family: 'Inter', sans-serif;
+    font-family: var(--font-body); /* Table inputs/selects use body font */
 }
 
 .goals-table .goal-table-description-input {
@@ -652,6 +681,7 @@ textarea[readonly] {
     cursor: pointer;
     font-size: 0.9em;
     transition: background-color 0.3s ease;
+    font-family: var(--font-body); /* Use body font for this button */
 }
 .goals-table .goal-table-delete-btn:hover {
     background-color: #c82333;
@@ -711,6 +741,7 @@ textarea[readonly] {
     line-height: 1.2;
     margin: 0;
     color: var(--card-current-title-color);
+    font-family: var(--font-heading); /* Card titles use heading font */
 }
 
 .sprint-card.sprint-card--past .sprint-card-title {
@@ -724,6 +755,7 @@ textarea[readonly] {
     flex-wrap: wrap;
     gap: 0.75rem; /* Adjusted gap */
     margin-top: 0.4rem;
+    font-family: var(--font-body); /* Card dates use body font */
 }
 
 .sprint-card-dates span {
@@ -767,6 +799,7 @@ textarea[readonly] {
     color: var(--md-text-high-emphasis);
     font-weight: 500;
     margin: 0;
+    font-family: var(--font-body); /* Progress text uses body font */
 }
 
 .sprint-card-actions {
@@ -782,6 +815,7 @@ textarea[readonly] {
     font-size: 0.95rem; /* Adjusted font size */
     background: var(--card-current-action-btn);
     color: var(--md-primary-text);
+    font-family: var(--font-body); /* Card action buttons use body font */
 }
 .sprint-card-actions .btn:hover {
     background: var(--card-current-action-btn-hover);
@@ -804,6 +838,7 @@ textarea[readonly] {
     border: 1px dashed var(--md-border-color);
     border-radius: 8px;
     background: var(--md-surface);
+    font-family: var(--font-body); /* Empty state messages use body font */
 }
 
 .empty-state .fas {
@@ -831,6 +866,7 @@ textarea[readonly] {
     justify-content: center;
     font-size: 2rem;
     margin-bottom: 1.5rem;
+    font-family: var(--font-heading); /* Welcome panel title uses heading font */
 }
 
 .welcome-panel .panel-title .fas {
@@ -845,6 +881,7 @@ textarea[readonly] {
     margin-left: auto;
     margin-right: auto;
     opacity: 0.9;
+    font-family: var(--font-body); /* Welcome message uses body font */
 }
 
 .welcome-actions {
@@ -922,6 +959,7 @@ textarea[readonly] {
     display: flex;
     align-items: center;
     gap: 10px;
+    font-family: var(--font-body); /* Toast messages use body font */
 }
 
 .toast.show {
@@ -1020,9 +1058,13 @@ textarea[readonly] {
         gap: 0.8rem;
         padding: 0.8rem;
     }
-    .goal-item input, .goal-item select, .goal-item textarea { /* Targets editable fields in Create Sprint form */
+    /* Ensure all form elements within goal-item are consistently styled */
+    .goal-item input,
+    .goal-item select,
+    .goal-item textarea {
         flex-basis: 100%;
         margin-bottom: 0.5rem;
+        font-family: var(--font-body); /* Explicitly set font for robustness */
     }
     .goal-item .remove-goal {
         width: 100%;
@@ -1065,6 +1107,7 @@ textarea[readonly] {
         color: var(--md-text-medium-emphasis);
         text-align: left;
         width: 100px; /* Width for the pseudo-label */
+        font-family: var(--font-body); /* Pseudo-labels use body font */
     }
 
     /* Adjust specific cells for mobile table view */
