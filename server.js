@@ -16,7 +16,23 @@ console.log("MONGODB_URI from .env:", process.env.MONGODB_URI); // <-- ADD THIS
 
 const app = express();
 // app.use(cors());
-app.use(cors({ origin: 'https://sprint101.onrender.com/' }));
+
+const allowedOrigins = [
+  'https://sprint101.vercel.app/',
+  'https://sprint101.onrender.com'
+];
+
+app.use(cors({
+  origin: function(origin, callback) {
+    // allow requests with no origin (like mobile apps, curl, etc.)
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    } else {
+      return callback(new Error('Not allowed by CORS'));
+    }
+  }
+}));
 
 
 const PORT = process.env.PORT || 3000;
