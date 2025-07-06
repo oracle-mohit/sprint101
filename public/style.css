@@ -22,7 +22,7 @@
     --md-text-medium-emphasis: rgba(0, 0, 0, 0.60); /* Grey for secondary text */
     --md-text-disabled: rgba(0, 0, 0, 0.38); /* Lighter grey for disabled text/elements */
 
-    /* Status Colors (remain standard for clarity in manage goals, but not on cards) */
+    /* Status Colors (toned down, used where appropriate) */
     --md-success: #66BB6A; /* Green for success */
     --md-success-light-bg: #E8F5E9; /* Very light green for success backgrounds */
     --md-error: #EF5350; /* Red for error */
@@ -413,8 +413,8 @@ input[readonly]:focus, select[disabled]:focus, textarea[readonly]:focus {
 /* Individual Goal Card in Manage Goals */
 .goals-cards-container {
     display: grid;
-    /* This is the key change for 1 goal card per line */
-    grid-template-columns: 1fr;
+    /* --- KEY FIX --- */
+    grid-template-columns: 1fr; /* Forces 1 card per line, taking full width */
     gap: 1.5rem;
     margin-top: 1.5rem;
 }
@@ -429,7 +429,7 @@ input[readonly]:focus, select[disabled]:focus, textarea[readonly]:focus {
     gap: 0.8rem;
     transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
-    border-left: 5px solid var(--md-primary-light); /* Accent border */
+    border-left: 5px solid var(--md-primary-light);
 }
 
 .goal-card:hover {
@@ -439,25 +439,25 @@ input[readonly]:focus, select[disabled]:focus, textarea[readonly]:focus {
 
 .goal-card-content {
     display: flex;
-    align-items: flex-start; /* Align content to top for textarea */
-    justify-content: space-between;
-    gap: 1rem;
+    align-items: flex-start;
+    /* --- KEY FIX: Adjusted flex distribution --- */
+    gap: 1.5rem; /* Increased gap slightly for more separation */
     width: 100%;
 }
 
 .goal-card-details {
-    flex-grow: 1;
+    flex: 1; /* Allows this section to grow and take available space */
     display: flex;
     flex-direction: column;
     gap: 0.4rem;
-    min-width: 0;
+    min-width: 0; /* Ensures content inside can shrink when space is tight */
 }
 
 /* Styles for goal description (now textarea) */
 .goal-card-description-input {
-    min-height: 60px; /* Increased minimum height for more readability */
-    resize: vertical; /* Allow vertical resizing only */
-    line-height: 1.4; /* Improve line spacing for readability */
+    min-height: 60px;
+    resize: vertical;
+    line-height: 1.4;
     padding: 0.6rem 0.8rem;
     border: 1px solid var(--md-border-color);
     border-radius: 4px;
@@ -495,7 +495,9 @@ input[readonly]:focus, select[disabled]:focus, textarea[readonly]:focus {
 
 /* Styling for goal status select */
 .goal-card-status-select {
-    flex-shrink: 0;
+    flex-shrink: 0; /* Prevents status dropdown from shrinking too much */
+    /* --- KEY FIX: Removed fixed min-width, let content dictate or set a relative width --- */
+    width: 120px; /* Give it a fixed width so details can grow without being pushed */
     padding: 0.6rem 0.8rem;
     border: 1px solid var(--md-border-color);
     border-radius: 4px;
@@ -503,7 +505,6 @@ input[readonly]:focus, select[disabled]:focus, textarea[readonly]:focus {
     background: var(--md-background);
     color: var(--md-text-high-emphasis);
     transition: border-color 0.2s, box-shadow 0.2s, background-color 0.2s;
-    min-width: 120px;
     text-align: center;
 }
 .goal-card-status-select:focus {
@@ -1010,7 +1011,6 @@ input[readonly]:focus, select[disabled]:focus, textarea[readonly]:focus {
     .app-title {
         font-size: 1.1rem;
     }
-
     .panel-card {
         padding: 1.2rem;
     }
