@@ -96,7 +96,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Event Listeners for Navigation ---
     viewSprintsBtn.addEventListener('click', () => showSection('sprints'));
-    createSprintBtn.addEventListener('click', () => showSection('create'));
+    createSprintBtn.addEventListener('click', () => {
+        sprintForm.reset(); // Clear the form when opening 'Add Sprint'
+        goalsContainer.innerHTML = ''; // Clear goals
+        addGoalRow(); // Add a fresh initial goal row
+        showSection('create');
+    });
     cancelSprintButton.addEventListener('click', () => {
         sprintForm.reset();
         goalsContainer.innerHTML = '';
@@ -105,7 +110,12 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Welcome Section Buttons
-    welcomeCreateSprintBtn.addEventListener('click', () => showSection('create'));
+    welcomeCreateSprintBtn.addEventListener('click', () => {
+        sprintForm.reset(); // Clear the form when opening 'Add Sprint'
+        goalsContainer.innerHTML = ''; // Clear goals
+        addGoalRow(); // Add a fresh initial goal row
+        showSection('create');
+    });
     welcomeViewSprintsBtn.addEventListener('click', () => showSection('sprints'));
 
 
@@ -479,27 +489,30 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // --- Initial Load Logic ---
-    // Check if there are any sprints. If not, show welcome. Otherwise, show sprints.
-    // This requires a fetch, so we'll do it a bit differently.
     async function initialLoad() {
+        // Always start by showing the welcome section
+        showSection('welcome', true); // Pass true to skip animation for initial load to avoid double animation
+
         try {
             const response = await fetch(`${API_BASE}/api/sprints`);
             if (response.ok) {
                 const sprints = await response.json();
-                if (sprints.length === 0) {
-                    showSection('welcome');
+                if (sprints.length > 0) {
+                    // If sprints exist, transition to sprints view after a short delay
+                    setTimeout(() => {
+                        showSection('sprints');
+                    }, 1000); // 1-second delay for welcome message visibility
                 } else {
-                    showSection('sprints');
+                    // If no sprints, welcome section remains (already shown)
+                    console.log("No sprints found, Welcome section remains visible.");
                 }
             } else {
-                console.error('Failed to check for existing sprints on initial load.');
-                // Fallback to showing sprints, potentially with an error message
-                showSection('sprints');
+                console.error('Failed to check for existing sprints on initial load, showing welcome as fallback.');
+                // In case of API error, keep welcome section
             }
         } catch (error) {
-            console.error('Network error during initial sprint check:', error);
-            // Fallback to showing sprints, potentially with an error message
-            showSection('sprints');
+            console.error('Network error during initial sprint check, showing welcome as fallback:', error);
+            // In case of network error, keep welcome section
         }
     }
 
