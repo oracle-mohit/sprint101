@@ -83,17 +83,25 @@
 
             <section id="manageGoalsSection" class="panel-card manage-goals-panel" style="display:none;">
                 <h2 class="form-section-title"><i class="fas fa-edit"></i> Manage Goals for <span id="managedSprintName"></span></h2>
+
+                <div class="sprint-details-header">
+                    <div class="sprint-details-dates">
+                        <span><i class="fas fa-calendar-alt"></i> <strong>Start:</strong> <span id="manageSprintStartDate"></span></span>
+                        <span><i class="fas fa-calendar-alt"></i> <strong>End:</strong> <span id="manageSprintEndDate"></span></span>
+                    </div>
+                    <div class="sprint-details-progress">
+                        <div class="progress-bar-container">
+                            <div id="manageSprintProgressBar" class="progress-bar-fill"></div>
+                        </div>
+                        <p class="progress-text">Achievement: <span id="manageSprintAchievement"></span>%</p>
+                    </div>
+                </div>
+
                 <div class="form-section">
-                    <table class="goals-table">
-                        <thead>
-                            <tr>
-                                <th>Goal Description</th>
-                                <th>Type</th>
-                                <th>Status</th>
-                            </tr>
-                        </thead>
-                        <tbody id="manageGoalsList"></tbody>
-                    </table>
+                    <h3 class="form-section-subtitle"><i class="fas fa-tasks"></i> Goals</h3>
+                    <div id="manageGoalsCardsContainer" class="goals-cards-container">
+                        <p class="empty-state">Loading goals...</p>
+                    </div>
                 </div>
                 <div class="form-actions-bottom">
                     <button type="button" id="backToSprintsBtn" class="btn btn-tertiary">Back to Sprints</button>

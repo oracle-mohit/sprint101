@@ -22,7 +22,7 @@
     --md-text-medium-emphasis: rgba(0, 0, 0, 0.60); /* Grey for secondary text */
     --md-text-disabled: rgba(0, 0, 0, 0.38); /* Lighter grey for disabled text/elements */
 
-    /* Status Colors (toned down, used where appropriate) */
+    /* Status Colors (remain standard for clarity in manage goals, but not on cards) */
     --md-success: #66BB6A; /* Green for success */
     --md-success-light-bg: #E8F5E9; /* Very light green for success backgrounds */
     --md-error: #EF5350; /* Red for error */
@@ -71,7 +71,7 @@ body {
 h1, h2, h3, h4, h5, h6 {
     font-family: 'Poppins', sans-serif;
     color: var(--md-text-high-emphasis);
-    margin: 0; /* Remove default margins */
+    margin: 0;
 }
 
 /* --- Header Section --- */
@@ -118,12 +118,12 @@ h1, h2, h3, h4, h5, h6 {
     padding: 0.5rem 1.2rem;
     background: rgba(255, 255, 255, 0.15);
     border: 1px solid rgba(255, 255, 255, 0.2);
-    box-shadow: var(--md-shadow-0); /* No shadow by default for header buttons */
+    box-shadow: var(--md-shadow-0);
 }
 
 .btn-header:hover {
     background: rgba(255, 255, 255, 0.25);
-    transform: none; /* No lift for header buttons */
+    transform: none;
     box-shadow: var(--md-shadow-0);
 }
 
@@ -145,7 +145,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .panel-card {
-    background: var(--md-surface); /* Default for most white sections/cards */
+    background: var(--md-surface);
     border-radius: 8px;
     box-shadow: var(--md-shadow-1);
     margin-bottom: 2.5rem;
@@ -158,7 +158,6 @@ h1, h2, h3, h4, h5, h6 {
     box-shadow: var(--md-shadow-2);
 }
 
-/* Section Titles (used for Welcome, and forms) */
 .form-section-title {
     font-size: 1.6rem;
     font-weight: 700;
@@ -166,13 +165,12 @@ h1, h2, h3, h4, h5, h6 {
     align-items: center;
     gap: 0.8rem;
     color: var(--md-primary-dark);
-    margin: 0 0 1.8rem 0; /* Top, Right, Bottom, Left */
+    margin: 0 0 1.8rem 0;
 }
 .form-section-title .fas {
     color: var(--md-primary);
 }
 
-/* Main Panel Titles (used for Sprint Sections) */
 .panel-title {
     font-size: 1.6rem;
     font-weight: 700;
@@ -180,13 +178,12 @@ h1, h2, h3, h4, h5, h6 {
     align-items: center;
     gap: 0.8rem;
     margin: 0 0 1.8rem 0;
-    color: var(--md-primary-dark); /* Default is primary-dark (blue) */
+    color: var(--md-primary-dark);
 }
 .panel-title .fas {
     color: var(--md-primary);
 }
 
-/* Override for Current & Upcoming and Past Sprints section titles to be black */
 #currentUpcomingSprintsSection .panel-title,
 #pastSprintsSection .panel-title {
     color: var(--md-text-high-emphasis);
@@ -206,7 +203,7 @@ h1, h2, h3, h4, h5, h6 {
     margin-bottom: 1rem;
 }
 
-/* --- Form Elements --- */
+/* --- Form Elements (General) --- */
 .form-section {
     margin-bottom: 2.5rem;
 }
@@ -222,7 +219,7 @@ h1, h2, h3, h4, h5, h6 {
 
 .form-row .form-group {
     flex: 1;
-    margin-bottom: 0; /* Reset margin for groups within a row */
+    margin-bottom: 0;
 }
 
 label {
@@ -233,7 +230,7 @@ label {
     font-size: 0.95rem;
 }
 
-input[type="text"], input[type="date"], select {
+input[type="text"], input[type="date"], select, textarea {
     width: 100%;
     padding: 0.8rem 1rem;
     border: 1px solid var(--md-border-color);
@@ -245,14 +242,28 @@ input[type="text"], input[type="date"], select {
     transition: border-color 0.2s, box-shadow 0.2s, background-color 0.2s;
 }
 
-input[type="text"]:focus, input[type="date"]:focus, select:focus {
+input[type="text"]:focus, input[type="date"]:focus, select:focus, textarea:focus {
     outline: none;
     border-color: var(--md-primary);
     box-shadow: 0 0 0 2px var(--md-primary-light);
     background: var(--md-surface);
 }
 
-/* --- Buttons --- */
+input[readonly], select[disabled], textarea[readonly] {
+    background: #f5f5f5; /* Lighter grey for disabled/readonly inputs */
+    color: var(--md-text-medium-emphasis);
+    cursor: default; /* Change cursor for non-editable */
+    border-color: #eee;
+    box-shadow: none;
+}
+input[readonly]:focus, select[disabled]:focus, textarea[readonly]:focus {
+    background: #f5f5f5;
+    border-color: #eee;
+    box-shadow: none;
+}
+
+
+/* --- Buttons (General) --- */
 .btn {
     display: inline-flex;
     align-items: center;
@@ -331,7 +342,7 @@ input[type="text"]:focus, input[type="date"]:focus, select:focus {
     margin-top: 1rem;
 }
 
-/* --- Create Sprint Goals Input --- */
+/* --- Create Sprint Goals Input List --- */
 .goal-input-container {
     margin-top: 1rem;
 }
@@ -368,22 +379,6 @@ input[type="text"]:focus, input[type="date"]:focus, select:focus {
     box-shadow: 0 1px 1px rgba(0,0,0,0.05);
 }
 
-.goal-item input, .goal-item select {
-    flex: 1;
-    margin: 0; /* Override default input margin */
-    padding: 0.6rem 0.8rem;
-    font-size: 0.95rem;
-    background: var(--md-surface);
-}
-
-.goal-item .goal-description { flex: 2; }
-.goal-item .goal-type { flex: 1; }
-
-.goal-item .remove-goal {
-    padding: 0.6rem 0.8rem;
-    font-size: 0.95rem;
-}
-
 /* --- Manage Goals Page Styles --- */
 .sprint-details-header {
     background: var(--md-background);
@@ -415,7 +410,7 @@ input[type="text"]:focus, input[type="date"]:focus, select:focus {
     margin-top: 1rem;
 }
 
-/* Manage Goals Page - Individual Goal Card */
+/* Individual Goal Card in Manage Goals */
 .goals-cards-container {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -433,7 +428,7 @@ input[type="text"]:focus, input[type="date"]:focus, select:focus {
     gap: 0.8rem;
     transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
-    border-left: 5px solid var(--md-primary-light);
+    border-left: 5px solid var(--md-primary-light); /* Accent border */
 }
 
 .goal-card:hover {
@@ -443,9 +438,10 @@ input[type="text"]:focus, input[type="date"]:focus, select:focus {
 
 .goal-card-content {
     display: flex;
-    align-items: center;
+    align-items: flex-start; /* Align content to top for textarea */
     justify-content: space-between;
     gap: 1rem;
+    width: 100%;
 }
 
 .goal-card-details {
@@ -453,11 +449,15 @@ input[type="text"]:focus, input[type="date"]:focus, select:focus {
     display: flex;
     flex-direction: column;
     gap: 0.4rem;
+    min-width: 0; /* Allow flex item to shrink */
 }
 
-.goal-card-description-input {
-    width: 100%;
-    padding: 0.6rem 0.8rem;
+/* Styling for goal description (now textarea) */
+.goal-card-description-input { /* Applies to textarea */
+    min-height: 60px; /* Increased minimum height for more readability */
+    resize: vertical; /* Allow vertical resizing only */
+    line-height: 1.4; /* Improve line spacing for readability */
+    padding: 0.6rem 0.8rem; /* Consistent padding */
     border: 1px solid var(--md-border-color);
     border-radius: 4px;
     font-size: 0.95rem;
@@ -472,15 +472,10 @@ input[type="text"]:focus, input[type="date"]:focus, select:focus {
     box-shadow: 0 0 0 2px var(--md-primary-light);
     background: var(--md-surface);
 }
-.goal-card-description-input[readonly] {
-    background: #f5f5f5;
-    color: var(--md-text-medium-emphasis);
-    cursor: default;
-    border-color: #eee;
-}
 
+/* Styling for goal type select */
 .goal-card-type-select {
-    width: 100%;
+    width: 100%; /* Ensure it takes full width of its container */
     padding: 0.6rem 0.8rem;
     border: 1px solid var(--md-border-color);
     border-radius: 4px;
@@ -496,13 +491,8 @@ input[type="text"]:focus, input[type="date"]:focus, select:focus {
     box-shadow: 0 0 0 2px var(--md-primary-light);
     background: var(--md-surface);
 }
-.goal-card-type-select[disabled] {
-    background: #f5f5f5;
-    color: var(--md-text-medium-emphasis);
-    cursor: not-allowed;
-    border-color: #eee;
-}
 
+/* Styling for goal status select */
 .goal-card-status-select {
     flex-shrink: 0;
     padding: 0.6rem 0.8rem;
@@ -521,13 +511,8 @@ input[type="text"]:focus, input[type="date"]:focus, select:focus {
     box-shadow: 0 0 0 2px var(--md-primary-light);
     background: var(--md-surface);
 }
-.goal-card-status-select[disabled] {
-    background: #f5f5f5;
-    color: var(--md-text-medium-emphasis);
-    cursor: not-allowed;
-    border-color: #eee;
-}
 
+/* Status colors within Goal Cards in Manage Goals */
 .goal-card-status-select.status-done {
     color: var(--md-success);
     font-weight: 600;
@@ -560,11 +545,11 @@ input[type="text"]:focus, input[type="date"]:focus, select:focus {
 
 /* --- Sprint List Sections --- */
 #currentUpcomingSprintsSection {
-    background: var(--section-bg-white); /* White background for section */
+    background: var(--section-bg-white);
 }
 
 #pastSprintsSection {
-    background: var(--section-bg-white); /* White background for section */
+    background: var(--section-bg-white);
 }
 
 /* --- Sprint Cards List --- */
@@ -582,15 +567,13 @@ input[type="text"]:focus, input[type="date"]:focus, select:focus {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     overflow: hidden;
 
-    /* Default (Current & Upcoming) Sprint Card Colors */
     border-left: 6px solid var(--card-current-border);
     background: var(--card-current-bg);
 }
 
-/* Past Sprint Card Specific Styles */
 .sprint-card.sprint-card--past {
     border-left-color: var(--card-past-border);
     background: var(--card-past-bg);
@@ -612,12 +595,12 @@ input[type="text"]:focus, input[type="date"]:focus, select:focus {
     font-size: 1.15rem;
     font-weight: 700;
     line-height: 1.2;
-    margin: 0; /* Ensure no default margin */
-    color: var(--card-current-title-color); /* Light blue for Current card titles */
+    margin: 0;
+    color: var(--card-current-title-color);
 }
 
 .sprint-card.sprint-card--past .sprint-card-title {
-    color: var(--card-past-title-color); /* Light purple for Past card titles */
+    color: var(--card-past-title-color);
 }
 
 .sprint-card-dates {
@@ -647,29 +630,29 @@ input[type="text"]:focus, input[type="date"]:focus, select:focus {
 
 .progress-bar-container {
     width: 100%;
-    height: 9px; /* Increased height by 50% from 6px */
+    height: 9px;
     background: var(--md-border-color);
-    border-radius: 4.5px; /* Adjusted border-radius to match new height */
+    border-radius: 4.5px;
     overflow: hidden;
     margin-bottom: 0.3rem;
 }
 
 .progress-bar-fill {
     height: 100%;
-    background: var(--card-current-progress-fill); /* Matches Current card title/border color */
+    background: var(--card-current-progress-fill);
     border-radius: 4.5px;
     transition: width 0.4s ease-out;
 }
 
 .sprint-card.sprint-card--past .progress-bar-fill {
-    background: var(--card-past-progress-fill); /* Matches Past card title/border color */
+    background: var(--card-past-progress-fill);
 }
 
 .progress-text {
     font-size: 0.8rem;
     color: var(--md-text-high-emphasis);
     font-weight: 500;
-    margin: 0; /* Ensure no default margin */
+    margin: 0;
 }
 
 .sprint-card-actions {
@@ -683,7 +666,7 @@ input[type="text"]:focus, input[type="date"]:focus, select:focus {
     justify-content: center;
     padding: 0.6rem 0.8rem;
     font-size: 0.9rem;
-    background: var(--card-current-action-btn); /* Matches Current card theme color */
+    background: var(--card-current-action-btn);
     color: var(--md-primary-text);
 }
 .sprint-card-actions .btn:hover {
@@ -691,7 +674,7 @@ input[type="text"]:focus, input[type="date"]:focus, select:focus {
 }
 
 .sprint-card.sprint-card--past .sprint-card-actions .btn {
-    background: var(--card-past-action-btn); /* Matches Past card theme color */
+    background: var(--card-past-action-btn);
 }
 .sprint-card.sprint-card--past .sprint-card-actions .btn:hover {
     background: var(--card-past-action-btn-hover);
