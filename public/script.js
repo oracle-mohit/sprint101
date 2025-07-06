@@ -65,6 +65,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- Section Management ---
     function showSection(sectionId) {
         const changeableSections = [
+            welcomeSection, // Added welcome section to hide it consistently
             createSprintSection,
             manageGoalsSection,
             currentUpcomingSprintsSection,
@@ -105,6 +106,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 break;
         }
 
+        // Show welcome section if no other section is specifically shown
+        if (!targetElementForScroll) {
+             welcomeSection.style.display = 'block';
+             welcomeSection.classList.add('fade-in-up');
+        }
+
         if (targetElementForScroll) {
             targetElementForScroll.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
@@ -115,13 +122,13 @@ document.addEventListener('DOMContentLoaded', () => {
     createSprintBtn.addEventListener('click', () => {
         sprintForm.reset();
         goalsContainer.innerHTML = '';
-        addGoalRow();
+        addGoalRow(); // Always add one empty row to start
         showSection('create');
     });
     cancelSprintButton.addEventListener('click', () => {
         sprintForm.reset();
         goalsContainer.innerHTML = '';
-        addGoalRow();
+        addGoalRow(); // Keep one row for next time
         showSection('sprints');
     });
 
@@ -135,26 +142,42 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     // --- Goal Management (Create Sprint Form) ---
+    // MODIFIED: Added `form-group` divs and changed input to textarea for description
     function addGoalRow(goal = { description: '', type: 'Dev Complete' }) {
         const goalItem = document.createElement('div');
-        goalItem.classList.add('goal-item');
+        goalItem.classList.add('goal-item'); // This will be a flex container for its contents
+        const uniqueId = Date.now() + Math.floor(Math.random() * 1000); // More robust unique ID
+
         goalItem.innerHTML = `
-            <input type="text" class="goal-description" placeholder="e.g., Implement user authentication" value="${goal.description}" required>
-            <select class="goal-type">
-                <option value="Live" ${goal.type === 'Live' ? 'selected' : ''}>Live</option>
-                <option value="QA Complete" ${goal.type === 'QA Complete' ? 'selected' : ''}>QA Complete</option>
-                <option value="Dev Complete" ${goal.type === 'Dev Complete' ? 'selected' : ''}>Dev Complete</option>
-            </select>
+            <div class="goal-fields-wrapper">
+                <div class="form-group goal-description-group">
+                    <label for="goal-desc-${uniqueId}">Description</label>
+                    <textarea id="goal-desc-${uniqueId}" class="goal-description" placeholder="e.g., Implement user authentication" rows="2" required>${goal.description}</textarea>
+                </div>
+                <div class="form-group goal-type-group">
+                    <label for="goal-type-${uniqueId}">Type</label>
+                    <select id="goal-type-${uniqueId}" class="goal-type">
+                        <option value="Live" ${goal.type === 'Live' ? 'selected' : ''}>Live</option>
+                        <option value="QA Complete" ${goal.type === 'QA Complete' ? 'selected' : ''}>QA Complete</option>
+                        <option value="Dev Complete" ${goal.type === 'Dev Complete' ? 'selected' : ''}>Dev Complete</option>
+                    </select>
+                </div>
+            </div>
             <button type="button" class="remove-goal btn btn-danger"><i class="fas fa-trash-can"></i></button>
         `;
         goalsContainer.appendChild(goalItem);
 
         goalItem.querySelector('.remove-goal').addEventListener('click', () => {
-            goalItem.remove();
+            // Add a class for fade-out effect before removal
+            goalItem.classList.add('removing');
+            goalItem.addEventListener('transitionend', function handler() {
+                goalItem.remove();
+                goalItem.removeEventListener('transitionend', handler); // Clean up listener
+            });
         });
     }
 
-    addGoalRow();
+    addGoalRow(); // Add one initial goal row when the page loads
     addGoalButton.addEventListener('click', () => addGoalRow());
 
 
@@ -203,13 +226,13 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!description) {
                 hasEmptyGoalDescription = true;
                 input.focus();
-                return;
+                return; // Skips this goal and continues forEach
             }
 
             if (description.length < 12) {
                 hasShortGoalDescription = true;
                 input.focus();
-                return;
+                return; // Skips this goal and continues forEach
             }
 
             goals.push({
@@ -219,15 +242,16 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         });
 
-        if (hasEmptyGoalDescription) {
-            showToast('Please fill out all goal descriptions or remove empty goal rows.', 'error');
-            return;
+        // Use `some` for more efficient validation checks (stops on first true)
+        if (goalDescriptionInputs.some(input => !input.value.trim())) {
+             showToast('Please fill out all goal descriptions or remove empty goal rows.', 'error');
+             return;
+        }
+        if (goalDescriptionInputs.some(input => input.value.trim().length < 12)) {
+             showToast('Each goal description must be at least 12 characters long.', 'error');
+             return;
         }
 
-        if (hasShortGoalDescription) {
-            showToast('Each goal description must be at least 12 characters long.', 'error');
-            return;
-        }
 
         if (goals.length < 3) {
             showToast('A sprint must have at least 3 goals. Please add more or fill out existing ones.', 'error');
@@ -259,7 +283,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 showToast('Sprint created successfully!', 'success');
                 sprintForm.reset();
                 goalsContainer.innerHTML = '';
-                addGoalRow();
+                addGoalRow(); // Add one initial goal row for the next sprint creation
                 showSection('sprints');
             } else {
                 const errorData = await response.json();
@@ -406,6 +430,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    // MODIFIED: Added `form-group` divs and labels for goal description, type, and status
     async function openManageGoalsPanel(sprintId, readOnly = false, editStatusOnly = false) {
         showSection('manageGoals');
 
@@ -435,34 +460,43 @@ document.addEventListener('DOMContentLoaded', () => {
             if (sprintData.goals.length === 0) {
                 manageGoalsCardsContainer.innerHTML = '<p class="empty-state"><i class="fas fa-clipboard"></i> No goals defined for this sprint.</p>';
             } else {
-                sprintData.goals.forEach((goal) => { // Removed idx, not strictly needed here
+                sprintData.goals.forEach((goal) => {
                     const goalCard = document.createElement('div');
                     goalCard.classList.add('goal-card');
                     goalCard.dataset.goalId = goal._id; // Assuming _id is available from backend
 
                     const isDescriptionEditable = !readOnly && !editStatusOnly;
                     const isTypeEditable = !readOnly && !editStatusOnly;
-                    const isStatusEditable = !readOnly;
+                    const isStatusEditable = !readOnly; // Status is editable unless overall readOnly
 
                     goalCard.innerHTML = `
                         <div class="goal-card-content">
                             <div class="goal-card-details">
-                                <textarea class="goal-card-description-input" rows="2" placeholder="Goal Description"
-                                    ${isDescriptionEditable ? '' : 'readonly'}>${goal.description}</textarea>
-                                <select class="goal-card-type-select"
-                                    ${isTypeEditable ? '' : 'disabled'}>
-                                    <option value="Live" ${goal.type === 'Live' ? 'selected' : ''}>Live</option>
-                                    <option value="QA Complete" ${goal.type === 'QA Complete' ? 'selected' : ''}>QA Complete</option>
-                                    <option value="Dev Complete" ${goal.type === 'Dev Complete' ? 'selected' : ''}>Dev Complete</option>
+                                <div class="form-group goal-card-description-group">
+                                    <label for="goal-card-desc-${goal._id}">Description</label>
+                                    <textarea id="goal-card-desc-${goal._id}" class="goal-card-description-input" rows="2" placeholder="Goal Description"
+                                        ${isDescriptionEditable ? '' : 'readonly'}>${goal.description}</textarea>
+                                </div>
+                                <div class="form-group goal-card-type-group">
+                                    <label for="goal-card-type-${goal._id}">Type</label>
+                                    <select id="goal-card-type-${goal._id}" class="goal-card-type-select"
+                                        ${isTypeEditable ? '' : 'disabled'}>
+                                        <option value="Live" ${goal.type === 'Live' ? 'selected' : ''}>Live</option>
+                                        <option value="QA Complete" ${goal.type === 'QA Complete' ? 'selected' : ''}>QA Complete</option>
+                                        <option value="Dev Complete" ${goal.type === 'Dev Complete' ? 'selected' : ''}>Dev Complete</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group goal-card-status-group">
+                                <label for="goal-card-status-${goal._id}">Status</label>
+                                <select id="goal-card-status-${goal._id}" class="goal-card-status-select ${goal.status === 'Done' ? 'status-done' : 'status-not-done'}"
+                                    ${isStatusEditable ? '' : 'disabled'}>
+                                    <option value="Not Done" ${goal.status === 'Not Done' ? 'selected' : ''}>Not Done</option>
+                                    <option value="Done" ${goal.status === 'Done' ? 'selected' : ''}>Done</option>
                                 </select>
                             </div>
-                            <select class="goal-card-status-select ${goal.status === 'Done' ? 'status-done' : 'status-not-done'}"
-                                ${isStatusEditable ? '' : 'disabled'}>
-                                <option value="Not Done" ${goal.status === 'Not Done' ? 'selected' : ''}>Not Done</option>
-                                <option value="Done" ${goal.status === 'Done' ? 'selected' : ''}>Done</option>
-                            </select>
                         </div>
-                        ${(!readOnly && !editStatusOnly) ? `<button type="button" class="goal-card-delete-btn"><i class="fas fa-trash-alt"></i></button>` : ''}
+                        ${(!readOnly && !editStatusOnly) ? `<button type="button" class="goal-card-delete-btn btn btn-danger"><i class="fas fa-trash-alt"></i></button>` : ''}
                     `;
                     manageGoalsCardsContainer.appendChild(goalCard);
 
@@ -485,12 +519,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (deleteBtn) {
                         deleteBtn.addEventListener('click', () => {
                             goalCard.classList.add('deleted'); // Mark for deletion
-                            goalCard.style.opacity = '0'; // Start fade out
-                            goalCard.style.height = '0'; // Collapse height
-                            goalCard.style.padding = '0'; // Collapse padding
-                            goalCard.style.margin = '0'; // Collapse margin
-                            goalCard.style.overflow = 'hidden'; // Hide overflow during collapse
-
+                            // CSS transition will handle the smooth removal
                             goalCard.addEventListener('transitionend', function handler() {
                                 goalCard.remove(); // Remove from DOM after transition
                                 showToast('Goal removed. Click Save Changes to finalize.', 'info', 2000);
