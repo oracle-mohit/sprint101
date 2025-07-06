@@ -26,16 +26,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const manageGoalsList = document.getElementById('manageGoalsList');
     const saveGoalsBtn = document.getElementById('saveGoalsBtn');
     const backToSprintsBtn = document.getElementById('backToSprintsBtn');
-    const toastContainer = document.getElementById('toast-container'); // New toast container
+    const toastContainer = document.getElementById('toast-container');
 
 
     // --- Custom Toast / Snackbar Function ---
-    /**
-     * Displays a Material Design-style toast/snackbar message.
-     * @param {string} message The message to display.
-     * @param {'success'|'error'|'info'|'default'} type The type of toast (affects color and icon).
-     * @param {number} duration How long the toast should be visible in milliseconds. Default 3000ms.
-     */
     function showToast(message, type = 'default', duration = 3000) {
         const toast = document.createElement('div');
         toast.classList.add('toast', type);
@@ -45,18 +39,16 @@ document.addEventListener('DOMContentLoaded', () => {
             case 'success': iconClass = 'fas fa-check-circle'; break;
             case 'error': iconClass = 'fas fa-times-circle'; break;
             case 'info': iconClass = 'fas fa-info-circle'; break;
-            default: iconClass = 'fas fa-bell'; break; // Generic icon
+            default: iconClass = 'fas fa-bell'; break;
         }
 
         toast.innerHTML = `<i class="${iconClass}"></i><span>${message}</span>`;
         toastContainer.appendChild(toast);
 
-        // Show the toast with a slight delay for animation
         setTimeout(() => {
             toast.classList.add('show');
-        }, 10); // Small delay to allow CSS transition to work
+        }, 10);
 
-        // Hide and remove the toast after duration
         setTimeout(() => {
             toast.classList.remove('show');
             toast.addEventListener('transitionend', () => toast.remove());
@@ -65,9 +57,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     // --- Section Management ---
-    // This function now manages the visibility of content *below* the permanent welcome section.
     function showSection(sectionId) {
-        // List of all sections that are dynamically shown/hidden by this function
         const changeableSections = [
             createSprintSection,
             manageGoalsSection,
@@ -75,45 +65,40 @@ document.addEventListener('DOMContentLoaded', () => {
             pastSprintsSection
         ];
 
-        // Hide all dynamically changeable sections first
         changeableSections.forEach(sec => {
             sec.style.display = 'none';
-            // Also remove the animation class to allow it to re-trigger on next display
             sec.classList.remove('fade-in-up');
         });
 
-        // Manage active state of header navigation buttons
         viewSprintsBtn.classList.remove('active');
         createSprintBtn.classList.remove('active');
 
-        let targetElementForScroll = null; // Element to scroll into view after showing
+        let targetElementForScroll = null;
 
         switch (sectionId) {
             case 'create':
                 createSprintSection.style.display = 'block';
-                createSprintSection.classList.add('fade-in-up'); // Apply animation
+                createSprintSection.classList.add('fade-in-up');
                 createSprintBtn.classList.add('active');
                 targetElementForScroll = createSprintSection;
                 break;
             case 'manageGoals':
                 manageGoalsSection.style.display = 'block';
-                manageGoalsSection.classList.add('fade-in-up'); // Apply animation
-                // No header button gets active for manage goals
+                manageGoalsSection.classList.add('fade-in-up');
                 targetElementForScroll = manageGoalsSection;
                 break;
-            case 'sprints': // This is the main view with current/past sprints
+            case 'sprints':
             default:
                 currentUpcomingSprintsSection.style.display = 'block';
                 pastSprintsSection.style.display = 'block';
-                currentUpcomingSprintsSection.classList.add('fade-in-up'); // Apply animation
-                pastSprintsSection.classList.add('fade-in-up'); // Apply animation
+                currentUpcomingSprintsSection.classList.add('fade-in-up');
+                pastSprintsSection.classList.add('fade-in-up');
                 viewSprintsBtn.classList.add('active');
-                fetchSprints(); // Re-fetch sprints whenever this section is shown
+                fetchSprints();
                 targetElementForScroll = currentUpcomingSprintsSection;
                 break;
         }
 
-        // Scroll to the top of the relevant section for better UX
         if (targetElementForScroll) {
             targetElementForScroll.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
@@ -122,19 +107,18 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- Event Listeners for Navigation ---
     viewSprintsBtn.addEventListener('click', () => showSection('sprints'));
     createSprintBtn.addEventListener('click', () => {
-        sprintForm.reset(); // Clear the form when switching to 'Add Sprint'
+        sprintForm.reset();
         goalsContainer.innerHTML = '';
-        addGoalRow(); // Add a fresh initial goal row
+        addGoalRow();
         showSection('create');
     });
     cancelSprintButton.addEventListener('click', () => {
         sprintForm.reset();
         goalsContainer.innerHTML = '';
         addGoalRow();
-        showSection('sprints'); // Switch back to sprints view
+        showSection('sprints');
     });
 
-    // Event Listeners for Welcome Section Buttons
     welcomeCreateSprintBtn.addEventListener('click', () => {
         sprintForm.reset();
         goalsContainer.innerHTML = '';
@@ -164,7 +148,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    addGoalRow(); // Add initial goal row when page loads for the form
+    addGoalRow();
     addGoalButton.addEventListener('click', () => addGoalRow());
 
 
@@ -172,43 +156,95 @@ document.addEventListener('DOMContentLoaded', () => {
     sprintForm.addEventListener('submit', async (e) => {
         e.preventDefault();
 
+        const podNameInput = document.getElementById('podName'); // Get podName input
         const startDateInput = document.getElementById('startDate');
         const endDateInput = document.getElementById('endDate');
-        const startDate = new Date(startDateInput.value);
-        const endDate = new Date(endDateInput.value);
+        const sprintStartDate = new Date(startDateInput.value);
+        const sprintEndDate = new Date(endDateInput.value);
 
-        if (startDate > endDate) {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        // Validation 1: Pod Name cannot be empty
+        if (!podNameInput.value.trim()) {
+            showToast('POD Name is required.', 'error');
+            podNameInput.focus();
+            return;
+        }
+
+        // Validation 2: Sprint End Date cannot be before Start Date
+        if (sprintStartDate > sprintEndDate) {
             showToast('Sprint End Date cannot be before Start Date. Please correct your dates.', 'error');
+            endDateInput.focus();
+            return;
+        }
+
+        // Validation 3: Sprint Start Date cannot be less than the current date
+        if (sprintStartDate < today) {
+            showToast('Sprint Start Date cannot be in the past. Please select today or a future date.', 'error');
             startDateInput.focus();
             return;
         }
 
+        const goalDescriptionInputs = Array.from(document.querySelectorAll('.goal-description'));
+        const goalTypeSelects = Array.from(document.querySelectorAll('.goal-type'));
+
+        const goals = [];
+        let hasEmptyGoalDescription = false; // Flag to check for empty goal descriptions
+        let hasShortGoalDescription = false; // Flag to check for short goal descriptions
+
+        goalDescriptionInputs.forEach((input, index) => {
+            const description = input.value.trim();
+            const type = goalTypeSelects[index].value;
+
+            // Check if goal description is empty
+            if (!description) {
+                hasEmptyGoalDescription = true;
+                input.focus(); // Focus on the first empty input found
+                return; // Skip adding this goal if empty
+            }
+
+            // Check for minimum goal description length
+            if (description.length < 12) {
+                hasShortGoalDescription = true;
+                input.focus(); // Focus on the first short input found
+                return; // Skip adding this goal if too short
+            }
+
+            goals.push({
+                description: description,
+                type: type,
+                status: 'Not Done'
+            });
+        });
+
+        // Validation 4: Check if any goal description was empty
+        if (hasEmptyGoalDescription) {
+            showToast('Please fill out all goal descriptions or remove empty goal rows.', 'error');
+            return;
+        }
+
+        // Validation 5: Check if any goal description was too short
+        if (hasShortGoalDescription) {
+            showToast('Each goal description must be at least 12 characters long.', 'error');
+            return;
+        }
+
+        // Validation 6: Sprint will not be created if there are less than 3 Goals
+        if (goals.length < 3) {
+            showToast('A sprint must have at least 3 goals. Please add more or fill out existing ones.', 'error');
+            // Optionally, scroll to goals section: goalsContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            return;
+        }
+
+
+        // Disable button and show loading state
         createSprintButton.disabled = true;
         createSprintButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creating...';
         cancelSprintButton.disabled = true;
 
-        const podName = document.getElementById('podName').value;
-        const goalDescriptions = Array.from(document.querySelectorAll('.goal-description')).map(input => input.value.trim());
-        const goalTypes = Array.from(document.querySelectorAll('.goal-type')).map(select => select.value);
-
-        const goals = goalDescriptions
-            .filter(desc => desc !== '')
-            .map((desc, index) => ({
-                description: desc,
-                type: goalTypes[index],
-                status: 'Not Done'
-            }));
-
-        if (goals.length === 0) {
-            goals.push({
-                description: 'No specific goals defined for this sprint.',
-                type: 'Dev Complete',
-                status: 'Not Done'
-            });
-        }
-
         const newSprint = {
-            podName,
+            podName: podNameInput.value,
             startDate: startDateInput.value,
             endDate: endDateInput.value,
             goals
@@ -227,8 +263,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 showToast('Sprint created successfully!', 'success');
                 sprintForm.reset();
                 goalsContainer.innerHTML = '';
-                addGoalRow();
-                showSection('sprints'); // Go back to sprints view and refresh
+                addGoalRow(); // Add a fresh initial goal row
+                showSection('sprints');
             } else {
                 const errorData = await response.json();
                 showToast(`Error creating sprint: ${errorData.message || 'Unknown error'}`, 'error');
@@ -372,7 +408,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     async function openManageGoalsPanel(sprintId, readOnly = false, editStatusOnly = false) {
-        showSection('manageGoals'); // Show manage goals section
+        showSection('manageGoals');
 
         let sprintDetails;
         try {
@@ -494,7 +530,7 @@ document.addEventListener('DOMContentLoaded', () => {
             saveGoalsBtn.disabled = false;
             saveGoalsBtn.innerHTML = 'Save Changes';
             backToSprintsBtn.disabled = false;
-            showSection('sprints'); // Go back to sprints view and refresh
+            showSection('sprints');
         }
     });
 
@@ -505,8 +541,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Initial Load Logic ---
     function initialLoad() {
-        showSection('sprints'); // This will fetch and display the sprint cards
+        showSection('sprints');
     }
 
-    initialLoad(); // Call this function on DOMContentLoaded
+    initialLoad();
 });
