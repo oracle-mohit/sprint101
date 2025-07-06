@@ -24,25 +24,24 @@
     --md-text-on-primary: #ffffff;
     --md-text-on-secondary: #ffffff;
 
-    /* Status Colors (toned down) */
-    --md-success: #66BB6A; /* Lighter Green (Material Green 400) */
-    --md-success-light-bg: #E8F5E9; /* Lightest Green 50 */
-    --md-error: #EF5350; /* Lighter Red (Material Red 400) */
-    --md-error-light-bg: #FFEBEE; /* Lightest Red 50 */
+    /* Status Colors (remain standard for clarity in manage goals, but not on cards) */
+    --md-success: #66BB6A; /* Toned down Green */
+    --md-success-light-bg: #E8F5E9; /* Lightest Green */
+    --md-error: #EF5350; /* Toned down Red */
+    --md-error-light-bg: #FFEBEE; /* Lightest Red */
     --md-info: #2196F3; /* Standard Material Blue for info */
     --md-warning: #FFC107; /* Amber */
 
-    /* --- NEW SECTION & CARD COLORS --- */
-    /* Current & Upcoming Sprints Section & Cards */
-    --section-current-bg: #E3F2FD; /* Very light blue (Material Blue 50) */
+    /* New Section & Card Colors */
+    /* Current & Upcoming Sprints Section & Cards (Blue Theme) */
+    --section-current-bg: #E3F2FD; /* Very light blue */
     --card-current-border: var(--md-primary); /* Use primary blue for border */
     --card-current-bg: #F5F8FF; /* Slightly off-white/very light blue for cards */
 
-    /* Past Sprints Section & Cards */
-    --section-past-bg: #F3E5F5; /* Very light purple (Material Purple 50) */
+    /* Past Sprints Section & Cards (Light Purple Theme) */
+    --section-past-bg: #F3E5F5; /* Very light purple */
     --card-past-border: #9C27B0; /* A darker purple for the border */
     --card-past-bg: #FCF5FF; /* Slightly off-white/very light purple for cards */
-    /* --- END NEW SECTION & CARD COLORS --- */
 
 
     /* Material Shadows (Elevation) */
@@ -118,7 +117,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .panel-card {
-    background: var(--md-surface); /* Default for forms, welcome, manage goals */
+    background: var(--md-surface);
     border-radius: 8px;
     box-shadow: var(--md-shadow-1);
     margin-bottom: 2.5rem;
@@ -337,7 +336,7 @@ input[type="text"]:focus, input[type="date"]:focus, select:focus {
     gap: 1rem;
     align-items: center;
     background: #fafafa;
-    padding: 0.8rem 1rem;
+    padding: 0.8rem 1.5rem; /* Adjusted for consistency */
     border-radius: 4px;
     border: 1px solid var(--md-border-color);
     box-shadow: 0 1px 1px rgba(0,0,0,0.05);
@@ -412,6 +411,7 @@ input[type="text"]:focus, input[type="date"]:focus, select:focus {
     background: var(--md-surface);
 }
 
+/* These status colors will remain for the dropdown in manage goals table */
 .goal-status-select.status-done {
     color: var(--md-success);
     font-weight: 600;
@@ -423,11 +423,11 @@ input[type="text"]:focus, input[type="date"]:focus, select:focus {
 
 /* --- SECTION BACKGROUNDS --- */
 #currentUpcomingSprintsSection {
-    background: var(--section-current-bg); /* Light blue for current/upcoming */
+    background: var(--section-current-bg);
 }
 
 #pastSprintsSection {
-    background: var(--section-past-bg); /* Light purple for past sprints */
+    background: var(--section-past-bg);
 }
 /* --- END SECTION BACKGROUNDS --- */
 
@@ -450,29 +450,27 @@ input[type="text"]:focus, input[type="date"]:focus, select:focus {
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     overflow: hidden;
 
-    /* --- DEFAULT CARD COLORS (for current & upcoming) --- */
+    /* Default (Current & Upcoming) Sprint Card Colors */
     border-left: 6px solid var(--card-current-border);
     background: var(--card-current-bg);
 }
 
-/* --- PAST SPRINT CARD SPECIFIC STYLES --- */
+/* Past Sprint Card Specific Styles */
 .sprint-card.sprint-card--past {
     border-left-color: var(--card-past-border);
     background: var(--card-past-bg);
 }
 
-/* --- REMOVED SPECIFIC CARD STATUS BACKGROUNDS/BORDERS --- */
-/* The .completed and .overdue classes will now only affect progress bar and button colors */
+/* --- REMOVED ALL GREEN/RED COLOR OVERRIDES FOR SPRINT CARD ELEMENTS --- */
+/* These properties are removed/commented out to ensure no green/red on the cards */
 /* .sprint-card.completed {
     border-left-color: var(--md-success);
     background: var(--md-success-light-bg);
 }
-
 .sprint-card.overdue {
     border-left-color: var(--md-error);
     background: var(--md-error-light-bg);
 } */
-
 
 .sprint-card:hover {
     transform: translateY(-3px);
@@ -509,13 +507,12 @@ input[type="text"]:focus, input[type="date"]:focus, select:focus {
 }
 
 .sprint-card-dates .fas {
-    color: var(--md-primary);
+    color: var(--md-primary); /* Icons will follow the card's main theme color */
     font-size: 0.7rem;
 }
-
-/* These will still apply to the icons if the card has the status class */
-.sprint-card.completed .sprint-card-dates .fas { color: var(--md-success); }
-.sprint-card.overdue .sprint-card-dates .fas { color: var(--md-error); }
+/* REMOVED specific color for completed/overdue date icons */
+/* .sprint-card.completed .sprint-card-dates .fas { color: var(--md-success); } */
+/* .sprint-card.overdue .sprint-card-dates .fas { color: var(--md-error); } */
 
 
 .progress-section {
@@ -534,13 +531,13 @@ input[type="text"]:focus, input[type="date"]:focus, select:focus {
 
 .progress-bar-fill {
     height: 100%;
-    background: var(--md-secondary); /* Default progress bar color */
+    background: var(--md-secondary); /* Progress bar will now follow secondary blue */
     border-radius: 3px;
     transition: width 0.4s ease-out;
 }
-/* These will still apply to the progress bar if the card has the status class */
-.sprint-card.completed .progress-bar-fill { background: var(--md-success); }
-.sprint-card.overdue .progress-bar-fill { background: var(--md-error); }
+/* REMOVED specific color for completed/overdue progress bar fill */
+/* .sprint-card.completed .progress-bar-fill { background: var(--md-success); } */
+/* .sprint-card.overdue .progress-bar-fill { background: var(--md-error); } */
 
 
 .progress-text {
@@ -561,25 +558,19 @@ input[type="text"]:focus, input[type="date"]:focus, select:focus {
     justify-content: center;
     padding: 0.6rem 0.8rem;
     font-size: 0.9rem;
-    background: var(--md-secondary); /* Default button color */
+    background: var(--md-secondary); /* Action button will now follow secondary blue */
     color: var(--md-secondary-text);
 }
-/* These will still apply to the button if the card has the status class */
-.sprint-card.completed .sprint-card-actions .btn {
-    background: var(--md-success);
-}
-.sprint-card.overdue .sprint-card-actions .btn {
-    background: var(--md-error);
-}
+/* REMOVED specific color for completed/overdue action buttons */
+/* .sprint-card.completed .sprint-card-actions .btn { background: var(--md-success); } */
+/* .sprint-card.overdue .sprint-card-actions .btn { background: var(--md-error); } */
+
 .sprint-card-actions .btn:hover {
     background: var(--md-secondary-dark);
 }
-.sprint-card.completed .sprint-card-actions .btn:hover {
-    background: #388E3C;
-}
-.sprint-card.overdue .sprint-card-actions .btn:hover {
-    background: #D32F2F;
-}
+/* REMOVED specific hover colors for completed/overdue action buttons */
+/* .sprint-card.completed .sprint-card-actions .btn:hover { background: #388E3C; } */
+/* .sprint-card.overdue .sprint-card-actions .btn:hover { background: #D32F2F; } */
 
 
 /* Empty State & Errors */
