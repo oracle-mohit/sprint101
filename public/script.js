@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
             createSprint: document.querySelector('#sprintForm button[type="submit"]'),
             cancelSprint: document.getElementById('cancelSprintBtn'),
             viewSprints: document.getElementById('viewSprintsBtn'),
-            createSprint: document.getElementById('createSprintBtn'),
+            createSprintHeader: document.getElementById('createSprintBtn'), // Renamed to avoid conflict with form submit btn
             welcomeCreateSprint: document.getElementById('welcomeCreateSprintBtn'),
             welcomeViewSprints: document.getElementById('welcomeViewSprintsBtn'),
             saveGoals: document.getElementById('saveGoalsBtn'),
@@ -29,7 +29,7 @@ document.addEventListener('DOMContentLoaded', () => {
         lists: {
             currentSprints: document.getElementById('currentSprintsList'),
             pastSprints: document.getElementById('pastSprintsList'),
-            manageGoalsCards: document.getElementById('manageGoalsCardsContainer'), // Container for goal cards
+            manageGoalsTableContainer: document.getElementById('manageGoalsTableContainer'), // Changed from CardsContainer
         },
         manageGoalsHeader: {
             name: document.getElementById('managedSprintName'),
@@ -85,7 +85,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         elements.buttons.viewSprints.classList.remove('active');
-        elements.buttons.createSprint.classList.remove('active');
+        elements.buttons.createSprintHeader.classList.remove('active'); // Use the header button
 
         let targetElementForScroll = null;
 
@@ -93,7 +93,7 @@ document.addEventListener('DOMContentLoaded', () => {
             case 'create':
                 elements.sections.createSprint.style.display = 'block';
                 elements.sections.createSprint.classList.add('fade-in-up');
-                elements.buttons.createSprint.classList.add('active');
+                elements.buttons.createSprintHeader.classList.add('active'); // Use the header button
                 targetElementForScroll = elements.sections.createSprint;
                 break;
             case 'manageGoals':
@@ -126,7 +126,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Event Listeners for Navigation ---
     elements.buttons.viewSprints.addEventListener('click', () => showSection('sprints'));
-    elements.buttons.createSprint.addEventListener('click', () => {
+    elements.buttons.createSprintHeader.addEventListener('click', () => { // Use the header button
         elements.forms.sprintForm.reset();
         elements.forms.goalsContainer.innerHTML = '';
         addGoalRow(); // Always add one empty row to start
@@ -149,11 +149,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     // --- Goal Management (Create Sprint Form) ---
-    // MODIFIED: Added `form-group` divs and changed input to textarea for description
     function addGoalRow(goal = { description: '', type: 'Dev Complete' }) {
         const goalItem = document.createElement('div');
         goalItem.classList.add('goal-item');
-        const uniqueId = Date.now() + Math.floor(Math.random() * 1000); // More robust unique ID
+        const uniqueId = Date.now() + Math.floor(Math.random() * 1000);
 
         goalItem.innerHTML = `
             <div class="goal-fields-wrapper">
@@ -223,21 +222,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const goals = [];
         
-        // Consolidated validation using 'some' to stop early if an error is found
         if (goalDescriptionInputs.some(input => !input.value.trim())) {
              showToast('Please fill out all goal descriptions or remove empty goal rows.', 'error');
-             // Find the first empty input and focus it
              goalDescriptionInputs.find(input => !input.value.trim()).focus();
              return;
         }
         if (goalDescriptionInputs.some(input => input.value.trim().length < 12)) {
              showToast('Each goal description must be at least 12 characters long.', 'error');
-             // Find the first short input and focus it
              goalDescriptionInputs.find(input => input.value.trim().length < 12).focus();
              return;
         }
 
-        // Build goals array after all validations pass
         goalDescriptionInputs.forEach((input, index) => {
             goals.push({
                 description: input.value.trim(),
@@ -423,12 +418,11 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // MODIFIED: Labels for description and type removed for this view.
-    // Goal description bold, Goal type has rounded border.
+    // REWRITTEN: To display goals in a tabular view
     async function openManageGoalsPanel(sprintId, readOnly = false, editStatusOnly = false) {
         showSection('manageGoals');
 
-        elements.lists.manageGoalsCards.innerHTML = '<p class="empty-state"><i class="fas fa-spinner fa-spin"></i> Loading goals...</p>';
+        elements.lists.manageGoalsTableContainer.innerHTML = '<p class="empty-state"><i class="fas fa-spinner fa-spin"></i> Loading goals...</p>';
 
         let sprintData;
         try {
@@ -449,51 +443,63 @@ document.addEventListener('DOMContentLoaded', () => {
             elements.manageGoalsHeader.progressBar.style.width = `${achievementPercentage}%`;
             elements.manageGoalsHeader.achievement.textContent = achievementPercentage;
 
-            elements.lists.manageGoalsCards.innerHTML = ''; // Clear loading message
+            elements.lists.manageGoalsTableContainer.innerHTML = ''; // Clear loading message
 
             if (sprintData.goals.length === 0) {
-                elements.lists.manageGoalsCards.innerHTML = '<p class="empty-state"><i class="fas fa-clipboard"></i> No goals defined for this sprint.</p>';
+                elements.lists.manageGoalsTableContainer.innerHTML = '<p class="empty-state"><i class="fas fa-clipboard"></i> No goals defined for this sprint.</p>';
             } else {
+                const table = document.createElement('table');
+                table.classList.add('goals-table');
+                table.innerHTML = `
+                    <thead>
+                        <tr>
+                            <th>Description</th>
+                            <th>Type</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                `;
+                elements.lists.manageGoalsTableContainer.appendChild(table);
+                const tbody = table.querySelector('tbody');
+
                 sprintData.goals.forEach((goal) => {
-                    const goalCard = document.createElement('div');
-                    goalCard.classList.add('goal-card');
-                    goalCard.dataset.goalId = goal._id;
+                    const tr = document.createElement('tr');
+                    tr.dataset.goalId = goal._id;
 
                     const isDescriptionEditable = !readOnly && !editStatusOnly;
                     const isTypeEditable = !readOnly && !editStatusOnly;
                     const isStatusEditable = !readOnly;
 
-                    goalCard.innerHTML = `
-                        <div class="goal-card-content">
-                            <div class="goal-card-details">
-                                <div class="form-group goal-card-description-group">
-                                    <textarea id="goal-card-desc-${goal._id}" class="goal-card-description-input" rows="2" placeholder="Goal Description"
-                                        ${isDescriptionEditable ? '' : 'readonly'}>${goal.description}</textarea>
-                                </div>
-                                <div class="form-group goal-card-type-group">
-                                    <select id="goal-card-type-${goal._id}" class="goal-card-type-select"
-                                        ${isTypeEditable ? '' : 'disabled'}>
-                                        <option value="Live" ${goal.type === 'Live' ? 'selected' : ''}>Live</option>
-                                        <option value="QA Complete" ${goal.type === 'QA Complete' ? 'selected' : ''}>QA Complete</option>
-                                        <option value="Dev Complete" ${goal.type === 'Dev Complete' ? 'selected' : ''}>Dev Complete</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="form-group goal-card-status-group">
-                                <label for="goal-card-status-${goal._id}">Status</label>
-                                <select id="goal-card-status-${goal._id}" class="goal-card-status-select ${goal.status === 'Done' ? 'status-done' : 'status-not-done'}"
-                                    ${isStatusEditable ? '' : 'disabled'}>
-                                    <option value="Not Done" ${goal.status === 'Not Done' ? 'selected' : ''}>Not Done</option>
-                                    <option value="Done" ${goal.status === 'Done' ? 'selected' : ''}>Done</option>
-                                </select>
-                            </div>
-                        </div>
-                        ${(!readOnly && !editStatusOnly) ? `<button type="button" class="goal-card-delete-btn btn btn-danger"><i class="fas fa-trash-alt"></i></button>` : ''}
+                    tr.innerHTML = `
+                        <td data-label="Description:">
+                            <textarea class="goal-table-description-input" rows="2" placeholder="Goal Description"
+                                ${isDescriptionEditable ? '' : 'readonly'}>${goal.description}</textarea>
+                        </td>
+                        <td data-label="Type:">
+                            <select class="goal-table-type-select"
+                                ${isTypeEditable ? '' : 'disabled'}>
+                                <option value="Live" ${goal.type === 'Live' ? 'selected' : ''}>Live</option>
+                                <option value="QA Complete" ${goal.type === 'QA Complete' ? 'selected' : ''}>QA Complete</option>
+                                <option value="Dev Complete" ${goal.type === 'Dev Complete' ? 'selected' : ''}>Dev Complete</option>
+                            </select>
+                        </td>
+                        <td data-label="Status:">
+                            <select class="goal-table-status-select ${goal.status === 'Done' ? 'status-done' : 'status-not-done'}"
+                                ${isStatusEditable ? '' : 'disabled'}>
+                                <option value="Not Done" ${goal.status === 'Not Done' ? 'selected' : ''}>Not Done</option>
+                                <option value="Done" ${goal.status === 'Done' ? 'selected' : ''}>Done</option>
+                            </select>
+                        </td>
+                        <td>
+                            ${(!readOnly && !editStatusOnly) ? `<button type="button" class="goal-table-delete-btn btn btn-danger"><i class="fas fa-trash-alt"></i></button>` : ''}
+                        </td>
                     `;
-                    elements.lists.manageGoalsCards.appendChild(goalCard);
+                    tbody.appendChild(tr);
 
                     // Add event listener to status select to change styling
-                    const statusSelect = goalCard.querySelector('.goal-card-status-select');
+                    const statusSelect = tr.querySelector('.goal-table-status-select');
                     if (statusSelect) {
                         statusSelect.addEventListener('change', (e) => {
                             if (e.target.value === 'Done') {
@@ -507,14 +513,14 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
 
                     // Add event listener for delete button
-                    const deleteBtn = goalCard.querySelector('.goal-card-delete-btn');
+                    const deleteBtn = tr.querySelector('.goal-table-delete-btn');
                     if (deleteBtn) {
                         deleteBtn.addEventListener('click', () => {
-                            goalCard.classList.add('deleted');
-                            goalCard.addEventListener('transitionend', function handler() {
-                                goalCard.remove();
+                            tr.classList.add('deleted'); // Mark for deletion (for animation if desired)
+                            tr.addEventListener('transitionend', function handler() {
+                                tr.remove(); // Remove from DOM after transition
                                 showToast('Goal removed. Click Save Changes to finalize.', 'info', 2000);
-                                goalCard.removeEventListener('transitionend', handler);
+                                tr.removeEventListener('transitionend', handler);
                             });
                         });
                     }
@@ -523,7 +529,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         } catch (error) {
             console.error(`Error fetching goals for sprint ${sprintId}:`, error);
-            elements.lists.manageGoalsCards.innerHTML = '<p class="empty-state error-message"><i class="fas fa-exclamation-circle"></i> Failed to load goals.</p>';
+            elements.lists.manageGoalsTableContainer.innerHTML = '<p class="empty-state error-message"><i class="fas fa-exclamation-circle"></i> Failed to load goals.</p>';
         }
 
         elements.buttons.saveGoals.style.display = readOnly ? 'none' : '';
@@ -533,15 +539,17 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- Save Goals Button ---
     elements.buttons.saveGoals.addEventListener('click', async function() {
         const sprintId = this.getAttribute('data-sprint-id');
-        const goalCards = document.querySelectorAll('#manageGoalsCardsContainer .goal-card');
+        // Select rows from the new table structure
+        const goalRows = document.querySelectorAll('#manageGoalsTableContainer .goals-table tbody tr');
         const updatedGoals = [];
 
         try {
-            goalCards.forEach(card => {
-                if (!card.classList.contains('deleted')) {
-                    const descriptionInput = card.querySelector('.goal-card-description-input');
-                    const typeSelect = card.querySelector('.goal-card-type-select');
-                    const statusSelect = card.querySelector('.goal-card-status-select');
+            goalRows.forEach(row => {
+                // Check if the row was marked for deletion (if you add a 'deleted' class for visual feedback)
+                if (!row.classList.contains('deleted')) {
+                    const descriptionInput = row.querySelector('.goal-table-description-input');
+                    const typeSelect = row.querySelector('.goal-table-type-select');
+                    const statusSelect = row.querySelector('.goal-table-status-select');
 
                     const description = descriptionInput.value.trim();
 
@@ -558,7 +566,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
 
                     updatedGoals.push({
-                        _id: card.dataset.goalId,
+                        _id: row.dataset.goalId,
                         description: description,
                         type: typeSelect.value,
                         status: statusSelect.value
