@@ -20,7 +20,9 @@ const app = express();
 const allowedOrigins = [
   'https://sprint101.vercel.app/',
   'https://sprint101.onrender.com',
-  'https://sprint101-1.onrender.com/'
+  'https://sprint101-1.onrender.com/',
+  'https://sprint101-1.onrender.com/api/sprints'
+
 ];
 
 app.use(cors({
