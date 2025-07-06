@@ -39,16 +39,18 @@
 
     /* Card backgrounds now take the previous section background colors */
     --card-current-bg: #E3F2FD; /* Very light blue for Current/Upcoming cards background */
+    --card-current-border: var(--md-primary); /* Primary blue for Current/Upcoming card border */
     --card-current-title-color: var(--md-primary-light); /* Light blue for Current card titles */
-    --card-current-border: var(--card-current-title-color); /* Left border matches title color */
     --card-current-action-btn: var(--card-current-title-color); /* Action button matches title color */
     --card-current-action-btn-hover: var(--md-primary-dark); /* Darker hover for current action button */
+    --card-current-progress-fill: var(--card-current-title-color); /* Achievement bar matches title color */
 
     --card-past-bg: #F3E5F5;    /* Very light purple for Past cards background */
     --card-past-title-color: #A06ECF; /* A distinct light purple for Past card titles */
     --card-past-border: var(--card-past-title-color); /* Left border matches title color */
     --card-past-action-btn: var(--card-past-title-color); /* Action button matches title color */
     --card-past-action-btn-hover: #7B3F9A; /* Darker hover for past action button */
+    --card-past-progress-fill: var(--card-past-title-color); /* Achievement bar matches title color */
     /* --- END UPDATED SECTION & CARD COLORS --- */
 
 
@@ -572,11 +574,11 @@ input[type="text"]:focus, input[type="date"]:focus, select:focus {
 
 /* --- SECTION BACKGROUNDS --- */
 #currentUpcomingSprintsSection {
-    background: var(--section-current-bg); /* Now white */
+    background: var(--section-current-bg);
 }
 
 #pastSprintsSection {
-    background: var(--section-past-bg); /* Now white */
+    background: var(--section-past-bg);
 }
 /* --- END SECTION BACKGROUNDS --- */
 
@@ -600,14 +602,14 @@ input[type="text"]:focus, input[type="date"]:focus, select:focus {
     overflow: hidden;
 
     /* Base colors for CURRENT & UPCOMING sprint cards */
-    border-left: 6px solid var(--card-current-border); /* PRIMARY BLUE FOR BORDER */
-    background: var(--card-current-bg); /* LIGHT BLUE BACKGROUND */
+    border-left: 6px solid var(--card-current-border); /* NOW MATCHES POD NAME COLOR */
+    background: var(--card-current-bg);
 }
 
 /* Past Sprint Card Specific Styles */
 .sprint-card.sprint-card--past {
-    border-left-color: var(--card-past-border); /* DARK PURPLE FOR BORDER */
-    background: var(--card-past-bg); /* LIGHT PURPLE BACKGROUND */
+    border-left-color: var(--card-past-border); /* NOW MATCHES POD NAME COLOR */
+    background: var(--card-past-bg);
 }
 
 .sprint-card:hover {
@@ -626,12 +628,12 @@ input[type="text"]:focus, input[type="date"]:focus, select:focus {
     font-size: 1.15rem;
     margin: 0;
     font-weight: 700;
-    color: var(--card-current-title-color); /* LIGHT BLUE FOR CURRENT CARD TITLES */
+    color: var(--card-current-title-color);
     line-height: 1.2;
 }
 
 .sprint-card.sprint-card--past .sprint-card-title {
-    color: var(--card-past-title-color); /* LIGHT PURPLE FOR PAST CARD TITLES */
+    color: var(--card-past-title-color);
 }
 /* --- END CARD TITLES --- */
 
@@ -664,19 +666,27 @@ input[type="text"]:focus, input[type="date"]:focus, select:focus {
 
 .progress-bar-container {
     width: 100%;
-    height: 6px;
+    /* Increased height by 50% from 6px to 9px */
+    height: 9px;
     background: var(--md-border-color);
-    border-radius: 3px;
+    border-radius: 4.5px; /* Adjust border-radius to match new height */
     overflow: hidden;
     margin-bottom: 0.3rem;
 }
 
+/* --- PROGRESS BAR FILL --- */
 .progress-bar-fill {
     height: 100%;
-    background: var(--md-secondary);
-    border-radius: 3px;
+    background: var(--card-current-progress-fill); /* Matches Current card title/border color */
+    border-radius: 4.5px; /* Adjust border-radius to match new height */
     transition: width 0.4s ease-out;
 }
+
+.sprint-card.sprint-card--past .progress-bar-fill {
+    background: var(--card-past-progress-fill); /* Matches Past card title/border color */
+}
+/* --- END PROGRESS BAR FILL --- */
+
 
 .progress-text {
     font-size: 0.8rem;
@@ -697,15 +707,15 @@ input[type="text"]:focus, input[type="date"]:focus, select:focus {
     justify-content: center;
     padding: 0.6rem 0.8rem;
     font-size: 0.9rem;
-    background: var(--card-current-action-btn); /* LIGHT BLUE FOR CURRENT ACTION BUTTONS */
-    color: var(--md-primary-text); /* White text for contrast */
+    background: var(--card-current-action-btn); /* Matches Current card title/border color */
+    color: var(--md-primary-text);
 }
 .sprint-card-actions .btn:hover {
     background: var(--card-current-action-btn-hover); /* Darker hover for Current */
 }
 
 .sprint-card.sprint-card--past .sprint-card-actions .btn {
-    background: var(--card-past-action-btn); /* LIGHT PURPLE FOR PAST ACTION BUTTONS */
+    background: var(--card-past-action-btn); /* Matches Past card title/border color */
 }
 .sprint-card.sprint-card--past .sprint-card-actions .btn:hover {
     background: var(--card-past-action-btn-hover); /* Darker hover for Past */
