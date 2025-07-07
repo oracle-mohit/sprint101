@@ -257,24 +257,23 @@ function WelcomeScreen({ navigateTo }) {
                 <span>Welcome to Sprint Goals!</span>
             </h2>
             <div className="flex justify-center gap-10 mb-10 flex-wrap">
+                {/* Updated USPs and Icon Colors */}
                 <div className="flex flex-col items-center text-blue-700 font-semibold text-lg">
-                    <i className="fas fa-eye text-5xl text-green-500 mb-3 drop-shadow-md"></i>
-                    <span>Visibility</span>
+                    <i className="fas fa-lightbulb text-5xl text-purple-500 mb-3 drop-shadow-md"></i>
+                    <span>Transparency</span>
                 </div>
                 <div className="flex flex-col items-center text-blue-700 font-semibold text-lg">
-                    <i className="fas fa-users text-5xl text-green-500 mb-3 drop-shadow-md"></i>
-                    <span>Collaboration</span>
+                    <i className="fas fa-rocket text-5xl text-purple-500 mb-3 drop-shadow-md"></i>
+                    <span>Efficiency</span>
                 </div>
                 <div className="flex flex-col items-center text-blue-700 font-semibold text-lg">
-                    <i className="fas fa-chart-line text-5xl text-green-500 mb-3 drop-shadow-md"></i>
-                    <span>Insights</span>
+                    <i className="fas fa-bullseye text-5xl text-purple-500 mb-3 drop-shadow-md"></i>
+                    <span>GTM Readiness</span>
                 </div>
             </div>
+            {/* Updated Welcome Message */}
             <p className="text-2xl text-gray-700 mb-12 leading-loose font-medium">
-                This platform is engineered to foster unparalleled transparency and alignment across your Tech and Product teams.
-                Gain real-time visibility into every sprint, track progress with precision, and ensure every stakeholder is empowered
-                with clear insights into our collective pipeline. Build trust through clarity, drive collaboration with shared understanding,
-                and achieve your product vision with confidence.
+                Our Sprint Goals Visibility product provides business stakeholders with a clear, real-time view into what product and engineering teams are delivering over the next 14 days—and what’s just been completed. It bridges the gap between planning and execution, enabling better alignment, proactive decision-making, and fewer surprises. Stay informed, anticipate outcomes, and contribute strategically without digging through tools or chasing updates.
             </p>
             <div className="flex flex-col sm:flex-row justify-center space-y-5 sm:space-y-0 sm:space-x-6">
                 <button
@@ -291,10 +290,19 @@ function WelcomeScreen({ navigateTo }) {
 // Sprints List Component
 function SprintsList({ sprints, onManageGoals }) {
     const now = new Date();
-    const currentUpcomingSprints = sprints.filter(sprint => new Date(sprint.endDate).setHours(23, 59, 59, 999) >= now)
-        .sort((a, b) => new Date(a.endDate) - new Date(b.endDate));
-    const pastSprints = sprints.filter(sprint => new Date(sprint.endDate).setHours(23, 59, 59, 999) < now)
-        .sort((a, b) => new Date(b.endDate) - new Date(a.endDate));
+
+    // Sort sprints: First by POD Name (alphabetical ascending), then by Sprint Start Date (descending)
+    const sortedSprints = [...sprints].sort((a, b) => {
+        const podNameCompare = a.podName.localeCompare(b.podName);
+        if (podNameCompare !== 0) {
+            return podNameCompare;
+        }
+        // If POD names are the same, sort by start date descending
+        return new Date(b.startDate) - new Date(a.startDate);
+    });
+
+    const currentUpcomingSprints = sortedSprints.filter(sprint => new Date(sprint.endDate).setHours(23, 59, 59, 999) >= now);
+    const pastSprints = sortedSprints.filter(sprint => new Date(sprint.endDate).setHours(23, 59, 59, 999) < now);
 
     return (
         <div className="space-y-10">
@@ -407,7 +415,12 @@ function SprintCard({ sprint, isPastSprint, onManageGoals }) {
 // Manage Goals Component
 function ManageGoals({ sprint, onSave, onBack }) {
     // Deep copy goals to allow local edits without affecting parent state directly
-    const [currentGoals, setCurrentGoals] = useState(sprint.goals.map(goal => ({ ...goal })));
+    // Sort goals by description alphabetically
+    const [currentGoals, setCurrentGoals] = useState(
+        sprint.goals
+            .map(goal => ({ ...goal }))
+            .sort((a, b) => a.description.localeCompare(b.description))
+    );
 
     // Calculate achievement percentage for header
     const totalGoals = currentGoals.length;
@@ -484,8 +497,11 @@ function ManageGoals({ sprint, onSave, onBack }) {
                                             value={goal.description}
                                             onChange={(e) => handleGoalChange(index, 'description', e.target.value)}
                                             readOnly={isReadOnly || isStatusOnlyEditable}
-                                            className={`w-full p-3 border rounded-lg text-base resize-y min-h-[80px] focus:ring-2 focus:ring-blue-300 transition-all duration-200
-                                                ${isReadOnly || isStatusOnlyEditable ? 'bg-transparent border-transparent cursor-not-allowed text-gray-800 font-medium' : 'border-gray-300'}`}
+                                            // Conditional styling for textarea to look like static text when read-only
+                                            className={`w-full p-3 text-base resize-y min-h-[80px] transition-all duration-200
+                                                ${isReadOnly || isStatusOnlyEditable
+                                                    ? 'bg-transparent border-transparent cursor-not-allowed text-gray-800 font-medium'
+                                                    : 'border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-300'}`}
                                             rows="2"
                                         />
                                     </td>
@@ -494,8 +510,11 @@ function ManageGoals({ sprint, onSave, onBack }) {
                                             value={goal.type}
                                             onChange={(e) => handleGoalChange(index, 'type', e.target.value)}
                                             disabled={isReadOnly || isStatusOnlyEditable}
-                                            className={`w-full p-3 border rounded-lg text-base focus:ring-2 focus:ring-blue-300 transition-all duration-200
-                                                ${isReadOnly || isStatusOnlyEditable ? 'bg-gray-100 border-transparent cursor-not-allowed' : 'border-gray-300'}`}
+                                            // Conditional styling for select to remove dropdown arrow and look like static text when disabled
+                                            className={`w-full p-3 text-base transition-all duration-200
+                                                ${isReadOnly || isStatusOnlyEditable
+                                                    ? 'bg-gray-100 border-transparent cursor-not-allowed appearance-none' // appearance-none removes default arrow
+                                                    : 'border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-300'}`}
                                         >
                                             <option value="Live">Live</option>
                                             <option value="QA Complete">QA Complete</option>
@@ -507,9 +526,10 @@ function ManageGoals({ sprint, onSave, onBack }) {
                                             value={goal.status}
                                             onChange={(e) => handleGoalChange(index, 'status', e.target.value)}
                                             disabled={isReadOnly}
-                                            className={`w-full p-3 border rounded-lg text-base font-semibold transition-all duration-200
+                                            // Conditional styling for select to remove dropdown arrow and look like static text when disabled
+                                            className={`w-full p-3 text-base font-semibold transition-all duration-200
                                                 ${goal.status === 'Done' ? 'bg-green-100 text-green-700 border-green-300' : 'bg-red-100 text-red-700 border-red-300'}
-                                                ${isReadOnly ? 'cursor-not-allowed' : 'focus:ring-2 focus:ring-blue-300'}`}
+                                                ${isReadOnly ? 'cursor-not-allowed appearance-none' : 'rounded-lg focus:ring-2 focus:ring-blue-300'}`} // appearance-none for disabled status
                                         >
                                             <option value="Not Done">Not Done</option>
                                             <option value="Done">Done</option>
