@@ -206,6 +206,23 @@ function App() {
     );
 }
 
+// Helper function for date formatting
+const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    const options = { day: 'numeric', month: 'long', year: 'numeric' };
+    const formatted = date.toLocaleDateString('en-US', options);
+
+    // Add 'st', 'nd', 'rd', 'th' suffix
+    const day = date.getDate();
+    if (day > 3 && day < 21) return formatted.replace(day, `${day}th`); // Handles 11th-20th
+    switch (day % 10) {
+        case 1: return formatted.replace(day, `${day}st`);
+        case 2: return formatted.replace(day, `${day}nd`);
+        case 3: return formatted.replace(day, `${day}rd`);
+        default: return formatted.replace(day, `${day}th`);
+    }
+};
+
 // Access Screen Component
 function AccessScreen({ onSubmit, error }) {
     const [code, setCode] = useState('');
@@ -225,6 +242,10 @@ function AccessScreen({ onSubmit, error }) {
                 Welcome to the Sprint Goals application! This tool helps teams define, track, and manage their sprint objectives and progress.
                 Enter the access code to continue.
             </p>
+            <div className="bg-yellow-50 border border-yellow-200 text-yellow-800 px-4 py-3 rounded-lg relative text-sm mb-6 shadow-sm">
+                <i className="fas fa-exclamation-triangle mr-2"></i>
+                Please use this tool on a **desktop device** for optimal experience. Mobile optimization is not yet complete.
+            </div>
             <form onSubmit={handleSubmit} className="flex flex-col items-center space-y-6">
                 <input
                     type="password"
@@ -271,10 +292,14 @@ function WelcomeScreen({ navigateTo }) {
                     <span>GTM Readiness</span>
                 </div>
             </div>
-            {/* Updated Welcome Message */}
+            {/* Updated Welcome Message with bold text */}
             <p className="text-2xl text-gray-700 mb-12 leading-loose font-medium">
-                Our Sprint Goals Visibility product provides business stakeholders with a clear, real-time view into what product and engineering teams are delivering over the next 14 days—and what’s just been completed. It bridges the gap between planning and execution, enabling better alignment, proactive decision-making, and fewer surprises. Stay informed, anticipate outcomes, and contribute strategically without digging through tools or chasing updates.
+                Our Sprint Goals Visibility product provides business stakeholders with a clear, real-time view into what product and engineering teams are delivering over the next <span className="font-bold">14 days</span>—and what’s just been completed. It bridges the gap between planning and execution, enabling better alignment, proactive decision-making, and fewer surprises. Stay informed, anticipate outcomes, and contribute strategically without digging through tools or chasing updates.
             </p>
+            <div className="bg-yellow-50 border border-yellow-200 text-yellow-800 px-4 py-3 rounded-lg relative text-sm mb-6 shadow-sm">
+                <i className="fas fa-exclamation-triangle mr-2"></i>
+                Please use this tool on a **desktop device** for optimal experience. Mobile optimization is not yet complete.
+            </div>
             <div className="flex flex-col sm:flex-row justify-center space-y-5 sm:space-y-0 sm:space-x-6">
                 <button
                     onClick={() => navigateTo('sprints')}
@@ -391,14 +416,22 @@ function SprintCard({ sprint, isPastSprint, onManageGoals }) {
             <div>
                 <h3 className="text-2xl font-bold text-gray-900 mb-3">{sprint.podName}</h3>
                 <div className="text-base text-gray-700 mb-4 space-y-1">
-                    <p className="flex items-center"><i className="fas fa-calendar-check mr-2 text-blue-500"></i><strong>Start:</strong> {startDate.toLocaleDateString('en-IN')}</p>
-                    <p className="flex items-center"><i className="fas fa-calendar-times mr-2 text-red-500"></i><strong>End:</strong> {endDate.toLocaleDateString('en-IN')}</p>
+                    <p className="flex items-center"><i className="fas fa-calendar-check mr-2 text-blue-500"></i><strong>Start:</strong> {formatDate(sprint.startDate)}</p>
+                    <p className="flex items-center"><i className="fas fa-calendar-times mr-2 text-red-500"></i><strong>End:</strong> {formatDate(sprint.endDate)}</p>
                 </div>
                 <div className="mb-5">
-                    <div className="w-full bg-gray-200 rounded-full h-3">
-                        <div className={`${progressBarColor} h-3 rounded-full shadow-inner`} style={{ width: `${achievementPercentage}%` }}></div> {/* Dynamic progress bar color */}
-                    </div>
-                    <p className="text-sm text-gray-700 mt-2 text-right">Achievement: <span className={`font-extrabold text-lg ${achievementPercentage < 30 ? 'text-red-700' : achievementPercentage < 70 ? 'text-orange-600' : 'text-green-700'}`}>{achievementPercentage}%</span></p>
+                    {isPastSprint ? (
+                        <p className="text-lg font-extrabold text-right mt-2">
+                            Achievement: <span className={`${achievementPercentage < 30 ? 'text-red-700' : achievementPercentage < 70 ? 'text-orange-600' : 'text-green-700'}`}>{achievementPercentage}%</span>
+                        </p>
+                    ) : (
+                        <>
+                            <div className="w-full bg-gray-200 rounded-full h-3">
+                                <div className={`${progressBarColor} h-3 rounded-full shadow-inner`} style={{ width: `${achievementPercentage}%` }}></div> {/* Dynamic progress bar color */}
+                            </div>
+                            <p className="text-sm text-gray-700 mt-2 text-right">Achievement: <span className={`font-extrabold text-lg ${achievementPercentage < 30 ? 'text-red-700' : achievementPercentage < 70 ? 'text-orange-600' : 'text-green-700'}`}>{achievementPercentage}%</span></p>
+                        </>
+                    )}
                 </div>
             </div>
             <button
@@ -464,8 +497,8 @@ function ManageGoals({ sprint, onSave, onBack }) {
 
             <div className="bg-blue-50 p-6 rounded-2xl mb-8 flex flex-col md:flex-row justify-between items-start md:items-center space-y-4 md:space-y-0 border border-blue-200 shadow-inner">
                 <div className="flex flex-col md:flex-row md:space-x-8 space-y-2 md:space-y-0 text-gray-700 text-base font-medium">
-                    <span className="flex items-center"><i className="fas fa-calendar-check mr-2 text-blue-600"></i><strong>Start:</strong> {new Date(sprint.startDate).toLocaleDateString('en-IN')}</span>
-                    <span className="flex items-center"><i className="fas fa-calendar-times mr-2 text-red-600"></i><strong>End:</strong> {new Date(sprint.endDate).toLocaleDateString('en-IN')}</span>
+                    <span className="flex items-center"><i className="fas fa-calendar-check mr-2 text-blue-600"></i><strong>Start:</strong> {formatDate(sprint.startDate)}</span>
+                    <span className="flex items-center"><i className="fas fa-calendar-times mr-2 text-red-600"></i><strong>End:</strong> {formatDate(sprint.endDate)}</span>
                 </div>
                 <div className="w-full md:w-1/3 flex items-center space-x-3">
                     <div className="flex-grow bg-gray-300 rounded-full h-3">
