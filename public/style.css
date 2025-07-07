@@ -334,6 +334,13 @@ body.theme-app .btn-tertiary:hover {
     color: var(--text-color);
 }
 
+.section-description {
+    font-size: 1rem;
+    color: #555;
+    margin-bottom: 1.5rem;
+    line-height: 1.6;
+}
+
 .form-group {
     margin-bottom: 1rem;
 }
@@ -480,23 +487,22 @@ textarea[readonly] {
 /* Goal List in Create Sprint */
 .goals-list {
     margin-bottom: 1rem;
+    border: 1px solid var(--border-color); /* Added border to contain goals */
+    border-radius: 8px;
+    padding: 1rem;
+    background-color: #fdfdfd;
 }
 
 .goal-item {
     display: flex;
     gap: 1rem;
     align-items: flex-start; /* Align items to the top for textarea */
-    background: #f1f1f1;
+    background: #f9f9f9;
     padding: 0.8rem;
     border-radius: 6px;
     margin-bottom: 0.75rem;
     border: 1px solid #e0e0e0;
     transition: all 0.3s ease-out;
-}
-
-.goal-item.removing {
-    opacity: 0;
-    transform: translateX(-20px);
 }
 
 .goal-item:last-child {
@@ -538,6 +544,7 @@ textarea[readonly] {
     background-color: #ffebeb; /* Light red background */
     border-radius: 4px;
     font-size: 0.9rem;
+    border: 1px solid var(--danger-color);
 }
 
 
@@ -545,22 +552,22 @@ textarea[readonly] {
     margin-bottom: 0; /* Remove margin-bottom from inner form-groups */
 }
 
-.remove-goal {
-    flex-shrink: 0;
-    align-self: center; /* Center vertically relative to goal-item */
-    background-color: var(--danger-color);
-    color: white;
-    border: none;
-    padding: 0.5rem 0.8rem;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 0.9em;
-}
+/* Removed .remove-goal styles as button is removed */
+
 
 .form-actions-inline {
     display: flex;
-    justify-content: flex-end;
+    justify-content: space-between; /* Space between counter and add button */
+    align-items: center;
     margin-top: 1rem;
+    padding-top: 0.5rem;
+    border-top: 1px dashed var(--border-color);
+}
+
+.goal-counter {
+    font-weight: bold;
+    color: var(--primary-color);
+    font-size: 1.1rem;
 }
 
 /* Manage Goals Panel */
@@ -869,10 +876,7 @@ textarea[readonly] {
         flex-direction: column;
         align-items: stretch;
     }
-    .remove-goal {
-        width: 100%;
-        margin-top: 0.5rem;
-    }
+    /* Removed .remove-goal responsive styles */
 
     .welcome-actions {
         flex-direction: column;

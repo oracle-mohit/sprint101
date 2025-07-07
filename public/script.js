@@ -48,6 +48,7 @@ document.addEventListener('DOMContentLoaded', () => {
         accessCodeError: document.getElementById('accessCodeError'), // New error message element
         mainAppHeaderActions: document.getElementById('mainAppHeaderActions'), // Header buttons container
         podNameSelect: document.getElementById('podName'), // New: POD Name dropdown
+        totalGoalsCount: document.getElementById('totalGoalsCount'), // New: Goal counter element
     };
 
     // --- Custom Toast / Snackbar Function ---
@@ -215,6 +216,7 @@ document.addEventListener('DOMContentLoaded', () => {
         addGoalRow(); // Always add one empty row to start
         // Clear and recalculate end date on new sprint creation
         elements.forms.calculatedEndDateInput.value = '';
+        updateGoalCounter(); // Reset goal counter
         showSection('create');
     });
     elements.buttons.cancelSprint.addEventListener('click', () => {
@@ -227,6 +229,7 @@ document.addEventListener('DOMContentLoaded', () => {
         addGoalRow(); // Keep one row for next time
         // Clear calculated end date
         elements.forms.calculatedEndDateInput.value = '';
+        updateGoalCounter(); // Reset goal counter
         showSection('sprints');
     });
 
@@ -240,6 +243,7 @@ document.addEventListener('DOMContentLoaded', () => {
             elements.forms.goalsContainer.innerHTML = '';
             addGoalRow();
             elements.forms.calculatedEndDateInput.value = '';
+            updateGoalCounter(); // Reset goal counter
             showSection('create');
         });
     }
@@ -253,8 +257,8 @@ document.addEventListener('DOMContentLoaded', () => {
             const startDateValue = e.target.value;
             if (startDateValue) {
                 const startDate = new Date(startDateValue);
-                // Add 14 days (14 * 24 hours * 60 minutes * 60 seconds * 1000 milliseconds)
-                startDate.setDate(startDate.getDate() + 14);
+                // Add 13 days
+                startDate.setDate(startDate.getDate() + 13);
                 const endDateFormatted = startDate.toLocaleDateString('en-CA'); // YYYY-MM-DD format for input type="date" compatibility
                 elements.forms.calculatedEndDateInput.value = endDateFormatted;
             } else {
@@ -263,6 +267,13 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // --- Goal Counter Update ---
+    function updateGoalCounter() {
+        if (elements.totalGoalsCount) {
+            const currentGoals = elements.forms.goalsContainer.querySelectorAll('.goal-item').length;
+            elements.totalGoalsCount.textContent = currentGoals;
+        }
+    }
 
     // --- Goal Management (Create Sprint Form) ---
     function addGoalRow(goal = { description: '', type: 'Dev Complete' }) {
@@ -277,7 +288,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <textarea id="goal-desc-${uniqueId}" class="goal-description" placeholder="e.g., Implement user authentication" rows="2" required>${goal.description}</textarea>
                 </div>
                 <div class="form-group goal-type-group">
-                    <label for="goal-type-${uniqueId}">Goal Type</label>
+                    <label for="goal-type-${uniqueId}">Type</label>
                     <select id="goal-type-${uniqueId}" class="goal-type">
                         <option value="Live" ${goal.type === 'Live' ? 'selected' : ''}>Live</option>
                         <option value="QA Complete" ${goal.type === 'QA Complete' ? 'selected' : ''}>QA Complete</option>
@@ -289,17 +300,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     <span class="goal-status-display">Not Done</span>
                 </div>
             </div>
-            <button type="button" class="remove-goal btn btn-danger"><i class="fas fa-trash-can"></i></button>
+            <!-- Removed delete button as per request -->
         `;
         elements.forms.goalsContainer.appendChild(goalItem);
-
-        goalItem.querySelector('.remove-goal').addEventListener('click', () => {
-            goalItem.classList.add('removing');
-            goalItem.addEventListener('transitionend', function handler() {
-                goalItem.remove();
-                goalItem.removeEventListener('transitionend', handler);
-            });
-        });
+        updateGoalCounter(); // Update counter when a goal is added
     }
 
     // Add initial goal row if goalsContainer exists
@@ -359,7 +363,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const goals = [];
 
             if (goalDescriptionInputs.some(input => !input.value.trim())) {
-                showToast('Please fill out all goal descriptions or remove empty goal rows.', 'error');
+                showToast('Please fill out all goal descriptions.', 'error');
                 goalDescriptionInputs.find(input => !input.value.trim()).focus();
                 return;
             }
@@ -378,7 +382,7 @@ document.addEventListener('DOMContentLoaded', () => {
             });
 
             if (goals.length < 3) {
-                showToast('A sprint must have at least 3 goals. Please add more or fill out existing ones.', 'error');
+                showToast('A sprint must have at least 3 goals. Please add more.', 'error');
                 return;
             }
 
@@ -412,6 +416,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     elements.forms.goalsContainer.innerHTML = '';
                     addGoalRow();
                     elements.forms.calculatedEndDateInput.value = ''; // Clear calculated end date
+                    updateGoalCounter(); // Reset goal counter
                     showSection('sprints');
                 } else {
                     const errorData = await response.json();
@@ -600,7 +605,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             <th>Description</th>
                             <th>Type</th>
                             <th>Status</th>
-                            <th>Actions</th>
+                            <!-- Removed Actions Header -->
                         </tr>
                     </thead>
                     <tbody></tbody>
@@ -636,9 +641,7 @@ document.addEventListener('DOMContentLoaded', () => {
                                 <option value="Done" ${goal.status === 'Done' ? 'selected' : ''}>Done</option>
                             </select>
                         </td>
-                        <td>
-                            ${(!readOnly && !editStatusOnly) ? `<button type="button" class="goal-table-delete-btn btn btn-danger"><i class="fas fa-trash-alt"></i></button>` : ''}
-                        </td>
+                        <!-- Removed Actions Cell -->
                     `;
                     tbody.appendChild(tr);
 
@@ -653,19 +656,6 @@ document.addEventListener('DOMContentLoaded', () => {
                                 e.target.classList.remove('status-done');
                                 e.target.classList.add('status-not-done');
                             }
-                        });
-                    }
-
-                    // Add event listener for delete button
-                    const deleteBtn = tr.querySelector('.goal-table-delete-btn');
-                    if (deleteBtn) {
-                        deleteBtn.addEventListener('click', () => {
-                            tr.classList.add('deleted'); // Mark for deletion (for animation if desired)
-                            tr.addEventListener('transitionend', function handler() {
-                                tr.remove(); // Remove from DOM after transition
-                                showToast('Goal removed. Click Save Changes to finalize.', 'info', 2000);
-                                tr.removeEventListener('transitionend', handler);
-                            });
                         });
                     }
                 });
@@ -692,6 +682,7 @@ document.addEventListener('DOMContentLoaded', () => {
             try {
                 goalRows.forEach(row => {
                     // Check if the row was marked for deletion (if you add a 'deleted' class for visual feedback)
+                    // Note: Delete button is removed from Create Sprint, but this logic remains for Manage Goals if goals were deleted previously
                     if (!row.classList.contains('deleted')) {
                         const descriptionInput = row.querySelector('.goal-table-description-input');
                         const typeSelect = row.querySelector('.goal-table-type-select');

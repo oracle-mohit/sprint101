@@ -90,22 +90,23 @@
                                 <input type="date" id="startDate" required>
                             </div>
                             <div class="form-group">
-                                <label for="calculatedEndDate">Sprint End Date</label>
+                                <label for="calculatedEndDate">Sprint End Date (Start Date + 13 days)</label>
                                 <input type="text" id="calculatedEndDate" readonly placeholder="Calculated automatically">
                             </div>
                         </div>
                     </div>
                     <div class="form-section">
-                        <h3 class="form-section-subtitle"><i class="fas fa-tasks"></i> Sprint Goals</h3>
+                        <h3 class="form-section-subtitle"><i class="fas fa-tasks"></i> Define Your Sprint Goals</h3>
+                        <p class="section-description">Clearly defining goals and goal types ensures better and timely tech-driven business outcomes.</p>
                         <div class="goal-input-container">
                             <div class="goal-headers">
                                 <span class="goal-header-description">Goal Description</span>
                                 <span class="goal-header-type">Type</span>
                                 <span class="goal-header-status">Status</span>
-                                <span class="goal-header-actions"></span>
                             </div>
                             <div id="goalsContainer" class="goals-list"></div>
-                            <div class="form-actions-inline">
+                            <div class="form-actions-inline goal-actions-bottom">
+                                <span class="goal-counter"><span id="totalGoalsCount">0</span> Goals Added</span>
                                 <button type="button" id="addGoal" class="btn btn-secondary btn-icon-left">
                                     <i class="fas fa-plus"></i> Add Another Goal
                                 </button>
