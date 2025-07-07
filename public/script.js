@@ -8,6 +8,8 @@ document.addEventListener('DOMContentLoaded', () => {
         forms: {
             sprintForm: document.getElementById('sprintForm'),
             goalsContainer: document.getElementById('goalsContainer'), // For Create Sprint form
+            startDateInput: document.getElementById('startDate'), // New: for auto end date calculation
+            calculatedEndDateInput: document.getElementById('calculatedEndDate'), // New: to display calculated end date
         },
         buttons: {
             addGoal: document.getElementById('addGoal'),
@@ -45,6 +47,7 @@ document.addEventListener('DOMContentLoaded', () => {
         accessCodeInput: document.getElementById('accessCodeInput'), // New access code input
         accessCodeError: document.getElementById('accessCodeError'), // New error message element
         mainAppHeaderActions: document.getElementById('mainAppHeaderActions'), // Header buttons container
+        podNameSelect: document.getElementById('podName'), // New: POD Name dropdown
     };
 
     // --- Custom Toast / Snackbar Function ---
@@ -204,14 +207,26 @@ document.addEventListener('DOMContentLoaded', () => {
     elements.buttons.viewSprints.addEventListener('click', () => showSection('sprints'));
     elements.buttons.createSprintHeader.addEventListener('click', () => {
         elements.forms.sprintForm.reset();
+        // Reset POD Name dropdown to default
+        if (elements.podNameSelect) {
+            elements.podNameSelect.value = "";
+        }
         elements.forms.goalsContainer.innerHTML = '';
         addGoalRow(); // Always add one empty row to start
+        // Clear and recalculate end date on new sprint creation
+        elements.forms.calculatedEndDateInput.value = '';
         showSection('create');
     });
     elements.buttons.cancelSprint.addEventListener('click', () => {
         elements.forms.sprintForm.reset();
+        // Reset POD Name dropdown to default
+        if (elements.podNameSelect) {
+            elements.podNameSelect.value = "";
+        }
         elements.forms.goalsContainer.innerHTML = '';
         addGoalRow(); // Keep one row for next time
+        // Clear calculated end date
+        elements.forms.calculatedEndDateInput.value = '';
         showSection('sprints');
     });
 
@@ -219,14 +234,35 @@ document.addEventListener('DOMContentLoaded', () => {
     if (elements.buttons.welcomeCreateSprint) {
         elements.buttons.welcomeCreateSprint.addEventListener('click', () => {
             elements.forms.sprintForm.reset();
+            if (elements.podNameSelect) {
+                elements.podNameSelect.value = "";
+            }
             elements.forms.goalsContainer.innerHTML = '';
             addGoalRow();
+            elements.forms.calculatedEndDateInput.value = '';
             showSection('create');
         });
     }
     if (elements.buttons.welcomeViewSprints) {
         elements.buttons.welcomeViewSprints.addEventListener('click', () => showSection('sprints'));
     }
+
+    // --- Auto-calculate Sprint End Date ---
+    if (elements.forms.startDateInput) {
+        elements.forms.startDateInput.addEventListener('change', (e) => {
+            const startDateValue = e.target.value;
+            if (startDateValue) {
+                const startDate = new Date(startDateValue);
+                // Add 14 days (14 * 24 hours * 60 minutes * 60 seconds * 1000 milliseconds)
+                startDate.setDate(startDate.getDate() + 14);
+                const endDateFormatted = startDate.toLocaleDateString('en-CA'); // YYYY-MM-DD format for input type="date" compatibility
+                elements.forms.calculatedEndDateInput.value = endDateFormatted;
+            } else {
+                elements.forms.calculatedEndDateInput.value = '';
+            }
+        });
+    }
+
 
     // --- Goal Management (Create Sprint Form) ---
     function addGoalRow(goal = { description: '', type: 'Dev Complete' }) {
@@ -241,12 +277,16 @@ document.addEventListener('DOMContentLoaded', () => {
                     <textarea id="goal-desc-${uniqueId}" class="goal-description" placeholder="e.g., Implement user authentication" rows="2" required>${goal.description}</textarea>
                 </div>
                 <div class="form-group goal-type-group">
-                    <label for="goal-type-${uniqueId}" class="sr-only">Type</label>
+                    <label for="goal-type-${uniqueId}">Goal Type</label>
                     <select id="goal-type-${uniqueId}" class="goal-type">
                         <option value="Live" ${goal.type === 'Live' ? 'selected' : ''}>Live</option>
                         <option value="QA Complete" ${goal.type === 'QA Complete' ? 'selected' : ''}>QA Complete</option>
                         <option value="Dev Complete" ${goal.type === 'Dev Complete' ? 'selected' : ''}>Dev Complete</option>
                     </select>
+                </div>
+                <div class="form-group goal-status-group">
+                    <label>Status</label>
+                    <span class="goal-status-display">Not Done</span>
                 </div>
             </div>
             <button type="button" class="remove-goal btn btn-danger"><i class="fas fa-trash-can"></i></button>
@@ -277,25 +317,34 @@ document.addEventListener('DOMContentLoaded', () => {
         elements.forms.sprintForm.addEventListener('submit', async (e) => {
             e.preventDefault();
 
-            const podNameInput = document.getElementById('podName');
-            const startDateInput = document.getElementById('startDate');
-            const endDateInput = document.getElementById('endDate');
+            const podNameInput = elements.podNameSelect;
+            const startDateInput = elements.forms.startDateInput;
+            const calculatedEndDateInput = elements.forms.calculatedEndDateInput;
+
             const sprintStartDate = new Date(startDateInput.value);
-            const sprintEndDate = new Date(endDateInput.value);
+            const sprintEndDate = new Date(calculatedEndDateInput.value); // Use the calculated end date
 
             const today = new Date();
             today.setHours(0, 0, 0, 0);
 
-            if (!podNameInput.value.trim()) {
-                showToast('POD Name is required.', 'error');
+            if (!podNameInput.value) {
+                showToast('Please select a POD Name.', 'error');
                 podNameInput.focus();
                 return;
             }
 
-            if (sprintStartDate > sprintEndDate) {
-                showToast('Sprint End Date cannot be before Start Date. Please correct your dates.', 'error');
-                endDateInput.focus();
+            if (!startDateInput.value) {
+                showToast('Sprint Start Date is required.', 'error');
+                startDateInput.focus();
                 return;
+            }
+
+            // End date is automatically calculated, so no direct validation needed here
+            // but ensure it's not empty if start date is picked
+            if (!calculatedEndDateInput.value) {
+                 showToast('Sprint End Date could not be calculated. Please select a valid Start Date.', 'error');
+                 startDateInput.focus();
+                 return;
             }
 
             if (sprintStartDate < today) {
@@ -324,7 +373,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 goals.push({
                     description: input.value.trim(),
                     type: goalTypeSelects[index].value,
-                    status: 'Not Done'
+                    status: 'Not Done' // Fixed to "Not Done" for new goals
                 });
             });
 
@@ -341,7 +390,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const newSprint = {
                 podName: podNameInput.value,
                 startDate: startDateInput.value,
-                endDate: endDateInput.value,
+                endDate: calculatedEndDateInput.value, // Use the calculated end date
                 goals
             };
 
@@ -357,8 +406,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (response.ok) {
                     showToast('Sprint created successfully!', 'success');
                     elements.forms.sprintForm.reset();
+                    if (elements.podNameSelect) {
+                        elements.podNameSelect.value = ""; // Reset dropdown
+                    }
                     elements.forms.goalsContainer.innerHTML = '';
                     addGoalRow();
+                    elements.forms.calculatedEndDateInput.value = ''; // Clear calculated end date
                     showSection('sprints');
                 } else {
                     const errorData = await response.json();

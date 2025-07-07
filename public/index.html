@@ -50,10 +50,17 @@
 
             <!-- Original Welcome Section (shown after access code is entered) -->
             <section id="welcomeSection" class="panel-card welcome-panel fade-in-up" style="display:none;">
-                <h2 class="panel-title"><i class="fas fa-hand-sparkles"></i> Welcome to Sprint Goals!</h2>
+                <h2 class="panel-title"><i class="fas fa-handshake"></i> Welcome to Sprint Goals!</h2>
+                <div class="welcome-icon-group">
+                    <div class="icon-item"><i class="fas fa-eye"></i><span>Visibility</span></div>
+                    <div class="icon-item"><i class="fas fa-users"></i><span>Collaboration</span></div>
+                    <div class="icon-item"><i class="fas fa-chart-line"></i><span>Insights</span></div>
+                </div>
                 <p class="welcome-message">
-                    ML Tech Sprint Goals is your dedicated platform for streamlining sprint planning and tracking.
-                    Effortlessly manage your team's objectives, monitor progress, and review past achievements to drive continuous improvement.
+                    This platform is engineered to foster unparalleled transparency and alignment across your Tech and Product teams.
+                    Gain real-time visibility into every sprint, track progress with precision, and ensure every stakeholder is empowered
+                    with clear insights into our collective pipeline. Build trust through clarity, drive collaboration with shared understanding,
+                    and achieve your product vision with confidence.
                 </p>
                 <div class="welcome-actions">
                     <button id="welcomeCreateSprintBtn" class="btn btn-primary"><i class="fas fa-plus"></i> Start a New Sprint</button>
@@ -68,7 +75,14 @@
                     <div class="form-section">
                         <div class="form-group">
                             <label for="podName">POD Name</label>
-                            <input type="text" id="podName" required placeholder="e.g., Team Alpha">
+                            <select id="podName" required>
+                                <option value="" disabled selected>Select a POD</option>
+                                <option value="Risk Tech">Risk Tech</option>
+                                <option value="Growth and Merchant Experience">Growth and Merchant Experience</option>
+                                <option value="Lender Supply and Integrations">Lender Supply and Integrations</option>
+                                <option value="Collections and Post Disbursal">Collections and Post Disbursal</option>
+                                <option value="New Initiatives and Platform">New Initiatives and Platform</option>
+                            </select>
                         </div>
                         <div class="form-row">
                             <div class="form-group">
@@ -76,8 +90,8 @@
                                 <input type="date" id="startDate" required>
                             </div>
                             <div class="form-group">
-                                <label for="endDate">Sprint End Date</label>
-                                <input type="date" id="endDate" required>
+                                <label for="calculatedEndDate">Sprint End Date</label>
+                                <input type="text" id="calculatedEndDate" readonly placeholder="Calculated automatically">
                             </div>
                         </div>
                     </div>
@@ -87,6 +101,7 @@
                             <div class="goal-headers">
                                 <span class="goal-header-description">Goal Description</span>
                                 <span class="goal-header-type">Type</span>
+                                <span class="goal-header-status">Status</span>
                                 <span class="goal-header-actions"></span>
                             </div>
                             <div id="goalsContainer" class="goals-list"></div>

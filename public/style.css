@@ -224,14 +224,39 @@ body.theme-app .btn-tertiary:hover {
 /* Welcome/Access Panel Specific Styles */
 .welcome-panel {
     text-align: center;
-    max-width: 500px; /* Smaller width for welcome/access */
+    max-width: 700px; /* Increased width for welcome/access */
     margin: 2rem auto;
-    padding: 2.5rem;
+    padding: 3rem 2.5rem; /* Adjusted padding */
+}
+
+.welcome-icon-group {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin-bottom: 2rem;
+    flex-wrap: wrap; /* Allow wrapping on smaller screens */
+}
+
+.icon-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--primary-color);
+    font-size: 0.95rem;
+    font-weight: 600;
+}
+
+.icon-item i {
+    font-size: 2.5rem; /* Larger icon size */
+    margin-bottom: 0.5rem;
+    color: var(--accent-color); /* Use accent color for these icons */
 }
 
 .welcome-message {
-    font-size: 1.1rem;
-    line-height: 1.8;
+    font-size: 1.25rem; /* Increased font size */
+    line-height: 2; /* Increased line height */
+    font-weight: 500; /* Added font weight */
     margin-bottom: 2rem;
     color: var(--access-text);
 }
@@ -481,9 +506,40 @@ textarea[readonly] {
 .goal-fields-wrapper {
     flex-grow: 1;
     display: flex;
-    flex-direction: column; /* Stack description and type vertically */
+    /* Changed to row for horizontal layout of goal fields */
+    flex-direction: row;
+    align-items: flex-start; /* Align items to the top */
+    gap: 1rem; /* Space between description, type, status */
+}
+
+/* Specific widths for goal fields in Create Sprint form */
+.goal-fields-wrapper .goal-description-group {
+    flex: 3; /* Take more space */
+}
+
+.goal-fields-wrapper .goal-type-group {
+    flex: 1; /* Less space */
+    min-width: 120px; /* Ensure it doesn't get too small */
+}
+
+.goal-fields-wrapper .goal-status-group {
+    flex: 0.8; /* Even less space */
+    min-width: 100px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
     gap: 0.5rem;
 }
+
+.goal-status-display {
+    font-weight: bold;
+    color: var(--danger-color); /* "Not Done" in red */
+    padding: 0.4rem 0.6rem;
+    background-color: #ffebeb; /* Light red background */
+    border-radius: 4px;
+    font-size: 0.9rem;
+}
+
 
 .goal-fields-wrapper .form-group {
     margin-bottom: 0; /* Remove margin-bottom from inner form-groups */
