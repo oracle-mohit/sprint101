@@ -144,19 +144,21 @@ function App() {
     return (
         <div className="min-h-screen flex flex-col">
             {/* Header */}
-            <header className="bg-blue-600 text-white p-4 shadow-md">
-                <div className="max-w-4xl mx-auto flex justify-between items-center">
-                    <div className="flex items-center space-x-2">
-                        <i className="fas fa-list-check text-2xl"></i>
-                        <span className="text-xl font-bold">Sprint Goals</span>
+            <header className="bg-blue-700 text-white p-4 shadow-lg">
+                <div className="max-w-5xl mx-auto flex justify-between items-center">
+                    <div className="flex items-center space-x-3">
+                        <i className="fas fa-list-check text-3xl text-blue-300"></i>
+                        <span className="text-2xl font-extrabold tracking-tight">Sprint Goals</span>
                     </div>
                     {accessGranted && (
                         <div className="flex space-x-4">
                             <button
                                 onClick={() => navigateTo('sprints')}
-                                className={`px-4 py-2 rounded-md transition-all duration-200 ${currentSection === 'sprints' ? 'bg-white text-blue-600 shadow-md' : 'bg-blue-500 hover:bg-blue-700'}`}
+                                className={`px-5 py-2 rounded-full transition-all duration-300 ease-in-out flex items-center space-x-2
+                                    ${currentSection === 'sprints' ? 'bg-white text-blue-700 shadow-xl' : 'bg-blue-600 hover:bg-blue-800 text-white'}`}
                             >
-                                <i className="fas fa-calendar-days mr-2"></i>Sprints
+                                <i className="fas fa-calendar-days text-lg"></i>
+                                <span className="font-semibold text-lg">Sprints</span>
                             </button>
                         </div>
                     )}
@@ -164,8 +166,8 @@ function App() {
             </header>
 
             {/* Main Content Area */}
-            <main className="flex-grow flex items-center justify-center p-4">
-                <div className="max-w-4xl w-full mx-auto">
+            <main className="flex-grow flex items-center justify-center p-6 bg-gray-50">
+                <div className="max-w-5xl w-full mx-auto">
                     {currentSection === 'access' && (
                         <AccessScreen onSubmit={handleAccessSubmit} error={toast?.type === 'error' ? toast.message : null} />
                     )}
@@ -185,19 +187,18 @@ function App() {
                     )}
                     {/* DEBUG LOG: Check if selectedSprint is available when manageGoals section is active */}
                     {currentSection === 'manageGoals' && !selectedSprint && accessGranted && (
-                        <p className="text-red-500 text-center">Error: No sprint selected for management.</p>
+                        <p className="text-red-500 text-center text-xl font-semibold mt-10">Error: No sprint selected for management. Please go back to Sprints list.</p>
                     )}
                 </div>
             </main>
 
             {/* Toast Container */}
             {toast && (
-                <div className={`fixed bottom-5 left-1/2 -translate-x-1/2 p-3 rounded-lg shadow-lg flex items-center space-x-2 transition-all duration-300 ${
-                    toast.type === 'success' ? 'bg-green-500' : toast.type === 'error' ? 'bg-red-500' : 'bg-gray-700'
-                } text-white`}>
-                    {toast.type === 'success' && <i className="fas fa-check-circle"></i>}
-                    {toast.type === 'error' && <i className="fas fa-times-circle"></i>}
-                    {toast.type === 'info' && <i className="fas fa-info-circle"></i>}
+                <div className={`fixed bottom-6 left-1/2 -translate-x-1/2 p-4 rounded-xl shadow-2xl flex items-center space-x-3 transition-all duration-300 z-50
+                    ${toast.type === 'success' ? 'bg-green-600' : toast.type === 'error' ? 'bg-red-600' : 'bg-gray-800'} text-white text-lg font-medium`}>
+                    {toast.type === 'success' && <i className="fas fa-check-circle text-2xl"></i>}
+                    {toast.type === 'error' && <i className="fas fa-times-circle text-2xl"></i>}
+                    {toast.type === 'info' && <i className="fas fa-info-circle text-2xl"></i>}
                     <span>{toast.message}</span>
                 </div>
             )}
@@ -215,33 +216,33 @@ function AccessScreen({ onSubmit, error }) {
     };
 
     return (
-        <section className="bg-white p-8 rounded-xl shadow-2xl text-center max-w-md mx-auto animate-fade-in-up">
-            <h2 className="text-3xl font-extrabold text-blue-700 mb-6 flex items-center justify-center space-x-3">
-                <i className="fas fa-lock text-blue-500"></i>
+        <section className="bg-white p-10 rounded-3xl shadow-2xl text-center max-w-lg mx-auto animate-fade-in-up border border-blue-100">
+            <h2 className="text-4xl font-extrabold text-blue-800 mb-8 flex items-center justify-center space-x-4">
+                <i className="fas fa-lock text-blue-600 text-4xl"></i>
                 <span>Access Sprint Goals</span>
             </h2>
-            <p className="text-lg text-gray-700 mb-8 leading-relaxed">
+            <p className="text-xl text-gray-700 mb-10 leading-relaxed">
                 Welcome to the Sprint Goals application! This tool helps teams define, track, and manage their sprint objectives and progress.
                 Enter the access code to continue.
             </p>
-            <form onSubmit={handleSubmit} className="flex flex-col items-center space-y-4">
+            <form onSubmit={handleSubmit} className="flex flex-col items-center space-y-6">
                 <input
                     type="password"
                     value={code}
                     onChange={(e) => setCode(e.target.value)}
                     placeholder="Enter access code"
-                    className="w-full max-w-xs p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent text-center text-lg"
+                    className="w-full max-w-xs p-4 border border-gray-300 rounded-xl focus:ring-4 focus:ring-blue-300 focus:border-blue-500 text-center text-xl shadow-sm transition-all duration-200"
                     autoComplete="off"
                 />
                 <button
                     type="submit"
-                    className="w-full max-w-xs bg-blue-600 text-white py-3 rounded-lg font-semibold text-lg hover:bg-blue-700 transition-colors shadow-md"
+                    className="w-full max-w-xs bg-blue-600 text-white py-4 rounded-xl font-bold text-xl hover:bg-blue-700 transition-colors shadow-lg transform hover:scale-105"
                 >
                     Continue
                 </button>
             </form>
             {error && (
-                <p className="text-red-600 font-medium mt-4 text-sm">{error}</p>
+                <p className="text-red-600 font-medium mt-6 text-base">{error}</p>
             )}
         </section>
     );
@@ -250,37 +251,37 @@ function AccessScreen({ onSubmit, error }) {
 // Welcome Screen Component
 function WelcomeScreen({ navigateTo }) {
     return (
-        <section className="bg-white p-8 rounded-xl shadow-2xl text-center max-w-2xl mx-auto animate-fade-in-up">
-            <h2 className="text-3xl font-extrabold text-blue-700 mb-6 flex items-center justify-center space-x-3">
-                <i className="fas fa-handshake text-blue-500"></i>
+        <section className="bg-white p-10 rounded-3xl shadow-2xl text-center max-w-3xl mx-auto animate-fade-in-up border border-blue-100">
+            <h2 className="text-4xl font-extrabold text-blue-800 mb-8 flex items-center justify-center space-x-4">
+                <i className="fas fa-handshake text-blue-600 text-4xl"></i>
                 <span>Welcome to Sprint Goals!</span>
             </h2>
-            <div className="flex justify-center gap-8 mb-8 flex-wrap">
-                <div className="flex flex-col items-center text-blue-600 font-semibold text-sm">
-                    <i className="fas fa-eye text-4xl text-green-500 mb-2"></i>
+            <div className="flex justify-center gap-10 mb-10 flex-wrap">
+                <div className="flex flex-col items-center text-blue-700 font-semibold text-lg">
+                    <i className="fas fa-eye text-5xl text-green-500 mb-3 drop-shadow-md"></i>
                     <span>Visibility</span>
                 </div>
-                <div className="flex flex-col items-center text-blue-600 font-semibold text-sm">
-                    <i className="fas fa-users text-4xl text-green-500 mb-2"></i>
+                <div className="flex flex-col items-center text-blue-700 font-semibold text-lg">
+                    <i className="fas fa-users text-5xl text-green-500 mb-3 drop-shadow-md"></i>
                     <span>Collaboration</span>
                 </div>
-                <div className="flex flex-col items-center text-blue-600 font-semibold text-sm">
-                    <i className="fas fa-chart-line text-4xl text-green-500 mb-2"></i>
+                <div className="flex flex-col items-center text-blue-700 font-semibold text-lg">
+                    <i className="fas fa-chart-line text-5xl text-green-500 mb-3 drop-shadow-md"></i>
                     <span>Insights</span>
                 </div>
             </div>
-            <p className="text-xl text-gray-700 mb-10 leading-loose font-medium">
+            <p className="text-2xl text-gray-700 mb-12 leading-loose font-medium">
                 This platform is engineered to foster unparalleled transparency and alignment across your Tech and Product teams.
                 Gain real-time visibility into every sprint, track progress with precision, and ensure every stakeholder is empowered
                 with clear insights into our collective pipeline. Build trust through clarity, drive collaboration with shared understanding,
                 and achieve your product vision with confidence.
             </p>
-            <div className="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4">
+            <div className="flex flex-col sm:flex-row justify-center space-y-5 sm:space-y-0 sm:space-x-6">
                 <button
                     onClick={() => navigateTo('sprints')}
-                    className="bg-blue-600 text-white py-3 px-8 rounded-lg font-semibold text-lg hover:bg-blue-700 transition-colors shadow-md"
+                    className="bg-blue-600 text-white py-4 px-10 rounded-xl font-bold text-xl hover:bg-blue-700 transition-colors shadow-lg transform hover:scale-105"
                 >
-                    <i className="fas fa-calendar-days mr-2"></i>View All Sprints
+                    <i className="fas fa-calendar-days mr-3"></i>View All Sprints
                 </button>
             </div>
         </section>
@@ -296,16 +297,16 @@ function SprintsList({ sprints, onManageGoals }) {
         .sort((a, b) => new Date(b.endDate) - new Date(a.endDate));
 
     return (
-        <div className="space-y-8">
-            <section className="bg-white p-6 rounded-xl shadow-md animate-fade-in-up">
-                <h2 className="text-2xl font-bold text-gray-800 mb-4 flex items-center space-x-2">
-                    <i className="fas fa-hourglass-start text-blue-500"></i>
+        <div className="space-y-10">
+            <section className="bg-white p-8 rounded-3xl shadow-xl border border-gray-200 animate-fade-in-up">
+                <h2 className="text-3xl font-bold text-gray-800 mb-6 flex items-center space-x-3">
+                    <i className="fas fa-hourglass-start text-blue-600 text-3xl"></i>
                     <span>Current & Upcoming Sprints</span>
                 </h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                     {currentUpcomingSprints.length === 0 ? (
-                        <p className="col-span-full text-center text-gray-500 p-8 border border-dashed border-gray-300 rounded-lg">
-                            <i className="fas fa-check-circle mr-2"></i>No current or upcoming sprints.
+                        <p className="col-span-full text-center text-gray-500 text-lg p-10 border-4 border-dashed border-gray-200 rounded-2xl bg-gray-50 italic">
+                            <i className="fas fa-check-circle mr-3 text-green-500"></i>No current or upcoming sprints.
                         </p>
                     ) : (
                         currentUpcomingSprints.map(sprint => (
@@ -315,15 +316,15 @@ function SprintsList({ sprints, onManageGoals }) {
                 </div>
             </section>
 
-            <section className="bg-white p-6 rounded-xl shadow-md animate-fade-in-up">
-                <h2 className="text-2xl font-bold text-gray-800 mb-4 flex items-center space-x-2">
-                    <i className="fas fa-box-archive text-gray-500"></i>
+            <section className="bg-white p-8 rounded-3xl shadow-xl border border-gray-200 animate-fade-in-up">
+                <h2 className="text-3xl font-bold text-gray-800 mb-6 flex items-center space-x-3">
+                    <i className="fas fa-box-archive text-gray-600 text-3xl"></i>
                     <span>Past Sprints</span>
                 </h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                     {pastSprints.length === 0 ? (
-                        <p className="col-span-full text-center text-gray-500 p-8 border border-dashed border-gray-300 rounded-lg">
-                            <i className="fas fa-box-open mr-2"></i>No past sprints recorded yet.
+                        <p className="col-span-full text-center text-gray-500 text-lg p-10 border-4 border-dashed border-gray-200 rounded-2xl bg-gray-50 italic">
+                            <i className="fas fa-box-open mr-3 text-gray-400"></i>No past sprints recorded yet.
                         </p>
                     ) : (
                         pastSprints.map(sprint => (
@@ -348,7 +349,7 @@ function SprintCard({ sprint, isPastSprint, onManageGoals }) {
     const achievementPercentage = totalGoals > 0 ? Math.round((completedGoals / totalGoals) * 100) : 0;
 
     let cardBorderColor = 'border-blue-500';
-    let cardShadow = 'shadow-md';
+    let cardShadow = 'shadow-lg';
     let ctaText = isPastSprint ? 'View Goals' : (hasStarted ? 'Manage Goals' : 'Manage Goals (Upcoming)');
     let ctaIcon = isPastSprint ? 'fas fa-eye' : 'fas fa-clipboard-list';
     let ctaBg = 'bg-blue-600 hover:bg-blue-700';
@@ -356,27 +357,28 @@ function SprintCard({ sprint, isPastSprint, onManageGoals }) {
     if (isPastSprint) {
         cardBorderColor = 'border-gray-400';
         ctaBg = 'bg-gray-500 hover:bg-gray-600';
+        cardShadow = 'shadow-md';
     } else if (achievementPercentage === 100 && totalGoals > 0) {
         cardBorderColor = 'border-green-500';
-        cardShadow = 'shadow-lg shadow-green-200';
+        cardShadow = 'shadow-xl shadow-green-200';
     } else if (endDate < now && achievementPercentage < 100) {
         cardBorderColor = 'border-red-500';
-        cardShadow = 'shadow-lg shadow-red-200';
+        cardShadow = 'shadow-xl shadow-red-200';
     }
 
     return (
-        <div className={`bg-white p-5 rounded-xl border-l-8 ${cardBorderColor} ${cardShadow} flex flex-col justify-between transition-all duration-300 hover:scale-105`}>
+        <div className={`bg-white p-6 rounded-2xl border-l-8 ${cardBorderColor} ${cardShadow} flex flex-col justify-between transition-all duration-300 hover:scale-105 hover:shadow-2xl`}>
             <div>
-                <h3 className="text-xl font-semibold text-gray-800 mb-2">{sprint.podName}</h3>
-                <div className="text-sm text-gray-600 mb-4">
-                    <p><i className="fas fa-calendar-alt mr-2"></i><strong>Start:</strong> {startDate.toLocaleDateString('en-IN')}</p>
-                    <p><i className="fas fa-calendar-alt mr-2"></i><strong>End:</strong> {endDate.toLocaleDateString('en-IN')}</p>
+                <h3 className="text-2xl font-bold text-gray-900 mb-3">{sprint.podName}</h3>
+                <div className="text-base text-gray-700 mb-4 space-y-1">
+                    <p className="flex items-center"><i className="fas fa-calendar-check mr-2 text-blue-500"></i><strong>Start:</strong> {startDate.toLocaleDateString('en-IN')}</p>
+                    <p className="flex items-center"><i className="fas fa-calendar-times mr-2 text-red-500"></i><strong>End:</strong> {endDate.toLocaleDateString('en-IN')}</p>
                 </div>
-                <div className="mb-4">
-                    <div className="w-full bg-gray-200 rounded-full h-2.5">
-                        <div className="bg-green-500 h-2.5 rounded-full" style={{ width: `${achievementPercentage}%` }}></div>
+                <div className="mb-5">
+                    <div className="w-full bg-gray-200 rounded-full h-3">
+                        <div className="bg-gradient-to-r from-green-400 to-green-600 h-3 rounded-full shadow-inner" style={{ width: `${achievementPercentage}%` }}></div>
                     </div>
-                    <p className="text-sm text-gray-700 mt-1">Achievement: <span className="font-bold">{achievementPercentage}%</span></p>
+                    <p className="text-sm text-gray-700 mt-2 text-right">Achievement: <span className="font-extrabold text-lg text-green-700">{achievementPercentage}%</span></p>
                 </div>
             </div>
             <button
@@ -384,7 +386,7 @@ function SprintCard({ sprint, isPastSprint, onManageGoals }) {
                     console.log('Manage Goals button clicked for sprint ID:', sprint._id); // DEBUG LOG
                     onManageGoals(sprint._id, isPastSprint, hasStarted);
                 }}
-                className={`w-full py-2 px-4 rounded-lg text-white font-semibold transition-colors ${ctaBg}`}
+                className={`w-full py-3 px-4 rounded-xl text-white font-bold text-lg transition-colors shadow-md transform hover:scale-[1.02] ${ctaBg}`}
             >
                 <i className={`${ctaIcon} mr-2`}></i>{ctaText}
             </button>
@@ -429,51 +431,51 @@ function ManageGoals({ sprint, onSave, onBack }) {
     const isStatusOnlyEditable = sprint.editStatusOnly && !isReadOnly; // Can only edit status if sprint has started and is not past
 
     return (
-        <section className="bg-white p-8 rounded-xl shadow-md animate-fade-in-up">
-            <h2 className="text-2xl font-bold text-gray-800 mb-6 flex items-center space-x-2">
-                <i className="fas fa-edit text-blue-500"></i>
-                <span>Manage Goals for {sprint.podName}</span>
+        <section className="bg-white p-8 rounded-3xl shadow-xl border border-gray-200 animate-fade-in-up">
+            <h2 className="text-3xl font-bold text-gray-800 mb-6 flex items-center space-x-3">
+                <i className="fas fa-edit text-blue-600 text-3xl"></i>
+                <span>Manage Goals for <span className="text-blue-800">{sprint.podName}</span></span>
             </h2>
 
-            <div className="bg-gray-100 p-4 rounded-lg mb-6 flex flex-col md:flex-row justify-between items-start md:items-center space-y-3 md:space-y-0">
-                <div className="flex flex-col md:flex-row md:space-x-6 space-y-2 md:space-y-0 text-gray-700 text-sm">
-                    <span><i className="fas fa-calendar-alt mr-2"></i><strong>Start:</strong> {new Date(sprint.startDate).toLocaleDateString('en-IN')}</span>
-                    <span><i className="fas fa-calendar-alt mr-2"></i><strong>End:</strong> {new Date(sprint.endDate).toLocaleDateString('en-IN')}</span>
+            <div className="bg-blue-50 p-6 rounded-2xl mb-8 flex flex-col md:flex-row justify-between items-start md:items-center space-y-4 md:space-y-0 border border-blue-200 shadow-inner">
+                <div className="flex flex-col md:flex-row md:space-x-8 space-y-2 md:space-y-0 text-gray-700 text-base font-medium">
+                    <span className="flex items-center"><i className="fas fa-calendar-check mr-2 text-blue-600"></i><strong>Start:</strong> {new Date(sprint.startDate).toLocaleDateString('en-IN')}</span>
+                    <span className="flex items-center"><i className="fas fa-calendar-times mr-2 text-red-600"></i><strong>End:</strong> {new Date(sprint.endDate).toLocaleDateString('en-IN')}</span>
                 </div>
-                <div className="w-full md:w-1/3 flex items-center space-x-2">
-                    <div className="flex-grow bg-gray-300 rounded-full h-2.5">
-                        <div className="bg-green-500 h-2.5 rounded-full" style={{ width: `${achievementPercentage}%` }}></div>
+                <div className="w-full md:w-1/3 flex items-center space-x-3">
+                    <div className="flex-grow bg-gray-300 rounded-full h-3">
+                        <div className="bg-gradient-to-r from-green-400 to-green-600 h-3 rounded-full shadow-inner" style={{ width: `${achievementPercentage}%` }}></div>
                     </div>
-                    <p className="text-sm font-bold text-gray-800">Achievement: {achievementPercentage}%</p>
+                    <p className="text-base font-bold text-gray-800 whitespace-nowrap">Achievement: <span className="text-green-700 text-xl">{achievementPercentage}%</span></p>
                 </div>
             </div>
 
-            <div className="overflow-x-auto rounded-lg border border-gray-200 shadow-sm">
+            <div className="overflow-x-auto rounded-xl border border-gray-200 shadow-md">
                 <table className="min-w-full divide-y divide-gray-200">
                     <thead className="bg-blue-600 text-white">
                         <tr>
-                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Description</th>
-                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider w-1/5">Type</th>
-                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider w-1/6">Status</th>
-                            {/* Removed Actions Header */}
+                            <th scope="col" className="px-6 py-4 text-left text-sm font-semibold uppercase tracking-wider w-3/5">Description</th>
+                            <th scope="col" className="px-6 py-4 text-left text-sm font-semibold uppercase tracking-wider w-1/5">Type</th>
+                            <th scope="col" className="px-6 py-4 text-left text-sm font-semibold uppercase tracking-wider w-1/5">Status</th>
                         </tr>
                     </thead>
                     <tbody className="bg-white divide-y divide-gray-200">
                         {currentGoals.length === 0 ? (
                             <tr>
-                                <td colSpan="3" className="px-6 py-4 whitespace-nowrap text-center text-gray-500">
+                                <td colSpan="3" className="px-6 py-8 whitespace-nowrap text-center text-gray-500 text-lg italic">
                                     No goals defined for this sprint.
                                 </td>
                             </tr>
                         ) : (
                             currentGoals.map((goal, index) => (
-                                <tr key={goal._id || index}>
+                                <tr key={goal._id || index} className="hover:bg-gray-50 transition-colors">
                                     <td className="px-6 py-4">
                                         <textarea
                                             value={goal.description}
                                             onChange={(e) => handleGoalChange(index, 'description', e.target.value)}
-                                            readOnly={isReadOnly || isStatusOnlyEditable} // Description is read-only if past or only status is editable
-                                            className={`w-full p-2 border rounded-md text-sm ${isReadOnly || isStatusOnlyEditable ? 'bg-gray-50 border-transparent resize-none' : 'border-gray-300 focus:ring-blue-400'}`}
+                                            readOnly={isReadOnly || isStatusOnlyEditable}
+                                            className={`w-full p-3 border rounded-lg text-base resize-y min-h-[80px] focus:ring-2 focus:ring-blue-300 transition-all duration-200
+                                                ${isReadOnly || isStatusOnlyEditable ? 'bg-gray-100 border-transparent cursor-not-allowed' : 'border-gray-300'}`}
                                             rows="2"
                                         />
                                     </td>
@@ -481,8 +483,9 @@ function ManageGoals({ sprint, onSave, onBack }) {
                                         <select
                                             value={goal.type}
                                             onChange={(e) => handleGoalChange(index, 'type', e.target.value)}
-                                            disabled={isReadOnly || isStatusOnlyEditable} // Type is read-only if past or only status is editable
-                                            className={`w-full p-2 border rounded-md text-sm ${isReadOnly || isStatusOnlyEditable ? 'bg-gray-50 border-transparent' : 'border-gray-300 focus:ring-blue-400'}`}
+                                            disabled={isReadOnly || isStatusOnlyEditable}
+                                            className={`w-full p-3 border rounded-lg text-base focus:ring-2 focus:ring-blue-300 transition-all duration-200
+                                                ${isReadOnly || isStatusOnlyEditable ? 'bg-gray-100 border-transparent cursor-not-allowed' : 'border-gray-300'}`}
                                         >
                                             <option value="Live">Live</option>
                                             <option value="QA Complete">QA Complete</option>
@@ -493,8 +496,10 @@ function ManageGoals({ sprint, onSave, onBack }) {
                                         <select
                                             value={goal.status}
                                             onChange={(e) => handleGoalChange(index, 'status', e.target.value)}
-                                            disabled={isReadOnly} // Status is only disabled if the whole sprint is read-only (past)
-                                            className={`w-full p-2 border rounded-md text-sm ${goal.status === 'Done' ? 'text-green-600 font-semibold' : 'text-red-600 font-semibold'} ${isReadOnly ? 'bg-gray-50 border-transparent' : 'border-gray-300 focus:ring-blue-400'}`}
+                                            disabled={isReadOnly}
+                                            className={`w-full p-3 border rounded-lg text-base font-semibold transition-all duration-200
+                                                ${goal.status === 'Done' ? 'bg-green-100 text-green-700 border-green-300' : 'bg-red-100 text-red-700 border-red-300'}
+                                                ${isReadOnly ? 'cursor-not-allowed' : 'focus:ring-2 focus:ring-blue-300'}`}
                                         >
                                             <option value="Not Done">Not Done</option>
                                             <option value="Done">Done</option>
@@ -507,17 +512,17 @@ function ManageGoals({ sprint, onSave, onBack }) {
                 </table>
             </div>
 
-            <div className="flex justify-end space-x-4 mt-8">
+            <div className="flex justify-end space-x-4 mt-10">
                 <button
                     onClick={onBack}
-                    className="px-6 py-2 bg-gray-300 text-gray-800 rounded-lg font-semibold hover:bg-gray-400 transition-colors shadow-md"
+                    className="px-8 py-3 bg-gray-300 text-gray-800 rounded-xl font-bold text-lg hover:bg-gray-400 transition-colors shadow-md transform hover:scale-105"
                 >
                     Back to Sprints
                 </button>
                 {!isReadOnly && ( // Only show save button if not read-only
                     <button
                         onClick={handleSaveClick}
-                        className="px-6 py-2 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition-colors shadow-md"
+                        className="px-8 py-3 bg-blue-600 text-white rounded-xl font-bold text-lg hover:bg-blue-700 transition-colors shadow-md transform hover:scale-105"
                     >
                         Save Changes
                     </button>
