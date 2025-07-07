@@ -1,17 +1,21 @@
-/* src/index.css or src/App.css */
+/* src/index.css */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* Add your custom global styles here if any, e.g., for fonts */
+/* Import Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@500;600;700&display=swap');
+
+/* Default body font for the app theme */
 body {
-  font-family: 'Inter', sans-serif; /* Default font for the app theme */
+  font-family: 'Inter', sans-serif;
 }
+/* Specific classes for theme switching */
 .font-poppins {
-  font-family: 'Poppins', sans-serif; /* For access/welcome screen */
+  font-family: 'Poppins', sans-serif;
 }
 .font-inter {
-  font-family: 'Inter', sans-serif; /* For main app sections */
+  font-family: 'Inter', sans-serif;
 }
 
 /* Keyframe for fade-in-up animation */
