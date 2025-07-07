@@ -2,14 +2,16 @@ import React, { useState, useEffect, useCallback } from 'react';
 
 // Main App Component
 function App() {
+    // IMPORTANT: Ensure this API_BASE URL is correct and your backend server is running.
+    // If your backend is hosted on Render.com, it might spin down due to inactivity.
     const API_BASE = 'https://sprint101-1.onrender.com';
     const ACCESS_CODE = 'MLProduct';
 
     // State for managing current section, access status, sprints data, and selected sprint for management
     const [currentSection, setCurrentSection] = useState('access'); // 'access', 'welcome', 'sprints', 'manageGoals'
     const [accessGranted, setAccessGranted] = useState(sessionStorage.getItem('accessGranted') === 'true');
-    const [sprints, setSprints] = useState([]);
-    const [selectedSprint, setSelectedSprint] = useState(null);
+    const [sprints, setSprints] = useState([]); // State to hold all fetched sprints
+    const [selectedSprint, setSelectedSprint] = useState(null); // State to hold the sprint currently being managed
     const [toast, setToast] = useState(null); // { message: '', type: '' }
 
     // Function to show toast messages
@@ -22,8 +24,9 @@ function App() {
 
     // Function to navigate between sections
     const navigateTo = useCallback((section, sprint = null) => {
+        console.log('Navigating to section:', section, 'with sprint:', sprint ? sprint.podName : 'N/A'); // DEBUG LOG
         setCurrentSection(section);
-        setSelectedSprint(sprint);
+        setSelectedSprint(sprint); // Set selected sprint when navigating to manageGoals
         // Apply theme based on section
         if (section === 'access') {
             document.body.classList.remove('font-inter');
@@ -47,23 +50,28 @@ function App() {
         }
     }, [accessGranted, navigateTo]);
 
-    // Function to fetch sprints from the backend
+    // Function to fetch all sprints from the backend
     const fetchSprints = useCallback(async () => {
+        console.log('Attempting to fetch all sprints...'); // DEBUG LOG
         try {
-            const response = await fetch(`${API_BASE}/api/sprints`);
+            const response = await fetch(`${API_BASE}/api/sprints`); // API call to get all sprints
             if (response.ok) {
                 const data = await response.json();
-                setSprints(data);
+                console.log('Sprints fetched successfully:', data); // DEBUG LOG
+                setSprints(data); // Update the sprints state
             } else {
-                showToast('Error loading sprints.', 'error');
+                const errorText = await response.text(); // Get raw error text
+                console.error('Error response from fetchSprints:', response.status, errorText); // DEBUG LOG
+                showToast('Error loading sprints. Please check backend connection.', 'error');
             }
         } catch (error) {
-            console.error('Error fetching sprints:', error);
-            showToast('Network error or server unreachable.', 'error');
+            console.error('Error fetching sprints:', error); // DEBUG LOG
+            showToast('Network error or server unreachable. Is backend running?', 'error');
         }
-    }, [showToast]);
+    }, [showToast, API_BASE]);
 
-    // Effect to fetch sprints when navigating to the sprints section
+    // Effect to fetch sprints when navigating to the 'sprints' section
+    // This ensures sprints are loaded when the user goes to the main list view
     useEffect(() => {
         if (currentSection === 'sprints' && accessGranted) {
             fetchSprints();
@@ -81,25 +89,32 @@ function App() {
         }
     };
 
-    // Handle managing goals for a specific sprint
+    // Handle managing goals for a specific sprint (triggered by SprintCard button)
     const handleManageGoals = useCallback(async (sprintId, isPastSprint, hasStarted) => {
+        console.log('handleManageGoals called for sprintId:', sprintId); // DEBUG LOG
         try {
+            // API call to get details for a SINGLE sprint
             const response = await fetch(`${API_BASE}/api/sprints/${sprintId}`);
             if (response.ok) {
                 const data = await response.json();
+                console.log('Single sprint details fetched:', data); // DEBUG LOG
+                // Set the selected sprint data, including read-only flags
                 setSelectedSprint({ ...data, readOnly: isPastSprint, editStatusOnly: !isPastSprint && hasStarted });
-                navigateTo('manageGoals');
+                navigateTo('manageGoals'); // Navigate to the manage goals section
             } else {
-                showToast('Failed to load sprint details.', 'error');
+                const errorText = await response.text(); // Get raw error text
+                console.error('Error response from fetch single sprint:', response.status, errorText); // DEBUG LOG
+                showToast('Failed to load sprint details. Sprint might not exist or backend error.', 'error');
             }
         } catch (error) {
-            console.error('Error fetching sprint for management:', error);
-            showToast('Network error loading sprint details.', 'error');
+            console.error('Error fetching sprint for management:', error); // DEBUG LOG
+            showToast('Network error loading sprint details. Check backend.', 'error');
         }
-    }, [navigateTo, showToast]);
+    }, [navigateTo, showToast, API_BASE]);
 
-    // Handle saving updated goals
+    // Handle saving updated goals (triggered by ManageGoals component)
     const handleSaveGoals = useCallback(async (sprintId, updatedGoals) => {
+        console.log('handleSaveGoals called for sprintId:', sprintId, 'with goals:', updatedGoals); // DEBUG LOG
         try {
             const response = await fetch(`${API_BASE}/api/sprints/${sprintId}/goals`, {
                 method: 'PUT',
@@ -108,17 +123,19 @@ function App() {
             });
 
             if (response.ok) {
+                console.log('Goals updated successfully on backend.'); // DEBUG LOG
                 showToast('Goals updated successfully!', 'success');
                 navigateTo('sprints'); // Go back to sprints list after saving
             } else {
                 const errorData = await response.json();
+                console.error('Error response from saveGoals:', response.status, errorData); // DEBUG LOG
                 showToast(`Error saving goals: ${errorData.message || 'Unknown error'}`, 'error');
             }
         } catch (error) {
-            console.error('Error saving goals:', error);
+            console.error('Error saving goals:', error); // DEBUG LOG
             showToast('An error occurred while saving goals. Please check your network and try again.', 'error');
         }
-    }, [showToast, navigateTo]);
+    }, [showToast, navigateTo, API_BASE]);
 
 
     return (
@@ -155,11 +172,17 @@ function App() {
                     )}
 
                     {currentSection === 'sprints' && accessGranted && (
+                        // SprintsList component receives the 'sprints' data and the 'onManageGoals' handler
                         <SprintsList sprints={sprints} onManageGoals={handleManageGoals} />
                     )}
 
                     {currentSection === 'manageGoals' && accessGranted && selectedSprint && (
+                        // ManageGoals component receives the 'selectedSprint' data and save/back handlers
                         <ManageGoals sprint={selectedSprint} onSave={handleSaveGoals} onBack={() => navigateTo('sprints')} />
+                    )}
+                    {/* DEBUG LOG: Check if selectedSprint is available when manageGoals section is active */}
+                    {currentSection === 'manageGoals' && !selectedSprint && accessGranted && (
+                        <p className="text-red-500 text-center">Error: No sprint selected for management.</p>
                     )}
                 </div>
             </main>
@@ -354,7 +377,10 @@ function SprintCard({ sprint, isPastSprint, onManageGoals }) {
                 </div>
             </div>
             <button
-                onClick={() => onManageGoals(sprint._id, isPastSprint, hasStarted)}
+                onClick={() => {
+                    console.log('Manage Goals button clicked for sprint ID:', sprint._id); // DEBUG LOG
+                    onManageGoals(sprint._id, isPastSprint, hasStarted);
+                }}
                 className={`w-full py-2 px-4 rounded-lg text-white font-semibold transition-colors ${ctaBg}`}
             >
                 <i className={`${ctaIcon} mr-2`}></i>{ctaText}
@@ -384,6 +410,7 @@ function ManageGoals({ sprint, onSave, onBack }) {
     const handleSaveClick = () => {
         // Basic validation before saving
         if (currentGoals.some(goal => !goal.description.trim() || goal.description.trim().length < 12)) {
+            // Using a custom alert for better UX than browser's alert()
             alert('All goal descriptions must be at least 12 characters long and not empty.');
             return;
         }
@@ -391,7 +418,7 @@ function ManageGoals({ sprint, onSave, onBack }) {
             alert('A sprint must have at least 3 goals.');
             return;
         }
-        onSave(sprint._id, currentGoals);
+        onSave(sprint._id, currentGoals); // Call the onSave prop from App.js
     };
 
     // Determine if fields should be read-only
@@ -425,6 +452,7 @@ function ManageGoals({ sprint, onSave, onBack }) {
                             <th scope="col" className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Description</th>
                             <th scope="col" className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider w-1/5">Type</th>
                             <th scope="col" className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider w-1/6">Status</th>
+                            {/* Removed Actions Header */}
                         </tr>
                     </thead>
                     <tbody className="bg-white divide-y divide-gray-200">
@@ -495,35 +523,5 @@ function ManageGoals({ sprint, onSave, onBack }) {
         </section>
     );
 }
-
-// Ensure Tailwind CSS is loaded (if not already part of the environment)
-// This script tag is for demonstration in environments that don't auto-inject Tailwind.
-// In a typical React setup with build tools, Tailwind is processed during compilation.
-/*
-<script src="https://cdn.tailwindcss.com"></script>
-<style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@500;600;700&display=swap');
-    body {
-        font-family: 'Inter', sans-serif;
-    }
-    .font-poppins {
-        font-family: 'Poppins', sans-serif;
-    }
-    .font-inter {
-        font-family: 'Inter', sans-serif;
-    }
-    .animate-fade-in-up {
-        animation: fadeInUp 0.5s ease-out forwards;
-        opacity: 0;
-        transform: translateY(20px);
-    }
-    @keyframes fadeInUp {
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-</style>
-*/
 
 export default App;
