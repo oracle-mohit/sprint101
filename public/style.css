@@ -581,6 +581,27 @@ textarea[readonly] {
     padding: 0.85rem 0.75rem;
 }
 
+/* Hide the Actions column header */
+.goals-table th:nth-child(4) {
+    display: none;
+}
+
+/* Adjust column widths for Description, Type, and Status */
+.goals-table td:nth-child(1) { /* Description */
+    width: 55%; /* Increased width */
+}
+.goals-table td:nth-child(2) { /* Type */
+    width: 20%; /* Reduced width */
+}
+.goals-table td:nth-child(3) { /* Status */
+    width: 25%; /* Reduced width */
+}
+
+/* Hide the Actions column data cell */
+.goals-table td:nth-child(4) {
+    display: none;
+}
+
 .goals-table .goal-table-description-input,
 .goals-table .goal-table-type-select,
 .goals-table .goal-table-status-select {
@@ -840,11 +861,9 @@ textarea[readonly] {
     .goals-table td:nth-child(3)::before {
         content: 'Status:';
     }
-    .goals-table td:nth-child(4) { /* Actions */
-        text-align: center;
-        border-top: 1px dashed var(--border-color);
-        margin-top: 0.5rem;
-        padding-top: 0.5rem;
+    /* Hide the Actions column on mobile as well */
+    .goals-table td:nth-child(4) {
+        display: none;
     }
     .goals-table td:nth-child(4)::before {
         content: ''; /* No label for actions */
