@@ -6,27 +6,20 @@ document.addEventListener('DOMContentLoaded', () => {
     // Grouping related DOM elements for better readability
     const elements = {
         forms: {
-            sprintForm: document.getElementById('sprintForm'),
-            goalsContainer: document.getElementById('goalsContainer'), // For Create Sprint form
-            startDateInput: document.getElementById('startDate'), // New: for auto end date calculation
-            calculatedEndDateInput: document.getElementById('calculatedEndDate'), // New: to display calculated end date
+            // Removed sprintForm, goalsContainer, startDateInput, calculatedEndDateInput
         },
         buttons: {
-            addGoal: document.getElementById('addGoal'),
-            createSprint: document.querySelector('#sprintForm button[type="submit"]'),
-            cancelSprint: document.getElementById('cancelSprintBtn'),
+            // Removed addGoal, createSprint, cancelSprint, createSprintHeader, welcomeCreateSprint
             viewSprints: document.getElementById('viewSprintsBtn'),
-            createSprintHeader: document.getElementById('createSprintBtn'), // Renamed to avoid conflict with form submit btn
-            welcomeCreateSprint: document.getElementById('welcomeCreateSprintBtn'),
             welcomeViewSprints: document.getElementById('welcomeViewSprintsBtn'),
             saveGoals: document.getElementById('saveGoalsBtn'),
             backToSprints: document.getElementById('backToSprintsBtn'),
-            accessCodeSubmit: document.getElementById('accessCodeSubmitBtn'), // New access code button
+            accessCodeSubmit: document.getElementById('accessCodeSubmitBtn'),
         },
         sections: {
-            accessCode: document.getElementById('accessCodeSection'), // New access code section
+            accessCode: document.getElementById('accessCodeSection'),
             welcome: document.getElementById('welcomeSection'),
-            createSprint: document.getElementById('createSprintSection'),
+            // Removed createSprint
             manageGoals: document.getElementById('manageGoalsSection'),
             currentUpcomingSprints: document.getElementById('currentUpcomingSprintsSection'),
             pastSprints: document.getElementById('pastSprintsSection'),
@@ -34,7 +27,7 @@ document.addEventListener('DOMContentLoaded', () => {
         lists: {
             currentSprints: document.getElementById('currentSprintsList'),
             pastSprints: document.getElementById('pastSprintsList'),
-            manageGoalsTableContainer: document.getElementById('manageGoalsTableContainer'), // Changed from CardsContainer
+            manageGoalsTableContainer: document.getElementById('manageGoalsTableContainer'),
         },
         manageGoalsHeader: {
             name: document.getElementById('managedSprintName'),
@@ -44,11 +37,10 @@ document.addEventListener('DOMContentLoaded', () => {
             achievement: document.getElementById('manageSprintAchievement'),
         },
         toastContainer: document.getElementById('toast-container'),
-        accessCodeInput: document.getElementById('accessCodeInput'), // New access code input
-        accessCodeError: document.getElementById('accessCodeError'), // New error message element
-        mainAppHeaderActions: document.getElementById('mainAppHeaderActions'), // Header buttons container
-        podNameSelect: document.getElementById('podName'), // New: POD Name dropdown
-        totalGoalsCount: document.getElementById('totalGoalsCount'), // New: Goal counter element
+        accessCodeInput: document.getElementById('accessCodeInput'),
+        accessCodeError: document.getElementById('accessCodeError'),
+        mainAppHeaderActions: document.getElementById('mainAppHeaderActions'),
+        // Removed podNameSelect, totalGoalsCount
     };
 
     // --- Custom Toast / Snackbar Function ---
@@ -84,13 +76,12 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- Section Management ---
     /**
      * Shows a specific section of the application and applies the correct theme.
-     * @param {string} sectionId - The ID of the section to show ('access', 'welcome', 'create', 'manageGoals', 'sprints').
+     * @param {string} sectionId - The ID of the section to show ('access', 'welcome', 'manageGoals', 'sprints').
      */
     function showSection(sectionId) {
         const allSections = [
             elements.sections.accessCode,
             elements.sections.welcome,
-            elements.sections.createSprint,
             elements.sections.manageGoals,
             elements.sections.currentUpcomingSprints,
             elements.sections.pastSprints,
@@ -106,7 +97,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Reset header button active states
         elements.buttons.viewSprints.classList.remove('active');
-        elements.buttons.createSprintHeader.classList.remove('active');
+        // elements.buttons.createSprintHeader.classList.remove('active'); // Removed
 
         let targetElementForScroll = null;
         let themeToApply = 'theme-app'; // Default theme for main app sections
@@ -134,12 +125,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 elements.sections.welcome.classList.add('fade-in-up');
                 targetElementForScroll = elements.sections.welcome;
                 break;
-            case 'create':
-                elements.sections.createSprint.style.display = 'block';
-                elements.sections.createSprint.classList.add('fade-in-up');
-                elements.buttons.createSprintHeader.classList.add('active');
-                targetElementForScroll = elements.sections.createSprint;
-                break;
+            // Removed case 'create'
             case 'manageGoals':
                 elements.sections.manageGoals.style.display = 'block';
                 elements.sections.manageGoals.classList.add('fade-in-up');
@@ -206,232 +192,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Event Listeners for Navigation ---
     elements.buttons.viewSprints.addEventListener('click', () => showSection('sprints'));
-    elements.buttons.createSprintHeader.addEventListener('click', () => {
-        elements.forms.sprintForm.reset();
-        // Reset POD Name dropdown to default
-        if (elements.podNameSelect) {
-            elements.podNameSelect.value = "";
-        }
-        elements.forms.goalsContainer.innerHTML = '';
-        addGoalRow(); // Always add one empty row to start
-        // Clear and recalculate end date on new sprint creation
-        elements.forms.calculatedEndDateInput.value = '';
-        updateGoalCounter(); // Reset goal counter
-        showSection('create');
-    });
-    elements.buttons.cancelSprint.addEventListener('click', () => {
-        elements.forms.sprintForm.reset();
-        // Reset POD Name dropdown to default
-        if (elements.podNameSelect) {
-            elements.podNameSelect.value = "";
-        }
-        elements.forms.goalsContainer.innerHTML = '';
-        addGoalRow(); // Keep one row for next time
-        // Clear calculated end date
-        elements.forms.calculatedEndDateInput.value = '';
-        updateGoalCounter(); // Reset goal counter
-        showSection('sprints');
-    });
+    // Removed createSprintHeader event listener
+    // Removed cancelSprint event listener
 
     // Welcome screen CTAs
-    if (elements.buttons.welcomeCreateSprint) {
-        elements.buttons.welcomeCreateSprint.addEventListener('click', () => {
-            elements.forms.sprintForm.reset();
-            if (elements.podNameSelect) {
-                elements.podNameSelect.value = "";
-            }
-            elements.forms.goalsContainer.innerHTML = '';
-            addGoalRow();
-            elements.forms.calculatedEndDateInput.value = '';
-            updateGoalCounter(); // Reset goal counter
-            showSection('create');
-        });
-    }
+    // Removed welcomeCreateSprint event listener
     if (elements.buttons.welcomeViewSprints) {
         elements.buttons.welcomeViewSprints.addEventListener('click', () => showSection('sprints'));
     }
 
-    // --- Auto-calculate Sprint End Date ---
-    if (elements.forms.startDateInput) {
-        elements.forms.startDateInput.addEventListener('change', (e) => {
-            const startDateValue = e.target.value;
-            if (startDateValue) {
-                const startDate = new Date(startDateValue);
-                // Add 13 days
-                startDate.setDate(startDate.getDate() + 13);
-                const endDateFormatted = startDate.toLocaleDateString('en-CA'); // YYYY-MM-DD format for input type="date" compatibility
-                elements.forms.calculatedEndDateInput.value = endDateFormatted;
-            } else {
-                elements.forms.calculatedEndDateInput.value = '';
-            }
-        });
-    }
+    // --- Removed Auto-calculate Sprint End Date logic ---
 
-    // --- Goal Counter Update ---
-    function updateGoalCounter() {
-        if (elements.totalGoalsCount) {
-            const currentGoals = elements.forms.goalsContainer.querySelectorAll('.goal-item').length;
-            elements.totalGoalsCount.textContent = currentGoals;
-        }
-    }
+    // --- Removed Goal Counter Update logic ---
 
-    // --- Goal Management (Create Sprint Form) ---
-    function addGoalRow(goal = { description: '', type: 'Dev Complete' }) {
-        const goalItem = document.createElement('div');
-        goalItem.classList.add('goal-item');
-        const uniqueId = Date.now() + Math.floor(Math.random() * 1000);
+    // --- Removed Goal Management (Create Sprint Form) logic ---
 
-        goalItem.innerHTML = `
-            <div class="goal-fields-wrapper">
-                <div class="form-group goal-description-group">
-                    <label for="goal-desc-${uniqueId}" class="sr-only">Description</label>
-                    <textarea id="goal-desc-${uniqueId}" class="goal-description" placeholder="e.g., Implement user authentication" rows="2" required>${goal.description}</textarea>
-                </div>
-                <div class="form-group goal-type-group">
-                    <label for="goal-type-${uniqueId}">Type</label>
-                    <select id="goal-type-${uniqueId}" class="goal-type">
-                        <option value="Live" ${goal.type === 'Live' ? 'selected' : ''}>Live</option>
-                        <option value="QA Complete" ${goal.type === 'QA Complete' ? 'selected' : ''}>QA Complete</option>
-                        <option value="Dev Complete" ${goal.type === 'Dev Complete' ? 'selected' : ''}>Dev Complete</option>
-                    </select>
-                </div>
-                <div class="form-group goal-status-group">
-                    <label>Status</label>
-                    <span class="goal-status-display">Not Done</span>
-                </div>
-            </div>
-            <!-- Removed delete button as per request -->
-        `;
-        elements.forms.goalsContainer.appendChild(goalItem);
-        updateGoalCounter(); // Update counter when a goal is added
-    }
-
-    // Add initial goal row if goalsContainer exists
-    if (elements.forms.goalsContainer) {
-        addGoalRow();
-    }
-    // Add event listener for "Add Another Goal" button
-    if (elements.buttons.addGoal) {
-        elements.buttons.addGoal.addEventListener('click', () => addGoalRow());
-    }
-
-
-    // --- Create Sprint Form Submission ---
-    if (elements.forms.sprintForm) {
-        elements.forms.sprintForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-
-            const podNameInput = elements.podNameSelect;
-            const startDateInput = elements.forms.startDateInput;
-            const calculatedEndDateInput = elements.forms.calculatedEndDateInput;
-
-            const sprintStartDate = new Date(startDateInput.value);
-            const sprintEndDate = new Date(calculatedEndDateInput.value); // Use the calculated end date
-
-            const today = new Date();
-            today.setHours(0, 0, 0, 0);
-
-            if (!podNameInput.value) {
-                showToast('Please select a POD Name.', 'error');
-                podNameInput.focus();
-                return;
-            }
-
-            if (!startDateInput.value) {
-                showToast('Sprint Start Date is required.', 'error');
-                startDateInput.focus();
-                return;
-            }
-
-            // End date is automatically calculated, so no direct validation needed here
-            // but ensure it's not empty if start date is picked
-            if (!calculatedEndDateInput.value) {
-                 showToast('Sprint End Date could not be calculated. Please select a valid Start Date.', 'error');
-                 startDateInput.focus();
-                 return;
-            }
-
-            if (sprintStartDate < today) {
-                showToast('Sprint Start Date cannot be in the past. Please select today or a future date.', 'error');
-                startDateInput.focus();
-                return;
-            }
-
-            const goalDescriptionInputs = Array.from(document.querySelectorAll('.goal-description'));
-            const goalTypeSelects = Array.from(document.querySelectorAll('.goal-type'));
-
-            const goals = [];
-
-            if (goalDescriptionInputs.some(input => !input.value.trim())) {
-                showToast('Please fill out all goal descriptions.', 'error');
-                goalDescriptionInputs.find(input => !input.value.trim()).focus();
-                return;
-            }
-            if (goalDescriptionInputs.some(input => input.value.trim().length < 12)) {
-                showToast('Each goal description must be at least 12 characters long.', 'error');
-                goalDescriptionInputs.find(input => input.value.trim().length < 12).focus();
-                return;
-            }
-
-            goalDescriptionInputs.forEach((input, index) => {
-                goals.push({
-                    description: input.value.trim(),
-                    type: goalTypeSelects[index].value,
-                    status: 'Not Done' // Fixed to "Not Done" for new goals
-                });
-            });
-
-            if (goals.length < 3) {
-                showToast('A sprint must have at least 3 goals. Please add more.', 'error');
-                return;
-            }
-
-
-            elements.buttons.createSprint.disabled = true;
-            elements.buttons.createSprint.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creating...';
-            elements.buttons.cancelSprint.disabled = true;
-
-            const newSprint = {
-                podName: podNameInput.value,
-                startDate: startDateInput.value,
-                endDate: calculatedEndDateInput.value, // Use the calculated end date
-                goals
-            };
-
-            try {
-                const response = await fetch(`${API_BASE}/api/sprints`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(newSprint)
-                });
-
-                if (response.ok) {
-                    showToast('Sprint created successfully!', 'success');
-                    elements.forms.sprintForm.reset();
-                    if (elements.podNameSelect) {
-                        elements.podNameSelect.value = ""; // Reset dropdown
-                    }
-                    elements.forms.goalsContainer.innerHTML = '';
-                    addGoalRow();
-                    elements.forms.calculatedEndDateInput.value = ''; // Clear calculated end date
-                    updateGoalCounter(); // Reset goal counter
-                    showSection('sprints');
-                } else {
-                    const errorData = await response.json();
-                    showToast(`Error creating sprint: ${errorData.message || 'Unknown error'}`, 'error');
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                showToast('An error occurred while creating the sprint. Please check your network and try again.', 'error');
-            } finally {
-                elements.buttons.createSprint.disabled = false;
-                elements.buttons.createSprint.innerHTML = '<i class="fas fa-plus"></i> Create Sprint';
-                elements.buttons.cancelSprint.disabled = false;
-            }
-        });
-    }
+    // --- Removed Create Sprint Form Submission logic ---
 
 
     // --- Fetch and Display Sprints ---

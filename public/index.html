@@ -23,9 +23,7 @@
                 <button id="viewSprintsBtn" class="btn btn-header btn-view-sprints active">
                     <i class="fas fa-calendar-days"></i> Sprints
                 </button>
-                <button id="createSprintBtn" class="btn btn-header btn-create-sprint">
-                    <i class="fas fa-plus"></i> Add Sprint
-                </button>
+                <!-- Removed Add Sprint Button -->
             </div>
         </div>
     </header>
@@ -63,62 +61,12 @@
                     and achieve your product vision with confidence.
                 </p>
                 <div class="welcome-actions">
-                    <button id="welcomeCreateSprintBtn" class="btn btn-primary"><i class="fas fa-plus"></i> Start a New Sprint</button>
+                    <!-- Removed "Start a New Sprint" button -->
                     <button id="welcomeViewSprintsBtn" class="btn btn-secondary"><i class="fas fa-calendar-days"></i> View All Sprints</button>
                 </div>
             </section>
 
-            <!-- Create Sprint Section -->
-            <section id="createSprintSection" class="panel-card create-sprint-panel" style="display:none;">
-                <h2 class="form-section-title"><i class="fas fa-plus-circle"></i> Create New Sprint</h2>
-                <form id="sprintForm" class="create-sprint-form">
-                    <div class="form-section">
-                        <div class="form-group">
-                            <label for="podName">POD Name</label>
-                            <select id="podName" required>
-                                <option value="" disabled selected>Select a POD</option>
-                                <option value="Risk Tech">Risk Tech</option>
-                                <option value="Growth and Merchant Experience">Growth and Merchant Experience</option>
-                                <option value="Lender Supply and Integrations">Lender Supply and Integrations</option>
-                                <option value="Collections and Post Disbursal">Collections and Post Disbursal</option>
-                                <option value="New Initiatives and Platform">New Initiatives and Platform</option>
-                            </select>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="startDate">Sprint Start Date</label>
-                                <input type="date" id="startDate" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="calculatedEndDate">Sprint End Date (Start Date + 13 days)</label>
-                                <input type="text" id="calculatedEndDate" readonly placeholder="Calculated automatically">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-section">
-                        <h3 class="form-section-subtitle"><i class="fas fa-tasks"></i> Define Your Sprint Goals</h3>
-                        <p class="section-description">Clearly defining goals and goal types ensures better and timely tech-driven business outcomes.</p>
-                        <div class="goal-input-container">
-                            <div class="goal-headers">
-                                <span class="goal-header-description">Goal Description</span>
-                                <span class="goal-header-type">Type</span>
-                                <span class="goal-header-status">Status</span>
-                            </div>
-                            <div id="goalsContainer" class="goals-list"></div>
-                            <div class="form-actions-inline goal-actions-bottom">
-                                <span class="goal-counter"><span id="totalGoalsCount">0</span> Goals Added</span>
-                                <button type="button" id="addGoal" class="btn btn-secondary btn-icon-left">
-                                    <i class="fas fa-plus"></i> Add Another Goal
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-actions-bottom">
-                        <button type="button" id="cancelSprintBtn" class="btn btn-tertiary">Cancel</button>
-                        <button type="submit" class="btn btn-primary">Create Sprint</button>
-                    </div>
-                </form>
-            </section>
+            <!-- Removed Create Sprint Section -->
 
             <!-- Manage Goals Section -->
             <section id="manageGoalsSection" class="panel-card manage-goals-panel" style="display:none;">
