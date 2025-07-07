@@ -306,15 +306,16 @@ function SprintsList({ sprints, onManageGoals }) {
 
     return (
         <div className="space-y-10">
-            <section className="bg-white p-8 rounded-3xl shadow-xl border border-gray-200 animate-fade-in-up">
-                <h2 className="text-3xl font-bold text-gray-800 mb-6 flex items-center space-x-3">
+            {/* Current & Upcoming Sprints Section */}
+            <section className="bg-blue-50 p-8 rounded-3xl shadow-xl border border-blue-200 animate-fade-in-up">
+                <h2 className="text-3xl font-bold text-blue-800 mb-6 flex items-center space-x-3">
                     <i className="fas fa-hourglass-start text-blue-600 text-3xl"></i>
                     <span>Current & Upcoming Sprints</span>
                 </h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                     {currentUpcomingSprints.length === 0 ? (
-                        <p className="col-span-full text-center text-gray-500 text-lg p-10 border-4 border-dashed border-gray-200 rounded-2xl bg-gray-50 italic">
-                            <i className="fas fa-check-circle mr-3 text-green-500"></i>No current or upcoming sprints.
+                        <p className="col-span-full text-center text-gray-500 text-lg p-10 border-4 border-dashed border-blue-200 rounded-2xl bg-blue-100 italic">
+                            <i className="fas fa-check-circle mr-3 text-blue-500"></i>No current or upcoming sprints.
                         </p>
                     ) : (
                         currentUpcomingSprints.map(sprint => (
@@ -324,14 +325,15 @@ function SprintsList({ sprints, onManageGoals }) {
                 </div>
             </section>
 
-            <section className="bg-white p-8 rounded-3xl shadow-xl border border-gray-200 animate-fade-in-up">
+            {/* Past Sprints Section */}
+            <section className="bg-gray-100 p-8 rounded-3xl shadow-xl border border-gray-200 animate-fade-in-up">
                 <h2 className="text-3xl font-bold text-gray-800 mb-6 flex items-center space-x-3">
                     <i className="fas fa-box-archive text-gray-600 text-3xl"></i>
                     <span>Past Sprints</span>
                 </h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                     {pastSprints.length === 0 ? (
-                        <p className="col-span-full text-center text-gray-500 text-lg p-10 border-4 border-dashed border-gray-200 rounded-2xl bg-gray-50 italic">
+                        <p className="col-span-full text-center text-gray-500 text-lg p-10 border-4 border-dashed border-gray-300 rounded-2xl bg-gray-50 italic">
                             <i className="fas fa-box-open mr-3 text-gray-400"></i>No past sprints recorded yet.
                         </p>
                     ) : (
