@@ -99,8 +99,11 @@ function App() {
                 const data = await response.json();
                 console.log('Single sprint details fetched:', data); // DEBUG LOG
                 // Set the selected sprint data, including read-only flags
-                setSelectedSprint({ ...data, readOnly: isPastSprint, editStatusOnly: !isPastSprint && hasStarted });
-                navigateTo('manageGoals'); // Navigate to the manage goals section
+                // This state update is actually redundant because we're passing 'data' directly to navigateTo now
+                // setSelectedSprint({ ...data, readOnly: isPastSprint, editStatusOnly: !isPastSprint && hasStarted });
+                
+                // FIX: Pass the fetched 'data' object to navigateTo
+                navigateTo('manageGoals', { ...data, readOnly: isPastSprint, editStatusOnly: !isPastSprint && hasStarted }); // <-- FIX IS HERE
             } else {
                 const errorText = await response.text(); // Get raw error text
                 console.error('Error response from fetch single sprint:', response.status, errorText); // DEBUG LOG
