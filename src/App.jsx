@@ -348,6 +348,16 @@ function SprintCard({ sprint, isPastSprint, onManageGoals }) {
     const completedGoals = sprint.goals.filter(goal => goal.status === 'Done').length;
     const achievementPercentage = totalGoals > 0 ? Math.round((completedGoals / totalGoals) * 100) : 0;
 
+    // Determine progress bar color based on achievement percentage
+    let progressBarColor = 'bg-gray-300'; // Default
+    if (achievementPercentage < 30) {
+        progressBarColor = 'bg-gradient-to-r from-red-400 to-red-600'; // Low achievement
+    } else if (achievementPercentage < 70) {
+        progressBarColor = 'bg-gradient-to-r from-yellow-400 to-orange-500'; // Moderate achievement
+    } else {
+        progressBarColor = 'bg-gradient-to-r from-green-400 to-green-600'; // High achievement
+    }
+
     let cardBorderColor = 'border-blue-500';
     let cardShadow = 'shadow-lg';
     let ctaText = isPastSprint ? 'View Goals' : (hasStarted ? 'Manage Goals' : 'Manage Goals (Upcoming)');
@@ -376,9 +386,9 @@ function SprintCard({ sprint, isPastSprint, onManageGoals }) {
                 </div>
                 <div className="mb-5">
                     <div className="w-full bg-gray-200 rounded-full h-3">
-                        <div className="bg-gradient-to-r from-green-400 to-green-600 h-3 rounded-full shadow-inner" style={{ width: `${achievementPercentage}%` }}></div>
+                        <div className={`${progressBarColor} h-3 rounded-full shadow-inner`} style={{ width: `${achievementPercentage}%` }}></div> {/* Dynamic progress bar color */}
                     </div>
-                    <p className="text-sm text-gray-700 mt-2 text-right">Achievement: <span className="font-extrabold text-lg text-green-700">{achievementPercentage}%</span></p>
+                    <p className="text-sm text-gray-700 mt-2 text-right">Achievement: <span className={`font-extrabold text-lg ${achievementPercentage < 30 ? 'text-red-700' : achievementPercentage < 70 ? 'text-orange-600' : 'text-green-700'}`}>{achievementPercentage}%</span></p>
                 </div>
             </div>
             <button
@@ -444,9 +454,9 @@ function ManageGoals({ sprint, onSave, onBack }) {
                 </div>
                 <div className="w-full md:w-1/3 flex items-center space-x-3">
                     <div className="flex-grow bg-gray-300 rounded-full h-3">
-                        <div className="bg-gradient-to-r from-green-400 to-green-600 h-3 rounded-full shadow-inner" style={{ width: `${achievementPercentage}%` }}></div>
+                        <div className={`${achievementPercentage < 30 ? 'bg-gradient-to-r from-red-400 to-red-600' : achievementPercentage < 70 ? 'bg-gradient-to-r from-yellow-400 to-orange-500' : 'bg-gradient-to-r from-green-400 to-green-600'} h-3 rounded-full shadow-inner`} style={{ width: `${achievementPercentage}%` }}></div>
                     </div>
-                    <p className="text-base font-bold text-gray-800 whitespace-nowrap">Achievement: <span className="text-green-700 text-xl">{achievementPercentage}%</span></p>
+                    <p className="text-base font-bold text-gray-800 whitespace-nowrap">Achievement: <span className={`${achievementPercentage < 30 ? 'text-red-700' : achievementPercentage < 70 ? 'text-orange-600' : 'text-green-700'} text-xl`}>{achievementPercentage}%</span></p>
                 </div>
             </div>
 
@@ -475,7 +485,7 @@ function ManageGoals({ sprint, onSave, onBack }) {
                                             onChange={(e) => handleGoalChange(index, 'description', e.target.value)}
                                             readOnly={isReadOnly || isStatusOnlyEditable}
                                             className={`w-full p-3 border rounded-lg text-base resize-y min-h-[80px] focus:ring-2 focus:ring-blue-300 transition-all duration-200
-                                                ${isReadOnly || isStatusOnlyEditable ? 'bg-gray-100 border-transparent cursor-not-allowed' : 'border-gray-300'}`}
+                                                ${isReadOnly || isStatusOnlyEditable ? 'bg-transparent border-transparent cursor-not-allowed text-gray-800 font-medium' : 'border-gray-300'}`}
                                             rows="2"
                                         />
                                     </td>
