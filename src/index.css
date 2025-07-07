@@ -1,0 +1,28 @@
+/* src/index.css or src/App.css */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Add your custom global styles here if any, e.g., for fonts */
+body {
+  font-family: 'Inter', sans-serif; /* Default font for the app theme */
+}
+.font-poppins {
+  font-family: 'Poppins', sans-serif; /* For access/welcome screen */
+}
+.font-inter {
+  font-family: 'Inter', sans-serif; /* For main app sections */
+}
+
+/* Keyframe for fade-in-up animation */
+@keyframes fadeInUp {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+.animate-fade-in-up {
+    animation: fadeInUp 0.5s ease-out forwards;
+    opacity: 0;
+    transform: translateY(20px);
+}
