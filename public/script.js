@@ -1,5 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     const API_BASE = 'https://sprint101-1.onrender.com'; // Your backend URL
+    const ACCESS_CODE = 'MLProduct'; // The required access code
 
     // --- DOM Elements ---
     // Grouping related DOM elements for better readability
@@ -18,8 +19,10 @@ document.addEventListener('DOMContentLoaded', () => {
             welcomeViewSprints: document.getElementById('welcomeViewSprintsBtn'),
             saveGoals: document.getElementById('saveGoalsBtn'),
             backToSprints: document.getElementById('backToSprintsBtn'),
+            accessCodeSubmit: document.getElementById('accessCodeSubmitBtn'), // New access code button
         },
         sections: {
+            accessCode: document.getElementById('accessCodeSection'), // New access code section
             welcome: document.getElementById('welcomeSection'),
             createSprint: document.getElementById('createSprintSection'),
             manageGoals: document.getElementById('manageGoalsSection'),
@@ -39,8 +42,10 @@ document.addEventListener('DOMContentLoaded', () => {
             achievement: document.getElementById('manageSprintAchievement'),
         },
         toastContainer: document.getElementById('toast-container'),
+        accessCodeInput: document.getElementById('accessCodeInput'), // New access code input
+        accessCodeError: document.getElementById('accessCodeError'), // New error message element
+        mainAppHeaderActions: document.getElementById('mainAppHeaderActions'), // Header buttons container
     };
-
 
     // --- Custom Toast / Snackbar Function ---
     function showToast(message, type = 'default', duration = 3000) {
@@ -58,9 +63,12 @@ document.addEventListener('DOMContentLoaded', () => {
         toast.innerHTML = `<i class="${iconClass}"></i><span>${message}</span>`;
         elements.toastContainer.appendChild(toast);
 
+        // Force reflow to ensure transition plays
+        void toast.offsetWidth;
+
         setTimeout(() => {
             toast.classList.add('show');
-        }, 10);
+        }, 10); // Small delay to ensure transition
 
         setTimeout(() => {
             toast.classList.remove('show');
@@ -70,8 +78,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     // --- Section Management ---
+    /**
+     * Shows a specific section of the application and applies the correct theme.
+     * @param {string} sectionId - The ID of the section to show ('access', 'welcome', 'create', 'manageGoals', 'sprints').
+     */
     function showSection(sectionId) {
-        const changeableSections = [
+        const allSections = [
+            elements.sections.accessCode,
             elements.sections.welcome,
             elements.sections.createSprint,
             elements.sections.manageGoals,
@@ -79,21 +92,48 @@ document.addEventListener('DOMContentLoaded', () => {
             elements.sections.pastSprints,
         ];
 
-        changeableSections.forEach(sec => {
-            sec.style.display = 'none';
-            sec.classList.remove('fade-in-up');
+        // Hide all sections and remove fade-in class
+        allSections.forEach(sec => {
+            if (sec) { // Ensure element exists before trying to access properties
+                sec.style.display = 'none';
+                sec.classList.remove('fade-in-up');
+            }
         });
 
+        // Reset header button active states
         elements.buttons.viewSprints.classList.remove('active');
-        elements.buttons.createSprintHeader.classList.remove('active'); // Use the header button
+        elements.buttons.createSprintHeader.classList.remove('active');
 
         let targetElementForScroll = null;
+        let themeToApply = 'theme-app'; // Default theme for main app sections
+
+        // Handle header visibility
+        if (sectionId === 'access') {
+            elements.mainAppHeaderActions.style.display = 'none';
+            themeToApply = 'theme-access';
+        } else {
+            // Only show header actions if access is granted
+            if (sessionStorage.getItem('accessGranted') === 'true') {
+                elements.mainAppHeaderActions.style.display = 'flex'; // Or 'block' depending on its original display
+            }
+        }
+
 
         switch (sectionId) {
+            case 'access':
+                elements.sections.accessCode.style.display = 'flex'; // Use flex for centering
+                elements.sections.accessCode.classList.add('fade-in-up');
+                targetElementForScroll = elements.sections.accessCode;
+                break;
+            case 'welcome':
+                elements.sections.welcome.style.display = 'block';
+                elements.sections.welcome.classList.add('fade-in-up');
+                targetElementForScroll = elements.sections.welcome;
+                break;
             case 'create':
                 elements.sections.createSprint.style.display = 'block';
                 elements.sections.createSprint.classList.add('fade-in-up');
-                elements.buttons.createSprintHeader.classList.add('active'); // Use the header button
+                elements.buttons.createSprintHeader.classList.add('active');
                 targetElementForScroll = elements.sections.createSprint;
                 break;
             case 'manageGoals':
@@ -102,31 +142,67 @@ document.addEventListener('DOMContentLoaded', () => {
                 targetElementForScroll = elements.sections.manageGoals;
                 break;
             case 'sprints':
-            default:
                 elements.sections.currentUpcomingSprints.style.display = 'block';
                 elements.sections.pastSprints.style.display = 'block';
                 elements.sections.currentUpcomingSprints.classList.add('fade-in-up');
                 elements.sections.pastSprints.classList.add('fade-in-up');
                 elements.buttons.viewSprints.classList.add('active');
-                fetchSprints();
+                fetchSprints(); // Re-fetch sprints when navigating to this section
                 targetElementForScroll = elements.sections.currentUpcomingSprints;
+                break;
+            default:
+                // Fallback, should not happen with proper calls
+                console.warn('Unknown section ID:', sectionId);
+                elements.sections.accessCode.style.display = 'flex';
+                elements.sections.accessCode.classList.add('fade-in-up');
+                targetElementForScroll = elements.sections.accessCode;
+                themeToApply = 'theme-access';
                 break;
         }
 
-        // Show welcome section if no other section is specifically shown
-        if (!targetElementForScroll) {
-             elements.sections.welcome.style.display = 'block';
-             elements.sections.welcome.classList.add('fade-in-up');
-        }
+        // Apply theme to body
+        document.body.classList.remove('theme-access', 'theme-app');
+        document.body.classList.add(themeToApply);
 
+        // Scroll to target section if available
         if (targetElementForScroll) {
             targetElementForScroll.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
     }
 
+    // --- Access Code Logic ---
+    function checkAccessCode() {
+        const enteredCode = elements.accessCodeInput.value.trim();
+        if (enteredCode === ACCESS_CODE) {
+            sessionStorage.setItem('accessGranted', 'true');
+            elements.accessCodeError.style.display = 'none';
+            showSection('welcome'); // Show the main welcome page after access
+            elements.mainAppHeaderActions.style.display = 'flex'; // Show header buttons
+        } else {
+            elements.accessCodeError.style.display = 'block';
+            elements.accessCodeInput.value = ''; // Clear input on error
+            elements.accessCodeInput.focus();
+        }
+    }
+
+    // Event listener for access code button
+    if (elements.buttons.accessCodeSubmit) {
+        elements.buttons.accessCodeSubmit.addEventListener('click', checkAccessCode);
+    }
+
+    // Event listener for Enter key on access code input
+    if (elements.accessCodeInput) {
+        elements.accessCodeInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault(); // Prevent form submission if any
+                checkAccessCode();
+            }
+        });
+    }
+
     // --- Event Listeners for Navigation ---
     elements.buttons.viewSprints.addEventListener('click', () => showSection('sprints'));
-    elements.buttons.createSprintHeader.addEventListener('click', () => { // Use the header button
+    elements.buttons.createSprintHeader.addEventListener('click', () => {
         elements.forms.sprintForm.reset();
         elements.forms.goalsContainer.innerHTML = '';
         addGoalRow(); // Always add one empty row to start
@@ -139,14 +215,18 @@ document.addEventListener('DOMContentLoaded', () => {
         showSection('sprints');
     });
 
-    elements.buttons.welcomeCreateSprint.addEventListener('click', () => {
-        elements.forms.sprintForm.reset();
-        elements.forms.goalsContainer.innerHTML = '';
-        addGoalRow();
-        showSection('create');
-    });
-    elements.buttons.welcomeViewSprints.addEventListener('click', () => showSection('sprints'));
-
+    // Welcome screen CTAs
+    if (elements.buttons.welcomeCreateSprint) {
+        elements.buttons.welcomeCreateSprint.addEventListener('click', () => {
+            elements.forms.sprintForm.reset();
+            elements.forms.goalsContainer.innerHTML = '';
+            addGoalRow();
+            showSection('create');
+        });
+    }
+    if (elements.buttons.welcomeViewSprints) {
+        elements.buttons.welcomeViewSprints.addEventListener('click', () => showSection('sprints'));
+    }
 
     // --- Goal Management (Create Sprint Form) ---
     function addGoalRow(goal = { description: '', type: 'Dev Complete' }) {
@@ -157,11 +237,11 @@ document.addEventListener('DOMContentLoaded', () => {
         goalItem.innerHTML = `
             <div class="goal-fields-wrapper">
                 <div class="form-group goal-description-group">
-                    <label for="goal-desc-${uniqueId}">Description</label>
+                    <label for="goal-desc-${uniqueId}" class="sr-only">Description</label>
                     <textarea id="goal-desc-${uniqueId}" class="goal-description" placeholder="e.g., Implement user authentication" rows="2" required>${goal.description}</textarea>
                 </div>
                 <div class="form-group goal-type-group">
-                    <label for="goal-type-${uniqueId}">Type</label>
+                    <label for="goal-type-${uniqueId}" class="sr-only">Type</label>
                     <select id="goal-type-${uniqueId}" class="goal-type">
                         <option value="Live" ${goal.type === 'Live' ? 'selected' : ''}>Live</option>
                         <option value="QA Complete" ${goal.type === 'QA Complete' ? 'selected' : ''}>QA Complete</option>
@@ -182,110 +262,118 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    addGoalRow();
-    elements.buttons.addGoal.addEventListener('click', () => addGoalRow());
+    // Add initial goal row if goalsContainer exists
+    if (elements.forms.goalsContainer) {
+        addGoalRow();
+    }
+    // Add event listener for "Add Another Goal" button
+    if (elements.buttons.addGoal) {
+        elements.buttons.addGoal.addEventListener('click', () => addGoalRow());
+    }
 
 
     // --- Create Sprint Form Submission ---
-    elements.forms.sprintForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
+    if (elements.forms.sprintForm) {
+        elements.forms.sprintForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
 
-        const podNameInput = document.getElementById('podName');
-        const startDateInput = document.getElementById('startDate');
-        const endDateInput = document.getElementById('endDate');
-        const sprintStartDate = new Date(startDateInput.value);
-        const sprintEndDate = new Date(endDateInput.value);
+            const podNameInput = document.getElementById('podName');
+            const startDateInput = document.getElementById('startDate');
+            const endDateInput = document.getElementById('endDate');
+            const sprintStartDate = new Date(startDateInput.value);
+            const sprintEndDate = new Date(endDateInput.value);
 
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
 
-        if (!podNameInput.value.trim()) {
-            showToast('POD Name is required.', 'error');
-            podNameInput.focus();
-            return;
-        }
-
-        if (sprintStartDate > sprintEndDate) {
-            showToast('Sprint End Date cannot be before Start Date. Please correct your dates.', 'error');
-            endDateInput.focus();
-            return;
-        }
-
-        if (sprintStartDate < today) {
-            showToast('Sprint Start Date cannot be in the past. Please select today or a future date.', 'error');
-            startDateInput.focus();
-            return;
-        }
-
-        const goalDescriptionInputs = Array.from(document.querySelectorAll('.goal-description'));
-        const goalTypeSelects = Array.from(document.querySelectorAll('.goal-type'));
-
-        const goals = [];
-        
-        if (goalDescriptionInputs.some(input => !input.value.trim())) {
-             showToast('Please fill out all goal descriptions or remove empty goal rows.', 'error');
-             goalDescriptionInputs.find(input => !input.value.trim()).focus();
-             return;
-        }
-        if (goalDescriptionInputs.some(input => input.value.trim().length < 12)) {
-             showToast('Each goal description must be at least 12 characters long.', 'error');
-             goalDescriptionInputs.find(input => input.value.trim().length < 12).focus();
-             return;
-        }
-
-        goalDescriptionInputs.forEach((input, index) => {
-            goals.push({
-                description: input.value.trim(),
-                type: goalTypeSelects[index].value,
-                status: 'Not Done'
-            });
-        });
-
-        if (goals.length < 3) {
-            showToast('A sprint must have at least 3 goals. Please add more or fill out existing ones.', 'error');
-            return;
-        }
-
-
-        elements.buttons.createSprint.disabled = true;
-        elements.buttons.createSprint.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creating...';
-        elements.buttons.cancelSprint.disabled = true;
-
-        const newSprint = {
-            podName: podNameInput.value,
-            startDate: startDateInput.value,
-            endDate: endDateInput.value,
-            goals
-        };
-
-        try {
-            const response = await fetch(`${API_BASE}/api/sprints`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(newSprint)
-            });
-
-            if (response.ok) {
-                showToast('Sprint created successfully!', 'success');
-                elements.forms.sprintForm.reset();
-                elements.forms.goalsContainer.innerHTML = '';
-                addGoalRow();
-                showSection('sprints');
-            } else {
-                const errorData = await response.json();
-                showToast(`Error creating sprint: ${errorData.message || 'Unknown error'}`, 'error');
+            if (!podNameInput.value.trim()) {
+                showToast('POD Name is required.', 'error');
+                podNameInput.focus();
+                return;
             }
-        } catch (error) {
-            console.error('Error:', error);
-            showToast('An error occurred while creating the sprint. Please check your network and try again.', 'error');
-        } finally {
-            elements.buttons.createSprint.disabled = false;
-            elements.buttons.createSprint.innerHTML = '<i class="fas fa-plus"></i> Create Sprint';
-            elements.buttons.cancelSprint.disabled = false;
-        }
-    });
+
+            if (sprintStartDate > sprintEndDate) {
+                showToast('Sprint End Date cannot be before Start Date. Please correct your dates.', 'error');
+                endDateInput.focus();
+                return;
+            }
+
+            if (sprintStartDate < today) {
+                showToast('Sprint Start Date cannot be in the past. Please select today or a future date.', 'error');
+                startDateInput.focus();
+                return;
+            }
+
+            const goalDescriptionInputs = Array.from(document.querySelectorAll('.goal-description'));
+            const goalTypeSelects = Array.from(document.querySelectorAll('.goal-type'));
+
+            const goals = [];
+
+            if (goalDescriptionInputs.some(input => !input.value.trim())) {
+                showToast('Please fill out all goal descriptions or remove empty goal rows.', 'error');
+                goalDescriptionInputs.find(input => !input.value.trim()).focus();
+                return;
+            }
+            if (goalDescriptionInputs.some(input => input.value.trim().length < 12)) {
+                showToast('Each goal description must be at least 12 characters long.', 'error');
+                goalDescriptionInputs.find(input => input.value.trim().length < 12).focus();
+                return;
+            }
+
+            goalDescriptionInputs.forEach((input, index) => {
+                goals.push({
+                    description: input.value.trim(),
+                    type: goalTypeSelects[index].value,
+                    status: 'Not Done'
+                });
+            });
+
+            if (goals.length < 3) {
+                showToast('A sprint must have at least 3 goals. Please add more or fill out existing ones.', 'error');
+                return;
+            }
+
+
+            elements.buttons.createSprint.disabled = true;
+            elements.buttons.createSprint.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creating...';
+            elements.buttons.cancelSprint.disabled = true;
+
+            const newSprint = {
+                podName: podNameInput.value,
+                startDate: startDateInput.value,
+                endDate: endDateInput.value,
+                goals
+            };
+
+            try {
+                const response = await fetch(`${API_BASE}/api/sprints`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(newSprint)
+                });
+
+                if (response.ok) {
+                    showToast('Sprint created successfully!', 'success');
+                    elements.forms.sprintForm.reset();
+                    elements.forms.goalsContainer.innerHTML = '';
+                    addGoalRow();
+                    showSection('sprints');
+                } else {
+                    const errorData = await response.json();
+                    showToast(`Error creating sprint: ${errorData.message || 'Unknown error'}`, 'error');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showToast('An error occurred while creating the sprint. Please check your network and try again.', 'error');
+            } finally {
+                elements.buttons.createSprint.disabled = false;
+                elements.buttons.createSprint.innerHTML = '<i class="fas fa-plus"></i> Create Sprint';
+                elements.buttons.cancelSprint.disabled = false;
+            }
+        });
+    }
 
 
     // --- Fetch and Display Sprints ---
@@ -307,6 +395,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 sprints.forEach(sprint => {
                     const endDate = new Date(sprint.endDate);
+                    // Set time to 23:59:59 for end date to include the whole day for comparison
+                    endDate.setHours(23, 59, 59, 999);
+
                     if (endDate >= now) {
                         currentUpcomingSprints.push(sprint);
                     } else {
@@ -532,98 +623,110 @@ document.addEventListener('DOMContentLoaded', () => {
             elements.lists.manageGoalsTableContainer.innerHTML = '<p class="empty-state error-message"><i class="fas fa-exclamation-circle"></i> Failed to load goals.</p>';
         }
 
+        // Only show save button if not readOnly
         elements.buttons.saveGoals.style.display = readOnly ? 'none' : '';
         elements.buttons.saveGoals.setAttribute('data-sprint-id', sprintId);
     }
 
     // --- Save Goals Button ---
-    elements.buttons.saveGoals.addEventListener('click', async function() {
-        const sprintId = this.getAttribute('data-sprint-id');
-        // Select rows from the new table structure
-        const goalRows = document.querySelectorAll('#manageGoalsTableContainer .goals-table tbody tr');
-        const updatedGoals = [];
+    if (elements.buttons.saveGoals) {
+        elements.buttons.saveGoals.addEventListener('click', async function() {
+            const sprintId = this.getAttribute('data-sprint-id');
+            // Select rows from the new table structure
+            const goalRows = document.querySelectorAll('#manageGoalsTableContainer .goals-table tbody tr');
+            const updatedGoals = [];
 
-        try {
-            goalRows.forEach(row => {
-                // Check if the row was marked for deletion (if you add a 'deleted' class for visual feedback)
-                if (!row.classList.contains('deleted')) {
-                    const descriptionInput = row.querySelector('.goal-table-description-input');
-                    const typeSelect = row.querySelector('.goal-table-type-select');
-                    const statusSelect = row.querySelector('.goal-table-status-select');
+            try {
+                goalRows.forEach(row => {
+                    // Check if the row was marked for deletion (if you add a 'deleted' class for visual feedback)
+                    if (!row.classList.contains('deleted')) {
+                        const descriptionInput = row.querySelector('.goal-table-description-input');
+                        const typeSelect = row.querySelector('.goal-table-type-select');
+                        const statusSelect = row.querySelector('.goal-table-status-select');
 
-                    const description = descriptionInput.value.trim();
+                        const description = descriptionInput.value.trim();
 
-                    if (!description) {
-                        showToast('Goal description cannot be empty. Please fill out or delete empty goals.', 'error');
-                        descriptionInput.focus();
-                        throw new Error('Validation Failed: Empty Goal');
+                        if (!description) {
+                            showToast('Goal description cannot be empty. Please fill out or delete empty goals.', 'error');
+                            descriptionInput.focus();
+                            throw new Error('Validation Failed: Empty Goal');
+                        }
+
+                        if (description.length < 12) {
+                            showToast('Goal description must be at least 12 characters long.', 'error');
+                            descriptionInput.focus();
+                            throw new Error('Validation Failed: Short Goal');
+                        }
+
+                        updatedGoals.push({
+                            _id: row.dataset.goalId,
+                            description: description,
+                            type: typeSelect.value,
+                            status: statusSelect.value
+                        });
                     }
+                });
 
-                    if (description.length < 12) {
-                        showToast('Goal description must be at least 12 characters long.', 'error');
-                        descriptionInput.focus();
-                        throw new Error('Validation Failed: Short Goal');
-                    }
-
-                    updatedGoals.push({
-                        _id: row.dataset.goalId,
-                        description: description,
-                        type: typeSelect.value,
-                        status: statusSelect.value
-                    });
+                if (updatedGoals.length < 3) {
+                    showToast('A sprint must have at least 3 goals. Cannot save with fewer.', 'error');
+                    throw new Error('Validation Failed: Too few goals');
                 }
-            });
 
-            if (updatedGoals.length < 3) {
-                showToast('A sprint must have at least 3 goals. Cannot save with fewer.', 'error');
-                throw new Error('Validation Failed: Too few goals');
+            } catch (validationError) {
+                console.warn(validationError.message);
+                elements.buttons.saveGoals.disabled = false;
+                elements.buttons.saveGoals.innerHTML = 'Save Changes';
+                elements.buttons.backToSprints.disabled = false;
+                return; // Stop execution if validation fails
             }
 
-        } catch (validationError) {
-            console.warn(validationError.message);
-            elements.buttons.saveGoals.disabled = false;
-            elements.buttons.saveGoals.innerHTML = 'Save Changes';
-            elements.buttons.backToSprints.disabled = false;
-            return;
-        }
 
+            elements.buttons.saveGoals.disabled = true;
+            elements.buttons.saveGoals.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+            elements.buttons.backToSprints.disabled = true;
 
-        elements.buttons.saveGoals.disabled = true;
-        elements.buttons.saveGoals.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
-        elements.buttons.backToSprints.disabled = true;
+            try {
+                const response = await fetch(`${API_BASE}/api/sprints/${sprintId}/goals`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ goals: updatedGoals })
+                });
 
-        try {
-            const response = await fetch(`${API_BASE}/api/sprints/${sprintId}/goals`, {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ goals: updatedGoals })
-            });
-
-            if (response.ok) {
-                showToast('Goals updated successfully!', 'success');
-            } else {
-                const errorData = await response.json();
-                showToast(`Error saving goals: ${errorData.message || 'Unknown error'}`, 'error');
+                if (response.ok) {
+                    showToast('Goals updated successfully!', 'success');
+                } else {
+                    const errorData = await response.json();
+                    showToast(`Error saving goals: ${errorData.message || 'Unknown error'}`, 'error');
+                }
+            } catch (error) {
+                console.error('Error saving goals:', error);
+                showToast('An error occurred while saving goals. Please check your network and try again.', 'error');
+            } finally {
+                elements.buttons.saveGoals.disabled = false;
+                elements.buttons.saveGoals.innerHTML = 'Save Changes';
+                elements.buttons.backToSprints.disabled = false;
+                showSection('sprints');
             }
-        } catch (error) {
-            console.error('Error saving goals:', error);
-            showToast('An error occurred while saving goals. Please check your network and try again.', 'error');
-        } finally {
-            elements.buttons.saveGoals.disabled = false;
-            elements.buttons.saveGoals.innerHTML = 'Save Changes';
-            elements.buttons.backToSprints.disabled = false;
-            showSection('sprints');
-        }
-    });
+        });
+    }
 
     // --- Back to Sprints Button ---
-    elements.buttons.backToSprints.addEventListener('click', function() {
-        showSection('sprints');
-    });
+    if (elements.buttons.backToSprints) {
+        elements.buttons.backToSprints.addEventListener('click', function() {
+            showSection('sprints');
+        });
+    }
 
     // --- Initial Load Logic ---
     function initialLoad() {
-        showSection('sprints');
+        // Check if access has been granted in the current session
+        if (sessionStorage.getItem('accessGranted') === 'true') {
+            showSection('welcome'); // If access granted, go straight to welcome screen
+            elements.mainAppHeaderActions.style.display = 'flex'; // Show header buttons
+        } else {
+            showSection('access'); // Otherwise, show the access code screen
+            elements.mainAppHeaderActions.style.display = 'none'; // Hide header buttons initially
+        }
     }
 
     initialLoad();

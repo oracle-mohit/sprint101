@@ -4,11 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sprint Goals</title>
-    <link rel="stylesheet" href="style.css">
+    <!-- Google Fonts for Inter (main app) and Poppins (welcome/access) -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Custom Stylesheet -->
+    <link rel="stylesheet" href="style.css">
 </head>
-<body>
+<body class="theme-access"> <!-- Default theme is access screen -->
 
     <header class="app-header">
         <div class="header-content">
@@ -16,7 +19,7 @@
                 <i class="fas fa-list-check app-icon"></i>
                 <span class="app-title">Sprint Goals</span>
             </div>
-            <div class="header-actions">
+            <div class="header-actions" id="mainAppHeaderActions" style="display:none;"> <!-- Hidden until access granted -->
                 <button id="viewSprintsBtn" class="btn btn-header btn-view-sprints active">
                     <i class="fas fa-calendar-days"></i> Sprints
                 </button>
@@ -30,15 +33,35 @@
     <div class="main-wrapper">
         <main class="content-container">
 
-            <section id="welcomeSection" class="panel-card welcome-panel fade-in-up">
+            <!-- New Access Code Section -->
+            <section id="accessCodeSection" class="panel-card welcome-panel fade-in-up">
+                <h2 class="panel-title"><i class="fas fa-lock"></i> Access Sprint Goals</h2>
+                <p class="welcome-message">
+                    Welcome to the Sprint Goals application! This tool helps teams define, track, and manage their sprint objectives and progress.
+                    Enter the access code to continue.
+                </p>
+                <div class="access-code-input-group">
+                    <label for="accessCodeInput" class="sr-only">Access Code</label>
+                    <input type="password" id="accessCodeInput" placeholder="Enter access code" autocomplete="off">
+                    <button type="button" id="accessCodeSubmitBtn" class="btn btn-primary">Continue</button>
+                </div>
+                <p id="accessCodeError" class="error-message" style="display:none;">Incorrect access code. Please try again.</p>
+            </section>
+
+            <!-- Original Welcome Section (shown after access code is entered) -->
+            <section id="welcomeSection" class="panel-card welcome-panel fade-in-up" style="display:none;">
                 <h2 class="panel-title"><i class="fas fa-hand-sparkles"></i> Welcome to Sprint Goals!</h2>
-                <p class="welcome-message">ML Tech Sprint Goals.</p>
+                <p class="welcome-message">
+                    ML Tech Sprint Goals is your dedicated platform for streamlining sprint planning and tracking.
+                    Effortlessly manage your team's objectives, monitor progress, and review past achievements to drive continuous improvement.
+                </p>
                 <div class="welcome-actions">
                     <button id="welcomeCreateSprintBtn" class="btn btn-primary"><i class="fas fa-plus"></i> Start a New Sprint</button>
                     <button id="welcomeViewSprintsBtn" class="btn btn-secondary"><i class="fas fa-calendar-days"></i> View All Sprints</button>
                 </div>
             </section>
 
+            <!-- Create Sprint Section -->
             <section id="createSprintSection" class="panel-card create-sprint-panel" style="display:none;">
                 <h2 class="form-section-title"><i class="fas fa-plus-circle"></i> Create New Sprint</h2>
                 <form id="sprintForm" class="create-sprint-form">
@@ -81,6 +104,7 @@
                 </form>
             </section>
 
+            <!-- Manage Goals Section -->
             <section id="manageGoalsSection" class="panel-card manage-goals-panel" style="display:none;">
                 <h2 class="form-section-title"><i class="fas fa-edit"></i> Manage Goals for <span id="managedSprintName"></span></h2>
 
@@ -109,14 +133,16 @@
                 </div>
             </section>
 
-            <section id="currentUpcomingSprintsSection" class="panel-card sprints-list-panel">
+            <!-- Current & Upcoming Sprints Section -->
+            <section id="currentUpcomingSprintsSection" class="panel-card sprints-list-panel" style="display:none;">
                 <h2 class="panel-title"><i class="fas fa-hourglass-start"></i> Current & Upcoming Sprints</h2>
                 <div id="currentSprintsList" class="sprint-cards-container">
                     <p class="empty-state">Loading sprints...</p>
                 </div>
             </section>
 
-            <section id="pastSprintsSection" class="panel-card sprints-list-panel">
+            <!-- Past Sprints Section -->
+            <section id="pastSprintsSection" class="panel-card sprints-list-panel" style="display:none;">
                 <h2 class="panel-title"><i class="fas fa-box-archive"></i> Past Sprints</h2>
                 <div id="pastSprintsList" class="sprint-cards-container">
                     <p class="empty-state">Loading past sprints.</p>
