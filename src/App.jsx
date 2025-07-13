@@ -4,7 +4,8 @@ import React, { useState, useEffect, useCallback } from 'react';
 function App() {
     // IMPORTANT: Ensure this API_BASE URL is correct and your backend server is running.
     // If your backend is hosted on Render.com, it might spin down due to inactivity.
-    const API_BASE = 'https://sprint101-1.onrender.com';
+    // For local development, use http://localhost:3000
+    const API_BASE = 'http://localhost:3000'; // <--- CHANGE THIS LINE
     const ACCESS_CODE = 'MLProduct';
 
     // State for managing current section, access status, sprints data, and selected sprint for management
@@ -101,7 +102,7 @@ function App() {
                 // Set the selected sprint data, including read-only flags
                 // This state update is actually redundant because we're passing 'data' directly to navigateTo now
                 // setSelectedSprint({ ...data, readOnly: isPastSprint, editStatusOnly: !isPastSprint && hasStarted });
-                
+
                 // FIX: Pass the fetched 'data' object to navigateTo
                 navigateTo('manageGoals', { ...data, readOnly: isPastSprint, editStatusOnly: !isPastSprint && hasStarted }); // <-- FIX IS HERE
             } else {
@@ -598,6 +599,3 @@ function ManageGoals({ sprint, onSave, onBack }) {
 }
 
 export default App;
-
-
-// redundant comments to sync to GIT
