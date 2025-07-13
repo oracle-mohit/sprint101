@@ -13,7 +13,7 @@ const app = express();
 // Enable CORS for all routes, specifically allowing your frontend's origin for development.
 // This is crucial for your React frontend to communicate with this backend.
 const corsOptions = {
-    origin: 'http://localhost:5173', // Allow requests only from your frontend's development server
+    origin: 'https://zany-guide-x5qqq7grv97c6wq9-5173.app.github.dev', // <--- UPDATED: Allow requests from your frontend's Codespaces URL
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE', // Allowed HTTP methods
     credentials: true, // Allow cookies to be sent with requests (if needed in the future)
     optionsSuccessStatus: 204 // Some legacy browsers (IE11, various SmartTVs) choke on 200
