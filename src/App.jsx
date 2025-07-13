@@ -645,27 +645,42 @@ function AddSprintScreen({ onAddSprint, onBack }) {
 
     const [podName, setPodName] = useState('');
     const [startDate, setStartDate] = useState(today.toISOString().split('T')[0]); // Default to today
-    const [endDate, setEndDate] = useState(() => {
-        const defaultEndDate = new Date(today);
-        defaultEndDate.setDate(today.getDate() + 14);
-        return defaultEndDate.toISOString().split('T')[0];
-    }); // Default to 14 days from today
-    const [goalDescription, setGoalDescription] = useState('');
-    const [goalType, setGoalType] = useState('Dev Complete');
+    const [goals, setGoals] = useState([{ description: '', type: 'Dev Complete', status: 'Not Done' }]); // Start with one goal
     const [errors, setErrors] = useState({});
+
+    // Calculate endDate based on startDate + 13 days
+    const calculateEndDate = (start) => {
+        const newEndDate = new Date(start);
+        newEndDate.setDate(start.getDate() + 13); // +13 days as per request
+        return newEndDate.toISOString().split('T')[0];
+    };
+
+    const endDate = calculateEndDate(new Date(startDate)); // End date is now derived and read-only
 
     // Effect to update end date when start date changes
     useEffect(() => {
-        const start = new Date(startDate);
-        const newEndDate = new Date(start);
-        newEndDate.setDate(start.getDate() + 14);
-        setEndDate(newEndDate.toISOString().split('T')[0]);
+        // No need to setEndDate here, it's derived.
+        // This useEffect can be removed if no other side effects are needed for startDate change.
     }, [startDate]);
+
+    const handleGoalChange = (index, field, value) => {
+        const updatedGoals = [...goals];
+        updatedGoals[index][field] = value;
+        setGoals(updatedGoals);
+    };
+
+    const addGoal = () => {
+        setGoals([...goals, { description: '', type: 'Dev Complete', status: 'Not Done' }]);
+    };
+
+    const removeGoal = (index) => {
+        const updatedGoals = goals.filter((_, i) => i !== index);
+        setGoals(updatedGoals);
+    };
 
     const validateForm = () => {
         const newErrors = {};
         const parsedStartDate = new Date(startDate);
-        const parsedEndDate = new Date(endDate);
         const now = new Date();
         now.setHours(0, 0, 0, 0);
 
@@ -677,16 +692,25 @@ function AddSprintScreen({ onAddSprint, onBack }) {
         } else if (parsedStartDate < now) {
             newErrors.startDate = 'Start Date cannot be in the past.';
         }
-        if (!endDate) {
-            newErrors.endDate = 'End Date is required.';
-        } else if (parsedEndDate <= parsedStartDate) {
-            newErrors.endDate = 'End Date must be after Start Date.';
-        }
-        if (!goalDescription.trim() || goalDescription.trim().length < 12) {
-            newErrors.goalDescription = 'Goal Description is required and must be at least 12 characters.';
-        }
-        if (!goalType) {
-            newErrors.goalType = 'Goal Type is required.';
+
+        // Validate goals
+        if (goals.length < 3) {
+            newErrors.goals = 'A sprint must have a minimum of 3 goals.';
+        } else {
+            const goalErrors = goals.map((goal, index) => {
+                const goalSpecificErrors = {};
+                if (!goal.description.trim() || goal.description.trim().length < 12) {
+                    goalSpecificErrors.description = `Goal ${index + 1} description is required and must be at least 12 characters.`;
+                }
+                if (!goal.type) {
+                    goalSpecificErrors.type = `Goal ${index + 1} type is required.`;
+                }
+                return Object.keys(goalSpecificErrors).length > 0 ? goalSpecificErrors : null;
+            }).filter(Boolean); // Filter out nulls
+
+            if (goalErrors.length > 0) {
+                newErrors.goals = goalErrors; // Store specific goal errors
+            }
         }
 
         setErrors(newErrors);
@@ -699,9 +723,8 @@ function AddSprintScreen({ onAddSprint, onBack }) {
             onAddSprint({
                 podName,
                 startDate,
-                endDate,
-                goalDescription,
-                goalType,
+                endDate, // This is now the calculated endDate
+                goals, // Pass the array of goals
             });
         }
     };
@@ -710,8 +733,13 @@ function AddSprintScreen({ onAddSprint, onBack }) {
         <section className="bg-white p-8 rounded-3xl shadow-xl border border-blue-200 animate-fade-in-up max-w-2xl mx-auto">
             <h2 className="text-3xl font-bold text-blue-800 mb-6 flex items-center justify-center space-x-3">
                 <i className="fas fa-plus-square text-blue-600 text-3xl"></i>
-                <span>Add New Sprint & Goal</span>
+                <span>App Next Sprint Goals</span> {/* Tweak 1: Changed heading */}
             </h2>
+
+            <div className="bg-blue-50 border border-blue-200 text-blue-800 px-4 py-3 rounded-lg relative text-sm mb-6 shadow-sm">
+                <i className="fas fa-info-circle mr-2"></i>
+                **Note:** Define goals as clearly as possible for maximum goal achievement rate. {/* Tweak 6: Added note */}
+            </div>
 
             <form onSubmit={handleSubmit} className="space-y-6">
                 {/* POD Name */}
@@ -745,52 +773,83 @@ function AddSprintScreen({ onAddSprint, onBack }) {
                     {errors.startDate && <p className="text-red-500 text-sm mt-1">{errors.startDate}</p>}
                 </div>
 
-                {/* End Date */}
+                {/* End Date - Now read-only */}
                 <div>
                     <label htmlFor="endDate" className="block text-gray-700 text-lg font-semibold mb-2">
-                        Sprint End Date (Optional - defaults to +14 days)
+                        Sprint End Date {/* Tweak 2: Changed label */}
                     </label>
                     <input
                         type="date"
                         id="endDate"
                         value={endDate}
-                        onChange={(e) => setEndDate(e.target.value)}
-                        className={`w-full p-3 border ${errors.endDate ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:ring-2 focus:ring-blue-300`}
+                        readOnly={true} // Tweak 3: Made read-only
+                        className="w-full p-3 border border-gray-300 rounded-lg bg-gray-100 cursor-not-allowed" // Tweak 3: Styled as read-only
                     />
-                    {errors.endDate && <p className="text-red-500 text-sm mt-1">{errors.endDate}</p>}
+                    {/* No error for endDate as it's calculated */}
                 </div>
 
-                {/* Goal Description */}
-                <div>
-                    <label htmlFor="goalDescription" className="block text-gray-700 text-lg font-semibold mb-2">
-                        Initial Goal Description
-                    </label>
-                    <textarea
-                        id="goalDescription"
-                        value={goalDescription}
-                        onChange={(e) => setGoalDescription(e.target.value)}
-                        className={`w-full p-3 border ${errors.goalDescription ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:ring-2 focus:ring-blue-300 resize-y min-h-[100px]`}
-                        placeholder="Describe the main goal for this new sprint (min 12 characters)"
-                    />
-                    {errors.goalDescription && <p className="text-red-500 text-sm mt-1">{errors.goalDescription}</p>}
-                </div>
-
-                {/* Goal Type */}
-                <div>
-                    <label htmlFor="goalType" className="block text-gray-700 text-lg font-semibold mb-2">
-                        Initial Goal Type
-                    </label>
-                    <select
-                        id="goalType"
-                        value={goalType}
-                        onChange={(e) => setGoalType(e.target.value)}
-                        className={`w-full p-3 border ${errors.goalType ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:ring-2 focus:ring-blue-300`}
+                {/* Goals Section */}
+                <div className="border border-gray-300 rounded-lg p-4 bg-gray-50">
+                    <h3 className="text-xl font-bold text-gray-800 mb-4 flex items-center space-x-2">
+                        <i className="fas fa-bullseye text-blue-600"></i>
+                        <span>Define Goals</span>
+                    </h3>
+                    {goals.map((goal, index) => (
+                        <div key={index} className="flex flex-col md:flex-row gap-4 mb-4 p-3 border border-gray-200 rounded-lg bg-white shadow-sm">
+                            <div className="flex-grow">
+                                <label htmlFor={`goalDescription-${index}`} className="block text-gray-700 text-sm font-semibold mb-1">
+                                    Goal {index + 1} Description
+                                </label>
+                                <textarea
+                                    id={`goalDescription-${index}`}
+                                    value={goal.description}
+                                    onChange={(e) => handleGoalChange(index, 'description', e.target.value)}
+                                    className={`w-full p-2 border ${errors.goals && errors.goals[index]?.description ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:ring-2 focus:ring-blue-300 resize-y min-h-[60px]`}
+                                    placeholder="Describe this goal (min 12 characters)"
+                                />
+                                {errors.goals && errors.goals[index]?.description && (
+                                    <p className="text-red-500 text-xs mt-1">{errors.goals[index].description}</p>
+                                )}
+                            </div>
+                            <div className="w-full md:w-1/3">
+                                <label htmlFor={`goalType-${index}`} className="block text-gray-700 text-sm font-semibold mb-1">
+                                    Goal Type {/* Tweak 5: Changed label */}
+                                </label>
+                                <select
+                                    id={`goalType-${index}`}
+                                    value={goal.type}
+                                    onChange={(e) => handleGoalChange(index, 'type', e.target.value)}
+                                    className={`w-full p-2 border ${errors.goals && errors.goals[index]?.type ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:ring-2 focus:ring-blue-300`}
+                                >
+                                    <option value="Dev Complete">Dev Complete</option>
+                                    <option value="QA Complete">QA Complete</option>
+                                    <option value="Live">Live</option>
+                                </select>
+                                {errors.goals && errors.goals[index]?.type && (
+                                    <p className="text-red-500 text-xs mt-1">{errors.goals[index].type}</p>
+                                )}
+                            </div>
+                            {goals.length > 1 && ( // Allow removing if more than one goal
+                                <button
+                                    type="button"
+                                    onClick={() => removeGoal(index)}
+                                    className="md:self-end px-3 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors shadow-sm text-sm"
+                                >
+                                    <i className="fas fa-trash-alt"></i>
+                                </button>
+                            )}
+                        </div>
+                    ))}
+                    {errors.goals && typeof errors.goals === 'string' && ( // General error for min goals
+                        <p className="text-red-500 text-sm mt-1">{errors.goals}</p>
+                    )}
+                    <button
+                        type="button"
+                        onClick={addGoal}
+                        className="mt-4 px-6 py-2 bg-green-600 text-white rounded-xl font-bold text-base hover:bg-green-700 transition-colors shadow-md transform hover:scale-105"
                     >
-                        <option value="Dev Complete">Dev Complete</option>
-                        <option value="QA Complete">QA Complete</option>
-                        <option value="Live">Live</option>
-                    </select>
-                    {errors.goalType && <p className="text-red-500 text-sm mt-1">{errors.goalType}</p>}
+                        <i className="fas fa-plus mr-2"></i>Add Another Goal
+                    </button>
                 </div>
 
                 {/* Buttons */}
