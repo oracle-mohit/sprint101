@@ -13,7 +13,7 @@ const app = express();
 // Enable CORS. For production, you should specify exact origins.
 // For development, or if you have multiple dynamic frontends, you might use a more flexible approach.
 const corsOptions = {
-    origin: 'https://sprint101.vercel.app', // <--- UPDATED: Allow requests from your Vercel frontend URL
+    origin: 'https://sprint101.vercel.app', // Allow requests from your Vercel frontend URL
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE', // Allowed HTTP methods
     credentials: true, // Allow cookies to be sent with requests (if needed in the future)
     optionsSuccessStatus: 204 // Some legacy browsers (IE11, various SmartTVs) choke on 200
@@ -151,10 +151,10 @@ app.post('/api/sprints', async (req, res) => {
     }
 });
 
-// NEW: POST route to add a new sprint with initial goals
+// UPDATED: POST route to add a new sprint with multiple goals
 app.post('/api/sprints/add', async (req, res) => {
     try {
-        const { podName, startDate, endDate, goalDescription, goalType } = req.body;
+        const { podName, startDate, endDate, goals } = req.body; // Expecting 'goals' as an array
 
         // 1. Validate POD Name
         if (!podName || podName.trim().length === 0) {
@@ -173,56 +173,63 @@ app.post('/api/sprints/add', async (req, res) => {
             return res.status(400).json({ message: 'Sprint Start Date cannot be in the past.' });
         }
 
-        // 3. Determine End Date
+        // 3. Determine and Validate End Date
         let calculatedEndDate;
-        if (endDate) {
+        if (endDate) { // If endDate is provided (from frontend calculation)
             calculatedEndDate = new Date(endDate);
             if (calculatedEndDate <= parsedStartDate) {
                 return res.status(400).json({ message: 'Sprint End Date must be after Start Date.' });
             }
         } else {
-            // Default to Start Date + 14 days
+            // This fallback shouldn't be hit if frontend sends endDate, but good for robustness
             calculatedEndDate = new Date(parsedStartDate);
-            calculatedEndDate.setDate(parsedStartDate.getDate() + 14);
+            calculatedEndDate.setDate(parsedStartDate.getDate() + 13); // +13 days as per frontend logic
         }
 
-        // 4. Validate Goal Description
-        if (!goalDescription || goalDescription.trim().length < 12) {
-            return res.status(400).json({ message: 'Goal Description is required and must be at least 12 characters long.' });
+        // 4. Validate Goals Array
+        if (!Array.isArray(goals) || goals.length < 3) { // Minimum 3 goals validation
+            return res.status(400).json({ message: 'A sprint must have a minimum of 3 goals.' });
         }
 
-        // 5. Validate Goal Type
-        const validGoalTypes = ['Live', 'QA Complete', 'Dev Complete'];
-        if (!goalType || !validGoalTypes.includes(goalType)) {
-            return res.status(400).json({ message: 'Invalid Goal Type. Must be one of: Live, QA Complete, Dev Complete.' });
+        const validatedGoals = [];
+        for (const goal of goals) {
+            if (!goal.description || goal.description.trim().length < 12) {
+                return res.status(400).json({ message: 'Each goal description is required and must be at least 12 characters long.' });
+            }
+            const validGoalTypes = ['Live', 'QA Complete', 'Dev Complete'];
+            if (!goal.type || !validGoalTypes.includes(goal.type)) {
+                return res.status(400).json({ message: 'Invalid Goal Type for one or more goals. Must be one of: Live, QA Complete, Dev Complete.' });
+            }
+            validatedGoals.push({
+                description: goal.description,
+                type: goal.type,
+                status: goal.status || 'Not Done', // Ensure status defaults if not provided by frontend
+            });
         }
 
-        // Create the initial goal
-        const initialGoal = {
-            description: goalDescription,
-            type: goalType,
-            status: 'Not Done', // New goals start as 'Not Done'
-        };
-
-        // Create the new sprint document
+        // Create the new sprint document with the array of validated goals
         const newSprint = new Sprint({
             podName,
             startDate: parsedStartDate,
             endDate: calculatedEndDate,
-            goals: [initialGoal], // Add the initial goal to the sprint
+            goals: validatedGoals, // Use the validated goals array
         });
 
         // Save the new sprint to the database
         await newSprint.save();
 
-        res.status(201).json({ message: 'Sprint and initial goal created successfully', sprint: newSprint });
+        res.status(201).json({ message: 'Sprint and goals created successfully', sprint: newSprint });
     } catch (err) {
-        console.error('Error creating new sprint and goal:', err);
+        console.error('Error creating new sprint and goals:', err);
         // Handle Mongoose validation errors specifically
         if (err.name === 'ValidationError') {
-            return res.status(400).json({ message: err.message, errors: err.errors });
+            const errors = {};
+            for (let field in err.errors) {
+                errors[field] = err.errors[field].message;
+            }
+            return res.status(400).json({ message: 'Validation Error', errors: errors });
         }
-        res.status(500).json({ message: 'Server error creating sprint and goal', error: err.message });
+        res.status(500).json({ message: 'Server error creating sprint and goals', error: err.message });
     }
 });
 
