@@ -370,6 +370,18 @@ function SprintsList({ sprints, onManageGoals }) {
     const currentUpcomingSprints = sortedSprints.filter(sprint => new Date(sprint.endDate).setHours(23, 59, 59, 999) >= now);
     const pastSprints = sortedSprints.filter(sprint => new Date(sprint.endDate).setHours(23, 59, 59, 999) < now);
 
+    // Group past sprints by POD Name
+    const groupedPastSprints = pastSprints.reduce((acc, sprint) => {
+        if (!acc[sprint.podName]) {
+            acc[sprint.podName] = [];
+        }
+        acc[sprint.podName].push(sprint);
+        return acc;
+    }, {});
+
+    // Sort POD names alphabetically
+    const sortedPodNames = Object.keys(groupedPastSprints).sort();
+
     return (
         <div className="space-y-10">
             {/* Current & Upcoming Sprints Section */}
@@ -391,23 +403,34 @@ function SprintsList({ sprints, onManageGoals }) {
                 </div>
             </section>
 
-            {/* Past Sprints Section */}
+            {/* Past Sprints Section - Grouped by POD Name */}
             <section className="bg-gray-100 p-8 rounded-3xl shadow-xl border border-gray-200 animate-fade-in-up">
                 <h2 className="text-3xl font-bold text-gray-800 mb-6 flex items-center space-x-3">
                     <i className="fas fa-box-archive text-gray-600 text-3xl"></i>
                     <span>Past Sprints</span>
                 </h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    {pastSprints.length === 0 ? (
-                        <p className="col-span-full text-center text-gray-500 text-lg p-10 border-4 border-dashed border-gray-300 rounded-2xl bg-gray-50 italic">
-                            <i className="fas fa-box-open mr-3 text-gray-400"></i>No past sprints recorded yet.
-                        </p>
-                    ) : (
-                        pastSprints.map(sprint => (
-                            <SprintCard key={sprint._id} sprint={sprint} isPastSprint={true} onManageGoals={onManageGoals} />
-                        ))
-                    )}
-                </div>
+                {sortedPodNames.length === 0 ? (
+                    <p className="col-span-full text-center text-gray-500 text-lg p-10 border-4 border-dashed border-gray-300 rounded-2xl bg-gray-50 italic">
+                        <i className="fas fa-box-open mr-3 text-gray-400"></i>No past sprints recorded yet.
+                    </p>
+                ) : (
+                    sortedPodNames.map(podName => (
+                        <div key={podName} className="mb-8 last:mb-0">
+                            <h3 className="text-2xl font-bold text-gray-700 mb-4 pb-2 border-b-2 border-gray-300 flex items-center space-x-2">
+                                <i className="fas fa-folder text-gray-500"></i>
+                                <span>{podName} POD Sprints</span>
+                            </h3>
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                                {groupedPastSprints[podName]
+                                    .sort((a, b) => new Date(b.startDate) - new Date(a.startDate)) // Sort by start date descending within each POD
+                                    .map(sprint => (
+                                        <SprintCard key={sprint._id} sprint={sprint} isPastSprint={true} onManageGoals={onManageGoals} />
+                                    ))
+                                }
+                            </div>
+                        </div>
+                    ))
+                )}
             </section>
         </div>
     );
