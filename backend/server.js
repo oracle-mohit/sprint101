@@ -10,10 +10,10 @@ require('dotenv').config(); // Load environment variables from .env file
 const app = express();
 
 // Middleware
-// Enable CORS for all routes, specifically allowing your frontend's origin for development.
-// This is crucial for your React frontend to communicate with this backend.
+// Enable CORS. For production, you should specify exact origins.
+// For development, or if you have multiple dynamic frontends, you might use a more flexible approach.
 const corsOptions = {
-    origin: 'https://zany-guide-x5qqq7grv97c6wq9-5173.app.github.dev', // <--- UPDATED: Allow requests from your frontend's Codespaces URL
+    origin: 'https://sprint101.vercel.app', // <--- UPDATED: Allow requests from your Vercel frontend URL
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE', // Allowed HTTP methods
     credentials: true, // Allow cookies to be sent with requests (if needed in the future)
     optionsSuccessStatus: 204 // Some legacy browsers (IE11, various SmartTVs) choke on 200
