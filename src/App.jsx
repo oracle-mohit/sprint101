@@ -9,7 +9,7 @@ function App() {
     const ACCESS_CODE = 'MLProduct';
 
     // State for managing current section, access status, sprints data, and selected sprint for management
-    const [currentSection, setCurrentSection] = useState('access'); // 'access', 'welcome', 'sprints', 'manageGoals'
+    const [currentSection, setCurrentSection] = useState('access'); // 'access', 'welcome', 'sprints', 'manageGoals', 'addSprint'
     const [accessGranted, setAccessGranted] = useState(sessionStorage.getItem('accessGranted') === 'true');
     const [sprints, setSprints] = useState([]); // State to hold all fetched sprints
     const [selectedSprint, setSelectedSprint] = useState(null); // State to hold the sprint currently being managed
@@ -141,6 +141,32 @@ function App() {
         }
     }, [showToast, navigateTo, API_BASE]);
 
+    // NEW: Handle adding a new sprint and its initial goal
+    const handleAddSprint = useCallback(async (newSprintData) => {
+        console.log('handleAddSprint called with data:', newSprintData);
+        try {
+            const response = await fetch(`${API_BASE}/api/sprints/add`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(newSprintData),
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                console.log('New sprint created successfully:', data);
+                showToast('New sprint created successfully!', 'success');
+                navigateTo('sprints'); // Navigate back to sprints list to see the new sprint
+            } else {
+                const errorData = await response.json();
+                console.error('Error response from addSprint:', response.status, errorData);
+                showToast(`Error creating sprint: ${errorData.message || 'Unknown error'}`, 'error');
+            }
+        } catch (error) {
+            console.error('Error adding new sprint:', error);
+            showToast('Network error adding new sprint. Please check your network and try again.', 'error');
+        }
+    }, [showToast, navigateTo, API_BASE]);
+
 
     return (
         <div className="min-h-screen flex flex-col">
@@ -160,6 +186,15 @@ function App() {
                             >
                                 <i className="fas fa-calendar-days text-lg"></i>
                                 <span className="font-semibold text-lg">Sprints</span>
+                            </button>
+                            {/* NEW: Add New Sprint Button */}
+                            <button
+                                onClick={() => navigateTo('addSprint')}
+                                className={`px-5 py-2 rounded-full transition-all duration-300 ease-in-out flex items-center space-x-2
+                                    ${currentSection === 'addSprint' ? 'bg-white text-blue-700 shadow-xl' : 'bg-blue-600 hover:bg-blue-800 text-white'}`}
+                            >
+                                <i className="fas fa-plus-circle text-lg"></i>
+                                <span className="font-semibold text-lg">New Sprint</span>
                             </button>
                         </div>
                     )}
@@ -189,6 +224,11 @@ function App() {
                     {/* DEBUG LOG: Check if selectedSprint is available when manageGoals section is active */}
                     {currentSection === 'manageGoals' && !selectedSprint && accessGranted && (
                         <p className="text-red-500 text-center text-xl font-semibold mt-10">Error: No sprint selected for management. Please go back to Sprints list.</p>
+                    )}
+
+                    {/* NEW: Add Sprint Screen */}
+                    {currentSection === 'addSprint' && accessGranted && (
+                        <AddSprintScreen onAddSprint={handleAddSprint} onBack={() => navigateTo('sprints')} />
                     )}
                 </div>
             </main>
@@ -594,6 +634,182 @@ function ManageGoals({ sprint, onSave, onBack }) {
                     </button>
                 )}
             </div>
+        </section>
+    );
+}
+
+// NEW: AddSprintScreen Component
+function AddSprintScreen({ onAddSprint, onBack }) {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // Normalize to start of day
+
+    const [podName, setPodName] = useState('');
+    const [startDate, setStartDate] = useState(today.toISOString().split('T')[0]); // Default to today
+    const [endDate, setEndDate] = useState(() => {
+        const defaultEndDate = new Date(today);
+        defaultEndDate.setDate(today.getDate() + 14);
+        return defaultEndDate.toISOString().split('T')[0];
+    }); // Default to 14 days from today
+    const [goalDescription, setGoalDescription] = useState('');
+    const [goalType, setGoalType] = useState('Dev Complete');
+    const [errors, setErrors] = useState({});
+
+    // Effect to update end date when start date changes
+    useEffect(() => {
+        const start = new Date(startDate);
+        const newEndDate = new Date(start);
+        newEndDate.setDate(start.getDate() + 14);
+        setEndDate(newEndDate.toISOString().split('T')[0]);
+    }, [startDate]);
+
+    const validateForm = () => {
+        const newErrors = {};
+        const parsedStartDate = new Date(startDate);
+        const parsedEndDate = new Date(endDate);
+        const now = new Date();
+        now.setHours(0, 0, 0, 0);
+
+        if (!podName.trim()) {
+            newErrors.podName = 'POD Name is required.';
+        }
+        if (!startDate) {
+            newErrors.startDate = 'Start Date is required.';
+        } else if (parsedStartDate < now) {
+            newErrors.startDate = 'Start Date cannot be in the past.';
+        }
+        if (!endDate) {
+            newErrors.endDate = 'End Date is required.';
+        } else if (parsedEndDate <= parsedStartDate) {
+            newErrors.endDate = 'End Date must be after Start Date.';
+        }
+        if (!goalDescription.trim() || goalDescription.trim().length < 12) {
+            newErrors.goalDescription = 'Goal Description is required and must be at least 12 characters.';
+        }
+        if (!goalType) {
+            newErrors.goalType = 'Goal Type is required.';
+        }
+
+        setErrors(newErrors);
+        return Object.keys(newErrors).length === 0;
+    };
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        if (validateForm()) {
+            onAddSprint({
+                podName,
+                startDate,
+                endDate,
+                goalDescription,
+                goalType,
+            });
+        }
+    };
+
+    return (
+        <section className="bg-white p-8 rounded-3xl shadow-xl border border-blue-200 animate-fade-in-up max-w-2xl mx-auto">
+            <h2 className="text-3xl font-bold text-blue-800 mb-6 flex items-center justify-center space-x-3">
+                <i className="fas fa-plus-square text-blue-600 text-3xl"></i>
+                <span>Add New Sprint & Goal</span>
+            </h2>
+
+            <form onSubmit={handleSubmit} className="space-y-6">
+                {/* POD Name */}
+                <div>
+                    <label htmlFor="podName" className="block text-gray-700 text-lg font-semibold mb-2">
+                        POD Name
+                    </label>
+                    <input
+                        type="text"
+                        id="podName"
+                        value={podName}
+                        onChange={(e) => setPodName(e.target.value)}
+                        className={`w-full p-3 border ${errors.podName ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:ring-2 focus:ring-blue-300`}
+                        placeholder="e.g., Andromeda, Phoenix, Gemini"
+                    />
+                    {errors.podName && <p className="text-red-500 text-sm mt-1">{errors.podName}</p>}
+                </div>
+
+                {/* Start Date */}
+                <div>
+                    <label htmlFor="startDate" className="block text-gray-700 text-lg font-semibold mb-2">
+                        Sprint Start Date
+                    </label>
+                    <input
+                        type="date"
+                        id="startDate"
+                        value={startDate}
+                        onChange={(e) => setStartDate(e.target.value)}
+                        className={`w-full p-3 border ${errors.startDate ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:ring-2 focus:ring-blue-300`}
+                    />
+                    {errors.startDate && <p className="text-red-500 text-sm mt-1">{errors.startDate}</p>}
+                </div>
+
+                {/* End Date */}
+                <div>
+                    <label htmlFor="endDate" className="block text-gray-700 text-lg font-semibold mb-2">
+                        Sprint End Date (Optional - defaults to +14 days)
+                    </label>
+                    <input
+                        type="date"
+                        id="endDate"
+                        value={endDate}
+                        onChange={(e) => setEndDate(e.target.value)}
+                        className={`w-full p-3 border ${errors.endDate ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:ring-2 focus:ring-blue-300`}
+                    />
+                    {errors.endDate && <p className="text-red-500 text-sm mt-1">{errors.endDate}</p>}
+                </div>
+
+                {/* Goal Description */}
+                <div>
+                    <label htmlFor="goalDescription" className="block text-gray-700 text-lg font-semibold mb-2">
+                        Initial Goal Description
+                    </label>
+                    <textarea
+                        id="goalDescription"
+                        value={goalDescription}
+                        onChange={(e) => setGoalDescription(e.target.value)}
+                        className={`w-full p-3 border ${errors.goalDescription ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:ring-2 focus:ring-blue-300 resize-y min-h-[100px]`}
+                        placeholder="Describe the main goal for this new sprint (min 12 characters)"
+                    />
+                    {errors.goalDescription && <p className="text-red-500 text-sm mt-1">{errors.goalDescription}</p>}
+                </div>
+
+                {/* Goal Type */}
+                <div>
+                    <label htmlFor="goalType" className="block text-gray-700 text-lg font-semibold mb-2">
+                        Initial Goal Type
+                    </label>
+                    <select
+                        id="goalType"
+                        value={goalType}
+                        onChange={(e) => setGoalType(e.target.value)}
+                        className={`w-full p-3 border ${errors.goalType ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:ring-2 focus:ring-blue-300`}
+                    >
+                        <option value="Dev Complete">Dev Complete</option>
+                        <option value="QA Complete">QA Complete</option>
+                        <option value="Live">Live</option>
+                    </select>
+                    {errors.goalType && <p className="text-red-500 text-sm mt-1">{errors.goalType}</p>}
+                </div>
+
+                {/* Buttons */}
+                <div className="flex justify-end space-x-4 mt-8">
+                    <button
+                        type="button"
+                        onClick={onBack}
+                        className="px-8 py-3 bg-gray-300 text-gray-800 rounded-xl font-bold text-lg hover:bg-gray-400 transition-colors shadow-md transform hover:scale-105"
+                    >
+                        Cancel
+                    </button>
+                    <button
+                        type="submit"
+                        className="px-8 py-3 bg-blue-600 text-white rounded-xl font-bold text-lg hover:bg-blue-700 transition-colors shadow-md transform hover:scale-105"
+                    >
+                        <i className="fas fa-plus mr-2"></i>Create Sprint
+                    </button>
+                </div>
+            </form>
         </section>
     );
 }
