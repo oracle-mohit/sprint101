@@ -733,7 +733,7 @@ function AddSprintScreen({ onAddSprint, onBack }) {
         <section className="bg-white p-8 rounded-3xl shadow-xl border border-blue-200 animate-fade-in-up max-w-2xl mx-auto">
             <h2 className="text-3xl font-bold text-blue-800 mb-6 flex items-center justify-center space-x-3">
                 <i className="fas fa-plus-square text-blue-600 text-3xl"></i>
-                <span>App Next Sprint Goals</span> {/* Tweak 1: Changed heading */}
+                <span>Add Next Sprint Goals</span> {/* Tweak 1: Changed heading */}
             </h2>
 
             <div className="bg-blue-50 border border-blue-200 text-blue-800 px-4 py-3 rounded-lg relative text-sm mb-6 shadow-sm">
