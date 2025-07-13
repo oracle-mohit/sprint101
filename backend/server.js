@@ -151,6 +151,81 @@ app.post('/api/sprints', async (req, res) => {
     }
 });
 
+// NEW: POST route to add a new sprint with initial goals
+app.post('/api/sprints/add', async (req, res) => {
+    try {
+        const { podName, startDate, endDate, goalDescription, goalType } = req.body;
+
+        // 1. Validate POD Name
+        if (!podName || podName.trim().length === 0) {
+            return res.status(400).json({ message: 'POD Name is required.' });
+        }
+
+        // 2. Validate Start Date
+        if (!startDate) {
+            return res.status(400).json({ message: 'Sprint Start Date is required.' });
+        }
+        const parsedStartDate = new Date(startDate);
+        const now = new Date();
+        now.setHours(0, 0, 0, 0); // Normalize 'now' to start of day for comparison
+
+        if (parsedStartDate < now) {
+            return res.status(400).json({ message: 'Sprint Start Date cannot be in the past.' });
+        }
+
+        // 3. Determine End Date
+        let calculatedEndDate;
+        if (endDate) {
+            calculatedEndDate = new Date(endDate);
+            if (calculatedEndDate <= parsedStartDate) {
+                return res.status(400).json({ message: 'Sprint End Date must be after Start Date.' });
+            }
+        } else {
+            // Default to Start Date + 14 days
+            calculatedEndDate = new Date(parsedStartDate);
+            calculatedEndDate.setDate(parsedStartDate.getDate() + 14);
+        }
+
+        // 4. Validate Goal Description
+        if (!goalDescription || goalDescription.trim().length < 12) {
+            return res.status(400).json({ message: 'Goal Description is required and must be at least 12 characters long.' });
+        }
+
+        // 5. Validate Goal Type
+        const validGoalTypes = ['Live', 'QA Complete', 'Dev Complete'];
+        if (!goalType || !validGoalTypes.includes(goalType)) {
+            return res.status(400).json({ message: 'Invalid Goal Type. Must be one of: Live, QA Complete, Dev Complete.' });
+        }
+
+        // Create the initial goal
+        const initialGoal = {
+            description: goalDescription,
+            type: goalType,
+            status: 'Not Done', // New goals start as 'Not Done'
+        };
+
+        // Create the new sprint document
+        const newSprint = new Sprint({
+            podName,
+            startDate: parsedStartDate,
+            endDate: calculatedEndDate,
+            goals: [initialGoal], // Add the initial goal to the sprint
+        });
+
+        // Save the new sprint to the database
+        await newSprint.save();
+
+        res.status(201).json({ message: 'Sprint and initial goal created successfully', sprint: newSprint });
+    } catch (err) {
+        console.error('Error creating new sprint and goal:', err);
+        // Handle Mongoose validation errors specifically
+        if (err.name === 'ValidationError') {
+            return res.status(400).json({ message: err.message, errors: err.errors });
+        }
+        res.status(500).json({ message: 'Server error creating sprint and goal', error: err.message });
+    }
+});
+
 
 // Define the port for the server to listen on.
 // It uses the PORT environment variable or defaults to 5000.
