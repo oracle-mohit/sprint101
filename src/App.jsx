@@ -3,9 +3,9 @@ import React, { useState, useEffect, useCallback } from 'react';
 // Main App Component
 function App() {
     // IMPORTANT: Ensure this API_BASE URL is correct and your backend server is running.
-    // If your backend is hosted on Render.com, it might spin down due to inactivity.
     // For local development in a cloud environment (like Codespaces), use the provided public URL.
-    const API_BASE = 'https://zany-guide-x5qqq7grv97c6wq9-5000.app.github.dev'; // <--- CHANGE THIS LINE TO YOUR PUBLIC BACKEND URL
+    // For Render deployment, use the live Render backend URL.
+    const API_BASE = 'https://sprint101-1.onrender.com'; // <--- CHANGE THIS LINE TO YOUR LIVE RENDER BACKEND URL
     const ACCESS_CODE = 'MLProduct';
 
     // State for managing current section, access status, sprints data, and selected sprint for management
@@ -576,26 +576,26 @@ function ManageGoals({ sprint, onSave, onBack }) {
                         )}
                     </tbody>
                 </table>
-                </div>
+            </div>
 
-                <div className="flex justify-end space-x-4 mt-10">
+            <div className="flex justify-end space-x-4 mt-10">
+                <button
+                    onClick={onBack}
+                    className="px-8 py-3 bg-gray-300 text-gray-800 rounded-xl font-bold text-lg hover:bg-gray-400 transition-colors shadow-md transform hover:scale-105"
+                >
+                    Back to Sprints
+                </button>
+                {!isReadOnly && ( // Only show save button if not read-only
                     <button
-                        onClick={onBack}
-                        className="px-8 py-3 bg-gray-300 text-gray-800 rounded-xl font-bold text-lg hover:bg-gray-400 transition-colors shadow-md transform hover:scale-105"
+                        onClick={handleSaveClick}
+                        className="px-8 py-3 bg-blue-600 text-white rounded-xl font-bold text-lg hover:bg-blue-700 transition-colors shadow-md transform hover:scale-105"
                     >
-                        Back to Sprints
+                        Save Changes
                     </button>
-                    {!isReadOnly && ( // Only show save button if not read-only
-                        <button
-                            onClick={handleSaveClick}
-                            className="px-8 py-3 bg-blue-600 text-white rounded-xl font-bold text-lg hover:bg-blue-700 transition-colors shadow-md transform hover:scale-105"
-                        >
-                            Save Changes
-                        </button>
-                    )}
-                </div>
-            </section>
-        );
-    }
+                )}
+            </div>
+        </section>
+    );
+}
 
-    export default App;
+export default App;
