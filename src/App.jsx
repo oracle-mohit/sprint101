@@ -526,6 +526,26 @@ function ManageGoals({ sprint, onSave, onBack }) {
     const completedGoals = currentGoals.filter(goal => goal.status === 'Done').length;
     const achievementPercentage = totalGoals > 0 ? Math.round((completedGoals / totalGoals) * 100) : 0;
 
+    // Calculate the edit deadline for description and type fields
+    const sprintStartDate = new Date(sprint.startDate);
+    const editDeadline = new Date(sprintStartDate);
+    editDeadline.setDate(sprintStartDate.getDate() + 3); // Sprint Start Date + 3 days
+    editDeadline.setHours(23, 59, 59, 999); // Allow edits until the end of the 3rd day
+
+    const now = new Date();
+    // Determine if description and type fields should be editable
+    // They are editable only if the current date is before or on the edit deadline
+    const canEditDescriptionAndType = now <= editDeadline;
+
+    // Determine if fields should be read-only based on sprint.readOnly (past sprint)
+    // or if the edit deadline for description/type has passed.
+    const isReadOnly = sprint.readOnly || !canEditDescriptionAndType; // If it's a past sprint OR deadline passed
+    const isStatusOnlyEditable = sprint.editStatusOnly && !sprint.readOnly; // Status is editable if sprint has started and is not past
+
+    // The status field is always editable unless the entire sprint is read-only (past sprint)
+    const isStatusEditable = !sprint.readOnly;
+
+
     // Handle goal status/description/type change
     const handleGoalChange = (index, field, value) => {
         const updatedGoals = [...currentGoals];
@@ -548,10 +568,6 @@ function ManageGoals({ sprint, onSave, onBack }) {
         onSave(sprint._id, currentGoals); // Call the onSave prop from App.js
     };
 
-    // Determine if fields should be read-only
-    const isReadOnly = sprint.readOnly;
-    const isStatusOnlyEditable = sprint.editStatusOnly && !isReadOnly; // Can only edit status if sprint has started and is not past
-
     return (
         <section className="bg-white p-8 rounded-3xl shadow-xl border border-gray-200 animate-fade-in-up">
             <h2 className="text-3xl font-bold text-gray-800 mb-6 flex items-center space-x-3">
@@ -571,6 +587,15 @@ function ManageGoals({ sprint, onSave, onBack }) {
                     <p className="text-base font-bold text-gray-800 whitespace-nowrap">Achievement: <span className={`${achievementPercentage < 30 ? 'text-red-700' : achievementPercentage < 70 ? 'text-orange-600' : 'text-green-700'} text-xl`}>{achievementPercentage}%</span></p>
                 </div>
             </div>
+
+            {/* Note about editability */}
+            {!sprint.readOnly && ( // Only show this note if the sprint is not a past sprint
+                <div className="bg-yellow-50 border border-yellow-200 text-yellow-800 px-4 py-3 rounded-lg relative text-sm mb-6 shadow-sm">
+                    <i className="fas fa-info-circle mr-2"></i>
+                    Goal descriptions and types can be edited until **{formatDate(editDeadline)}**. Status can always be updated.
+                </div>
+            )}
+
 
             <div className="overflow-x-auto rounded-xl border border-gray-200 shadow-md">
                 <table className="min-w-full divide-y divide-gray-200">
@@ -595,10 +620,10 @@ function ManageGoals({ sprint, onSave, onBack }) {
                                         <textarea
                                             value={goal.description}
                                             onChange={(e) => handleGoalChange(index, 'description', e.target.value)}
-                                            readOnly={isReadOnly || isStatusOnlyEditable}
+                                            readOnly={!canEditDescriptionAndType} // Read-only if deadline passed
                                             // Conditional styling for textarea to look like static text when read-only
                                             className={`w-full p-3 text-base resize-y min-h-[80px] transition-all duration-200
-                                                ${isReadOnly || isStatusOnlyEditable
+                                                ${!canEditDescriptionAndType
                                                     ? 'bg-transparent border-transparent cursor-not-allowed text-gray-800 font-medium'
                                                     : 'border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-300'}`}
                                             rows="2"
@@ -608,10 +633,10 @@ function ManageGoals({ sprint, onSave, onBack }) {
                                         <select
                                             value={goal.type}
                                             onChange={(e) => handleGoalChange(index, 'type', e.target.value)}
-                                            disabled={isReadOnly || isStatusOnlyEditable}
+                                            disabled={!canEditDescriptionAndType} // Disabled if deadline passed
                                             // Conditional styling for select to remove dropdown arrow and look like static text when disabled
                                             className={`w-full p-3 text-base transition-all duration-200
-                                                ${isReadOnly || isStatusOnlyEditable
+                                                ${!canEditDescriptionAndType
                                                     ? 'bg-gray-100 border-transparent cursor-not-allowed appearance-none' // appearance-none removes default arrow
                                                     : 'border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-300'}`}
                                         >
@@ -624,11 +649,11 @@ function ManageGoals({ sprint, onSave, onBack }) {
                                         <select
                                             value={goal.status}
                                             onChange={(e) => handleGoalChange(index, 'status', e.target.value)}
-                                            disabled={isReadOnly}
+                                            disabled={!isStatusEditable} // Disabled only if status is not editable (i.e., past sprint)
                                             // Conditional styling for select to remove dropdown arrow and look like static text when disabled
                                             className={`w-full p-3 text-base font-semibold transition-all duration-200
                                                 ${goal.status === 'Done' ? 'bg-green-100 text-green-700 border-green-300' : 'bg-red-100 text-red-700 border-red-300'}
-                                                ${isReadOnly ? 'cursor-not-allowed appearance-none' : 'rounded-lg focus:ring-2 focus:ring-blue-300'}`} // appearance-none for disabled status
+                                                ${!isStatusEditable ? 'cursor-not-allowed appearance-none' : 'rounded-lg focus:ring-2 focus:ring-blue-300'}`} // appearance-none for disabled status
                                         >
                                             <option value="Not Done">Not Done</option>
                                             <option value="Done">Done</option>
@@ -648,7 +673,8 @@ function ManageGoals({ sprint, onSave, onBack }) {
                 >
                     Back to Sprints
                 </button>
-                {!isReadOnly && ( // Only show save button if not read-only
+                {/* Only show save button if description/type are editable OR if status is editable */}
+                {(canEditDescriptionAndType || isStatusEditable) && (
                     <button
                         onClick={handleSaveClick}
                         className="px-8 py-3 bg-blue-600 text-white rounded-xl font-bold text-lg hover:bg-blue-700 transition-colors shadow-md transform hover:scale-105"
@@ -756,7 +782,7 @@ function AddSprintScreen({ onAddSprint, onBack }) {
         <section className="bg-white p-8 rounded-3xl shadow-xl border border-blue-200 animate-fade-in-up max-w-2xl mx-auto">
             <h2 className="text-3xl font-bold text-blue-800 mb-6 flex items-center justify-center space-x-3">
                 <i className="fas fa-plus-square text-blue-600 text-3xl"></i>
-                <span>Add Next Sprint Goals</span> {/* Tweak 1: Changed heading */}
+                <span>App Next Sprint Goals</span> {/* Tweak 1: Changed heading */}
             </h2>
 
             <div className="bg-blue-50 border border-blue-200 text-blue-800 px-4 py-3 rounded-lg relative text-sm mb-6 shadow-sm">
