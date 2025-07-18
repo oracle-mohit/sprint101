@@ -356,21 +356,41 @@ function WelcomeScreen({ navigateTo }) {
 // Sprints List Component
 function SprintsList({ sprints, onManageGoals }) {
     const now = new Date();
+    // Normalize 'now' to the start of the current day for consistent date comparisons
+    now.setHours(0, 0, 0, 0);
 
-    // Sort sprints: First by POD Name (alphabetical ascending), then by Sprint Start Date (descending)
+    // Sort all sprints: First by POD Name (alphabetical ascending), then by Sprint Start Date (descending)
     const sortedSprints = [...sprints].sort((a, b) => {
         const podNameCompare = a.podName.localeCompare(b.podName);
         if (podNameCompare !== 0) {
             return podNameCompare;
         }
-        // If POD names are the same, sort by start date descending
-        return new Date(b.startDate) - new Date(a.startDate);
+        return new Date(b.startDate) - new Date(a.startDate); // Descending by start date
     });
 
-    const currentUpcomingSprints = sortedSprints.filter(sprint => new Date(sprint.endDate).setHours(23, 59, 59, 999) >= now);
-    const pastSprints = sortedSprints.filter(sprint => new Date(sprint.endDate).setHours(23, 59, 59, 999) < now);
+    // Filter into Current, Upcoming, and Past Sprints
+    const currentSprints = sortedSprints.filter(sprint => {
+        const sprintStartDate = new Date(sprint.startDate);
+        sprintStartDate.setHours(0, 0, 0, 0);
+        const sprintEndDate = new Date(sprint.endDate);
+        sprintEndDate.setHours(23, 59, 59, 999); // End of the day
 
-    // Group past sprints by POD Name
+        return sprintStartDate <= now && sprintEndDate >= now;
+    }).sort((a, b) => new Date(a.startDate) - new Date(b.startDate)); // Sort current by start date ascending
+
+    const upcomingSprints = sortedSprints.filter(sprint => {
+        const sprintStartDate = new Date(sprint.startDate);
+        sprintStartDate.setHours(0, 0, 0, 0);
+        return sprintStartDate > now;
+    }).sort((a, b) => new Date(a.startDate) - new Date(b.startDate)); // Sort upcoming by start date ascending
+
+    const pastSprints = sortedSprints.filter(sprint => {
+        const sprintEndDate = new Date(sprint.endDate);
+        sprintEndDate.setHours(23, 59, 59, 999); // End of the day
+        return sprintEndDate < now;
+    });
+
+    // Group past sprints by POD Name (re-using existing logic)
     const groupedPastSprints = pastSprints.reduce((acc, sprint) => {
         if (!acc[sprint.podName]) {
             acc[sprint.podName] = [];
@@ -379,24 +399,43 @@ function SprintsList({ sprints, onManageGoals }) {
         return acc;
     }, {});
 
-    // Sort POD names alphabetically
+    // Sort POD names alphabetically for past sprints
     const sortedPodNames = Object.keys(groupedPastSprints).sort();
 
     return (
         <div className="space-y-10">
-            {/* Current & Upcoming Sprints Section */}
+            {/* NEW: Current Sprints Section */}
             <section className="bg-blue-50 p-8 rounded-3xl shadow-xl border border-blue-200 animate-fade-in-up">
                 <h2 className="text-3xl font-bold text-blue-800 mb-6 flex items-center space-x-3">
-                    <i className="fas fa-hourglass-start text-blue-600 text-3xl"></i>
-                    <span>Current & Upcoming Sprints</span>
+                    <i className="fas fa-hourglass-half text-blue-600 text-3xl"></i>
+                    <span>Current Sprints</span>
                 </h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    {currentUpcomingSprints.length === 0 ? (
+                    {currentSprints.length === 0 ? (
                         <p className="col-span-full text-center text-gray-500 text-lg p-10 border-4 border-dashed border-blue-200 rounded-2xl bg-blue-100 italic">
-                            <i className="fas fa-check-circle mr-3 text-blue-500"></i>No current or upcoming sprints.
+                            <i className="fas fa-check-circle mr-3 text-blue-500"></i>No sprints currently in progress.
                         </p>
                     ) : (
-                        currentUpcomingSprints.map(sprint => (
+                        currentSprints.map(sprint => (
+                            <SprintCard key={sprint._id} sprint={sprint} isPastSprint={false} onManageGoals={onManageGoals} />
+                        ))
+                    )}
+                </div>
+            </section>
+
+            {/* NEW: Upcoming Sprints Section */}
+            <section className="bg-purple-50 p-8 rounded-3xl shadow-xl border border-purple-200 animate-fade-in-up">
+                <h2 className="text-3xl font-bold text-purple-800 mb-6 flex items-center space-x-3">
+                    <i className="fas fa-calendar-alt text-purple-600 text-3xl"></i>
+                    <span>Upcoming Sprints</span>
+                </h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    {upcomingSprints.length === 0 ? (
+                        <p className="col-span-full text-center text-gray-500 text-lg p-10 border-4 border-dashed border-purple-200 rounded-2xl bg-purple-100 italic">
+                            <i className="fas fa-calendar-plus mr-3 text-purple-500"></i>No upcoming sprints planned.
+                        </p>
+                    ) : (
+                        upcomingSprints.map(sprint => (
                             <SprintCard key={sprint._id} sprint={sprint} isPastSprint={false} onManageGoals={onManageGoals} />
                         ))
                     )}
