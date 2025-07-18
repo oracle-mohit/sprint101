@@ -417,7 +417,7 @@ function SprintsList({ sprints, onManageGoals }) {
                         </p>
                     ) : (
                         currentSprints.map(sprint => (
-                            <SprintCard key={sprint._id} sprint={sprint} isPastSprint={false} onManageGoals={onManageGoals} />
+                            <SprintCard key={sprint._id} sprint={sprint} isPastSprint={false} isUpcomingSprint={false} isCurrentSprint={true} onManageGoals={onManageGoals} />
                         ))
                     )}
                 </div>
@@ -436,7 +436,7 @@ function SprintsList({ sprints, onManageGoals }) {
                         </p>
                     ) : (
                         upcomingSprints.map(sprint => (
-                            <SprintCard key={sprint._id} sprint={sprint} isPastSprint={false} onManageGoals={onManageGoals} />
+                            <SprintCard key={sprint._id} sprint={sprint} isPastSprint={false} isUpcomingSprint={true} isCurrentSprint={false} onManageGoals={onManageGoals} />
                         ))
                     )}
                 </div>
@@ -463,7 +463,7 @@ function SprintsList({ sprints, onManageGoals }) {
                                 {groupedPastSprints[podName]
                                     .sort((a, b) => new Date(b.startDate) - new Date(a.startDate)) // Sort by start date descending within each POD
                                     .map(sprint => (
-                                        <SprintCard key={sprint._id} sprint={sprint} isPastSprint={true} onManageGoals={onManageGoals} />
+                                        <SprintCard key={sprint._id} sprint={sprint} isPastSprint={true} isUpcomingSprint={false} isCurrentSprint={false} onManageGoals={onManageGoals} />
                                     ))
                                 }
                             </div>
@@ -476,7 +476,7 @@ function SprintsList({ sprints, onManageGoals }) {
 }
 
 // Sprint Card Component
-function SprintCard({ sprint, isPastSprint, onManageGoals }) {
+function SprintCard({ sprint, isPastSprint, onManageGoals, isUpcomingSprint, isCurrentSprint }) {
     const startDate = new Date(sprint.startDate);
     const endDate = new Date(sprint.endDate);
     const now = new Date();
@@ -506,6 +506,14 @@ function SprintCard({ sprint, isPastSprint, onManageGoals }) {
         cardBorderColor = 'border-gray-400';
         ctaBg = 'bg-gray-500 hover:bg-gray-600';
         cardShadow = 'shadow-md';
+    } else if (isUpcomingSprint) { // NEW: Styling for Upcoming Sprints
+        cardBorderColor = 'border-purple-500';
+        ctaBg = 'bg-purple-600 hover:bg-purple-700';
+        cardShadow = 'shadow-lg'; // Keep consistent shadow for active/upcoming
+    } else if (isCurrentSprint) { // Explicitly define for Current Sprints if needed, or let defaults apply
+        cardBorderColor = 'border-blue-500'; // Already default, but explicit
+        ctaBg = 'bg-blue-600 hover:bg-blue-700'; // Already default, but explicit
+        cardShadow = 'shadow-lg';
     } else if (achievementPercentage === 100 && totalGoals > 0) {
         cardBorderColor = 'border-green-500';
         cardShadow = 'shadow-xl shadow-green-200';
@@ -519,8 +527,8 @@ function SprintCard({ sprint, isPastSprint, onManageGoals }) {
             <div>
                 <h3 className="text-2xl font-bold text-gray-900 mb-3">{sprint.podName}</h3>
                 <div className="text-base text-gray-700 mb-4 space-y-1">
-                    <p className="flex items-center"><i className="fas fa-calendar-check mr-2 text-blue-500"></i><strong>Start:</strong> {formatDate(sprint.startDate)}</p>
-                    <p className="flex items-center"><i className="fas fa-calendar-times mr-2 text-red-500"></i><strong>End:</strong> {formatDate(sprint.endDate)}</p>
+                    <p className="flex items-center"><i className="fas fa-calendar-check mr-2 ${isUpcomingSprint ? 'text-purple-500' : 'text-blue-500'}"></i><strong>Start:</strong> {formatDate(sprint.startDate)}</p>
+                    <p className="flex items-center"><i className="fas fa-calendar-times mr-2 ${isUpcomingSprint ? 'text-purple-500' : 'text-red-500'}"></i><strong>End:</strong> {formatDate(sprint.endDate)}</p>
                 </div>
                 <div className="mb-5">
                     {isPastSprint ? (
